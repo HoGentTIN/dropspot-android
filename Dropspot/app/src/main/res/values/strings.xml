@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Dropspot</string>
+    //home frag
+    <string name="name">Name</string>
+    <string name="creator">Creator</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec sagittis nisl. Phasellus
+        nec pellentesque neque. Aliquam sed dolor molestie, porttitor sapien eu, eleifend magna. Proin quam nisl, semper
+        sed magna ut, auctor vulputate quam. Quisque dignissim massa et augue eleifend ultrices. Nullam in urna
+        pharetra, pharetra ex et, tempor.
+    </string>
+    <string name="photospot_description">photo of the selected spot</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+        AIzaSyDpf9jDOYfqasU41sUnMozgcMjf3pDPGnE
+    </string>
+    <string name="home">Home</string>
+    //main
+    <string name="add_spot_contentdescr">floating action button to add spot</string>
+    <string name="me">Me</string>
+    //add_spot_fragment
+    <string name="description_label">Description:</string>
+    <string name="name_label">Name:</string>
+    <string name="name_placeholder_add_spot">Name</string>
+    <string name="descr_placeholder_add_spot">Description</string>
+
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/navigation"
+            app:startDestination="@id/homeFragment">
+
+    <fragment
+            android:id="@+id/homeFragment"
+            android:name="com.example.dropspot.ui.home.HomeFragment"
+            android:label="Home">
+        <action
+                android:id="@+id/action_homeFragment_to_addSpotFragment"
+                app:destination="@id/addSpotFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"
+                app:popUpTo="@+id/homeFragment"
+                app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+            android:id="@+id/meFragment"
+            android:name="com.example.dropspot.ui.me.meFragment"
+            android:label="Me"
+            tools:layout="@layout/me_fragment"/>
+    <fragment
+            android:id="@+id/addSpotFragment"
+            android:name="com.example.dropspot.ui.spot.add_spot.EditSpotsFragment"
+            android:label="Add a spot"
+            tools:layout="@layout/add_spot_fragment"/>
+</navigation>

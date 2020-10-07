@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/2059037239/Dropspot.iml" filepath="$PROJECT_DIR$/.idea/modules/2059037239/Dropspot.iml" group="Dropspot" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/app.iml" filepath="$PROJECT_DIR$/.idea/app.iml" group="Dropspot/app" />
+    </modules>
+  </component>
+</project>
