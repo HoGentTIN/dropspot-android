@@ -4,7 +4,9 @@ import android.content.Context
 import android.net.ConnectivityManager
 import com.example.dropspot.data.AppDatabase
 import com.example.dropspot.data.repos.SpotRepository
+import com.example.dropspot.network.AuthService
 import com.example.dropspot.network.SpotService
+import com.example.dropspot.ui.auth.AuthViewModel
 import com.example.dropspot.ui.home.HomeViewModel
 import com.example.dropspot.ui.me.MeViewModel
 import com.example.dropspot.utils.BASE_URL
@@ -35,16 +37,19 @@ val myModule: Module = module {
     //retrofit
     single {
         Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(get()))
-                .addCallAdapterFactory(CoroutineCallAdapterFactory())
-                // .client(get())
-                .build()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(get()))
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            // .client(get())
+            .build()
     }
 
     //api services
     single {
-        provideSpotApiService(get())
+        provideSpotService(get())
+    }
+    single {
+        provideAuthService(get())
     }
     //connectivity_service
     single { androidContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager }
@@ -63,10 +68,15 @@ val myModule: Module = module {
     //viewmodels
     viewModel { HomeViewModel(get()) }
     viewModel { MeViewModel() }
+    viewModel { AuthViewModel(get()) }
 
 }
 
-private fun provideSpotApiService(retrofit: Retrofit): SpotService {
+private fun provideSpotService(retrofit: Retrofit): SpotService {
     return retrofit.create(SpotService::class.java)
+}
+
+private fun provideAuthService(retrofit: Retrofit): AuthService {
+    return retrofit.create(AuthService::class.java)
 }
 

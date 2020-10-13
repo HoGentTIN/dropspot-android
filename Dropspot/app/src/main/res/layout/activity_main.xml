@@ -60,31 +60,31 @@
 
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fab"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|end"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="20dp"
-                        android:layout_marginBottom="16dp"
-                        android:contentDescription="@string/add_spot_contentdescr"
-                        android:scaleType="center"
-                        app:backgroundTint="@color/colorPrimary"
-                        app:fabSize="normal"
-                        app:srcCompat="@drawable/ic_add_24px"/>
+                    android:id="@+id/fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="16dp"
+                    android:contentDescription="@string/add_spot_contentdescr"
+                    android:scaleType="center"
+                    app:backgroundTint="@color/primary_color"
+                    app:fabSize="normal"
+                    app:srcCompat="@drawable/ic_add_24px" />
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
-                    android:id="@+id/bottom_navigation"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:background="@color/colorPrimary"
-                    app:itemIconTint="@color/white"
-                    app:itemTextColor="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:menu="@menu/navbottom"/>
+                android:id="@+id/bottom_navigation"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/primary_color"
+                app:itemIconTint="@color/white"
+                app:itemTextColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:menu="@menu/navbottom" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <com.google.android.material.navigation.NavigationView

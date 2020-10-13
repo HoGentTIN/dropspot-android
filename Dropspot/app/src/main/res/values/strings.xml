@@ -22,5 +22,15 @@
     <string name="name_label">Name:</string>
     <string name="name_placeholder_add_spot">Name</string>
     <string name="descr_placeholder_add_spot">Description</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="email_or_username">Email or username</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="username">Username</string>
+    <string name="password_confirmation">Password Confirmation</string>
+    <string name="dropspot_logo">Dropspot logo</string>
 
 </resources>

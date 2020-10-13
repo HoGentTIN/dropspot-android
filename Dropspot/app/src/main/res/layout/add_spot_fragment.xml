@@ -103,18 +103,18 @@
             </androidx.recyclerview.widget.RecyclerView>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabConfirm"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:contentDescription="@string/add_spot_contentdescr"
-                    android:scaleType="center"
-                    app:backgroundTint="@color/colorPrimary"
-                    app:fabSize="normal"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/ic_add_24px"/>
+                android:id="@+id/fabConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="@string/add_spot_contentdescr"
+                android:scaleType="center"
+                app:backgroundTint="@color/primary_color"
+                app:fabSize="normal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/ic_add_24px" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
