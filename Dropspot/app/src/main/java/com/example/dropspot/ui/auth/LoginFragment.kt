@@ -1,6 +1,7 @@
 package com.example.dropspot.ui.auth
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,10 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.dropspot.R
+import com.example.dropspot.data.model.dto.responses.JwtResponse
 import com.example.dropspot.databinding.FragmentLoginBinding
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
@@ -25,7 +28,6 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
     private lateinit var button_register: Button
     private lateinit var button_login: Button
     private lateinit var progressBar_loading: ProgressBar
-
 
     @NotEmpty(message = "Email or username is required")
     private lateinit var input_email: EditText
@@ -75,6 +77,18 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
             }
             false
         }
+
+        authViewModel.loginResponse.observe(viewLifecycleOwner, Observer {
+            if (it.success) {
+                startMainActivity(it)
+            } else {
+                Toast.makeText(this.requireContext(), "Login failed", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun startMainActivity(it: JwtResponse) {
+        Log.i("login", "login succes : " + it.toString())
     }
 
     private fun login() {

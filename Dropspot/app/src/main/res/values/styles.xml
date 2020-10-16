@@ -25,6 +25,7 @@
 
         <item name="fontFamily">@font/open_sans</item>
         <item name="android:fontFamily">@font/open_sans</item>
+
         <item name="textAppearanceHeadline1">@style/TextAppearance.MaterialComponents.Headline1
         </item>
         <item name="textAppearanceHeadline2">@style/TextAppearance.MaterialComponents.Headline2
@@ -71,4 +72,5 @@
         <item name="android:minHeight">40dp</item>
         <item name="android:maxHeight">40dp</item>
     </style>
+
 </resources>

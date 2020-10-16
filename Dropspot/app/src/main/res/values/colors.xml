@@ -16,7 +16,7 @@
     <color name="error">#F44336</color>
     <color name="color_on_error">#FFFFFF</color>
 
-    <color name="background">#FFFFFF</color>
+    <color name="background">#eceff1</color>
     <color name="color_on_background">#000000</color>
 
     <color name="white">#FFFFFF</color>

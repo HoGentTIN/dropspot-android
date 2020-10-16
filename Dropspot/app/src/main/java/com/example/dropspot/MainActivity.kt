@@ -60,7 +60,6 @@ class MainActivity : AppCompatActivity() {
         val addSpot: FloatingActionButton = binding.fabaddspot
         addSpot.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View) {
-                navController.navigate(R.id.action_homeFragment_to_addSpotFragment)
             }
         })
     }

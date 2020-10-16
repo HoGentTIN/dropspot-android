@@ -1,6 +1,7 @@
 package com.example.dropspot.ui.auth
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.example.dropspot.databinding.FragmentRegisterBinding
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
@@ -24,25 +26,25 @@ class RegisterFragment : Fragment(), Validator.ValidationListener {
     private lateinit var progressBar_loading: ProgressBar
     private val validator = Validator(this)
 
-    @NotEmpty(message = "Firstname is required")
-    @Length(max = 50)
+    @NotEmpty(message = "First name is required")
+    @Length(max = 50, message = "First name max length 50")
     private lateinit var input_firstName: EditText
 
-    @NotEmpty(message = "Lastname is required")
-    @Length(max = 50)
+    @NotEmpty(message = "Last name is required")
+    @Length(max = 50, message = "Last name max length 50")
     private lateinit var input_lastName: EditText
 
     @NotEmpty(message = "Username is required")
-    @Length(min = 5, max = 35, message = "Username must have between {min} and {max} characters.")
+    @Length(min = 5, max = 35, message = "Username must have between 5 and 35 characters.")
     private lateinit var input_username: EditText
 
     @Email(message = "Must be an email address")
     @NotEmpty(message = "Email is required")
-    @Length(max = 100, message = "Email max length {max}.")
+    @Length(max = 100, message = "Email max length 100.")
     private lateinit var input_email: EditText
 
     @NotEmpty(message = "Password is required")
-    @Password(min = 6)
+    @Password(min = 6, message = "password min length 6")
     private lateinit var input_password: EditText
 
     @ConfirmPassword
@@ -79,6 +81,18 @@ class RegisterFragment : Fragment(), Validator.ValidationListener {
         button_register.setOnClickListener {
             validator.validate()
         }
+
+        authViewModel.registerResponse.observe(viewLifecycleOwner, Observer {
+            if (it.success) {
+                navigateToLogin()
+            } else {
+                Toast.makeText(this.requireContext(), "Login failed", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun navigateToLogin() {
+        Log.i("register", "success")
     }
 
     private fun register() {
