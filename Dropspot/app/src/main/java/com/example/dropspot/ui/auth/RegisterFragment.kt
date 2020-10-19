@@ -1,16 +1,17 @@
 package com.example.dropspot.ui.auth
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.example.dropspot.databinding.FragmentRegisterBinding
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
@@ -71,7 +72,7 @@ class RegisterFragment : Fragment(), Validator.ValidationListener {
         input_email = binding.inputEmail
         input_username = binding.inputUsername
         input_password = binding.inputPassword
-        input_passwordConfirm = binding.inputPasswordconfirm
+        input_passwordConfirm = binding.inputPasswordConfirm
         button_register = binding.buttonRegister
         progressBar_loading = binding.progressBarLoading
     }
@@ -82,22 +83,37 @@ class RegisterFragment : Fragment(), Validator.ValidationListener {
             validator.validate()
         }
 
+        input_passwordConfirm.setOnEditorActionListener { _, actionId, _ ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_DONE -> {
+                    validator.validate()
+                }
+            }
+            false
+        }
+
         authViewModel.registerResponse.observe(viewLifecycleOwner, Observer {
             if (it.success) {
                 navigateToLogin()
             } else {
-                Toast.makeText(this.requireContext(), "Login failed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this.requireContext(), it.message, Toast.LENGTH_SHORT).show()
             }
         })
+
+
     }
 
     private fun navigateToLogin() {
-        Log.i("register", "success")
+        findNavController().navigate(
+            RegisterFragmentDirections.actionRegisterFragmentToLoginFragment(
+                input_username.text.toString().trim(), input_password.text.toString().trim()
+            )
+        )
     }
 
     private fun register() {
         authViewModel.register(
-            input_firstname.text.toString()
+            input_firstname.text.toString().trim()
             , input_lastname.text.toString().trim()
             , input_username.text.toString().trim()
             , input_email.text.toString().trim()

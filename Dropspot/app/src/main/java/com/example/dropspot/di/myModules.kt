@@ -12,6 +12,8 @@ import com.example.dropspot.ui.me.MeViewModel
 import com.example.dropspot.utils.BASE_URL
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
@@ -24,15 +26,16 @@ val myModule: Module = module {
     //gson
     single {
         GsonBuilder()
-                .create()
+            .create()
     }
 
-    //custom client with auth interceptor
-    /*single {
+    //custom client with auth interceptor and logging
+    single {
         OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor)
+            //.addInterceptor(AuthInterceptor)
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
-    }*/
+    }
 
     //retrofit
     single {
@@ -40,7 +43,7 @@ val myModule: Module = module {
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(get()))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            // .client(get())
+            .client(get())
             .build()
     }
 
@@ -68,7 +71,7 @@ val myModule: Module = module {
     //viewmodels
     viewModel { HomeViewModel(get()) }
     viewModel { MeViewModel() }
-    viewModel { AuthViewModel(get()) }
+    viewModel { AuthViewModel(get(), get(), get()) }
 
 }
 

@@ -1,3 +1,3 @@
 package com.example.dropspot.data.model.dto.responses
 
-data class MessageResponse(val success: Boolean, private val message: String)
+data class MessageResponse(val success: Boolean, val message: String)

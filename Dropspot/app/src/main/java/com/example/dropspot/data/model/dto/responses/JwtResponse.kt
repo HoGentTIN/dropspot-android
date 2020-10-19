@@ -6,9 +6,9 @@ data class JwtResponse(
     val username: String,
     val email: String,
     val roles: List<String>,
-    val success: Boolean = true
+    val success: Boolean,
+    val message: String
 ) {
     private val type = "Bearer"
 
-    constructor () : this("", -1L, "", "", listOf(), false)
 }

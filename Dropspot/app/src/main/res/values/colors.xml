@@ -10,8 +10,8 @@
     <color name="secondary_color_dark">#258552</color>
     <color name="color_on_secondary">#000000</color>
 
-    <color name="surface_color">#84FFFF</color>
-    <color name="color_on_surface">#EA80FC</color>
+    <color name="surface_color">#eceff1</color>
+    <color name="color_on_surface">#000f17</color>
 
     <color name="error">#F44336</color>
     <color name="color_on_error">#FFFFFF</color>

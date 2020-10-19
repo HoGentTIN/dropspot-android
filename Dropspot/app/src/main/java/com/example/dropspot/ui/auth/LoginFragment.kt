@@ -1,7 +1,7 @@
 package com.example.dropspot.ui.auth
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +13,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.example.dropspot.R
+import androidx.navigation.fragment.navArgs
+import com.example.dropspot.MainActivity
 import com.example.dropspot.data.model.dto.responses.JwtResponse
 import com.example.dropspot.databinding.FragmentLoginBinding
 import com.mobsandgeeks.saripaar.ValidationError
@@ -25,6 +26,10 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
 
     private val authViewModel: AuthViewModel by viewModel()
     private lateinit var binding: FragmentLoginBinding
+    private val validator = Validator(this)
+    private val args: LoginFragmentArgs by navArgs()
+
+    // UI components
     private lateinit var button_register: Button
     private lateinit var button_login: Button
     private lateinit var progressBar_loading: ProgressBar
@@ -35,7 +40,6 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
     @NotEmpty(message = "Password is required")
     private lateinit var input_password: EditText
 
-    private val validator = Validator(this)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +49,7 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
         validator.setValidationListener(this)
         setupBinding(inflater, container)
         setupListeners()
+        setupUI()
         return binding.root
     }
 
@@ -66,7 +71,7 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
 
         button_register.setOnClickListener {
             //nav to register
-            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment())
         }
 
         input_password.setOnEditorActionListener { _, actionId, _ ->
@@ -82,13 +87,28 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
             if (it.success) {
                 startMainActivity(it)
             } else {
-                Toast.makeText(this.requireContext(), "Login failed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this.requireContext(), it.message, Toast.LENGTH_SHORT).show()
             }
         })
     }
 
+    private fun setupUI() {
+        // handling successful registration
+        if (args.emailOrUsername.isNotBlank() && args.password.isNotBlank()) {
+            binding.inputEmail.setText(args.emailOrUsername)
+            binding.inputPassword.setText(args.password)
+        }
+    }
+
+
     private fun startMainActivity(it: JwtResponse) {
-        Log.i("login", "login succes : " + it.toString())
+        val intent = Intent(this.context, MainActivity::class.java)
+        intent.putExtra("TOKEN", it.token)
+        intent.putExtra("ID", it.id)
+        intent.putExtra("EMAIL", it.email)
+        intent.putExtra("USERNAME", it.username)
+        intent.putExtra("PASSWORD", binding.inputPassword.text)
+        startActivity(intent)
     }
 
     private fun login() {
@@ -100,7 +120,7 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
 
     override fun onValidationFailed(errors: MutableList<ValidationError>?) {
         for (error: ValidationError in errors!!.iterator()) {
-            var view: View = error.view
+            val view: View = error.view
             val message: String = error.getCollatedErrorMessage(this.requireContext())
             if (view is EditText) {
                 view.error = message
