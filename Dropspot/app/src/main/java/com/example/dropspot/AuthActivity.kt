@@ -25,6 +25,7 @@ class AuthActivity : AppCompatActivity() {
 
         //actionbar provided with return action
         navController = this.findNavController(R.id.nav_host_auth)
+        navController.setGraph(R.navigation.auth_nav)
         binding.toolbar.setupWithNavController(navController)
     }
 
