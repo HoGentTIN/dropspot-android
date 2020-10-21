@@ -7,14 +7,14 @@
 
     <fragment
             android:id="@+id/homeFragment"
-            android:name="com.example.dropspot.ui.home.HomeFragment"
-            android:label="Home">
+        android:name="com.example.dropspot.ui.HomeFragment"
+        android:label="Home">
 
     </fragment>
     <fragment
-            android:id="@+id/meFragment"
-            android:name="com.example.dropspot.ui.me.meFragment"
-            android:label="Me"
+        android:id="@+id/meFragment"
+        android:name="com.example.dropspot.ui.meFragment"
+        android:label="Me"
             tools:layout="@layout/me_fragment"/>
 
 </navigation>

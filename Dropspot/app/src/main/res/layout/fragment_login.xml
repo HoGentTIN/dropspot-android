@@ -7,7 +7,7 @@
 
         <variable
             name="vm"
-            type="com.example.dropspot.ui.auth.AuthViewModel" />
+            type="com.example.dropspot.viewmodels.AuthViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

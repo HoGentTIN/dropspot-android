@@ -1,17 +1,16 @@
-package com.example.dropspot.ui.home
+package com.example.dropspot.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.dropspot.data.model.Spot
 import com.example.dropspot.data.repos.SpotRepository
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeViewModel(private val spotRepository: SpotRepository) : ViewModel() {
-
-    //coroutines
-    private val viewModelJob = SupervisorJob()
-    private val viewModelScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     //selected spot
     private val _selectedSpot = MutableLiveData<Spot>()
@@ -35,11 +34,5 @@ class HomeViewModel(private val spotRepository: SpotRepository) : ViewModel() {
 
         }
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
-    }
-
 
 }

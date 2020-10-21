@@ -4,25 +4,25 @@
         xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
-                name="meViewModel"
-                type="com.example.dropspot.ui.me.MeViewModel"/>
+            name="meViewModel"
+            type="com.example.dropspot.viewmodels.MeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/frameLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".ui.me.meFragment">
+        android:id="@+id/frameLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.meFragment">
 
         <TextView
-                android:id="@+id/textView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:text="Hello"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="Hello"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

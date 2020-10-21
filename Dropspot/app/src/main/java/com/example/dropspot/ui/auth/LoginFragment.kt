@@ -17,6 +17,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.dropspot.MainActivity
 import com.example.dropspot.data.model.dto.responses.JwtResponse
 import com.example.dropspot.databinding.FragmentLoginBinding
+import com.example.dropspot.viewmodels.AuthViewModel
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
@@ -90,6 +91,14 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
                 Toast.makeText(this.requireContext(), it.message, Toast.LENGTH_SHORT).show()
             }
         })
+
+        authViewModel.spinner.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                progressBar_loading.visibility = View.VISIBLE
+            } else {
+                progressBar_loading.visibility = View.GONE
+            }
+        })
     }
 
     private fun setupUI() {
@@ -109,6 +118,7 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
         intent.putExtra("USERNAME", it.username)
         intent.putExtra("PASSWORD", binding.inputPassword.text)
         startActivity(intent)
+        this.activity!!.finish()
     }
 
     private fun login() {

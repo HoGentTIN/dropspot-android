@@ -1,27 +1,25 @@
-package com.example.dropspot.ui.home
+package com.example.dropspot.ui
 
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RatingBar
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import com.example.dropspot.R
 import com.example.dropspot.databinding.HomeFragmentBinding
+import com.example.dropspot.viewmodels.HomeViewModel
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -39,9 +37,9 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.IOException
 import java.util.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
@@ -56,38 +54,40 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.home_fragment, container, false)
         binding.lifecycleOwner = this
+        binding.vm = viewModel
 
         initMap()
-        setupUI()
+        // setupUI() // move to spot detail fragment
         return binding.root
     }
 
-    private fun setupUI() {
-        adjustScreenToOrientation()
-        setRatingBar()
-    }
-
-    private fun setRatingBar() {
-        val ratingBar = binding.ratingBar
-        ratingBar.onRatingBarChangeListener = RatingBar.OnRatingBarChangeListener { ratingBar, rating, fromUser ->
-            Log.i("home", rating.toString())
+    /*
+        private fun setupUI() {
+            adjustScreenToOrientation()
+            setRatingBar()
         }
-    }
 
-    private fun adjustScreenToOrientation() {
-        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.descriptionNestedScrollView.visibility = View.GONE
-            binding.spotPhoto.visibility = View.GONE
-            binding.spotNameTextv.gravity = Gravity.CENTER
-            binding.creatorTextv.gravity = Gravity.CENTER
+        private fun setRatingBar() {
+            val ratingBar = binding.ratingBar
+            ratingBar.onRatingBarChangeListener = RatingBar.OnRatingBarChangeListener { ratingBar, rating, fromUser ->
+                Log.i("home", rating.toString())
+            }
         }
-    }
 
+        private fun adjustScreenToOrientation() {
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                binding.descriptionNestedScrollView.visibility = View.GONE
+                binding.spotPhoto.visibility = View.GONE
+                binding.spotNameTextv.gravity = Gravity.CENTER
+                binding.creatorTextv.gravity = Gravity.CENTER
+            }
+        }
+    */
     private fun initMap() {
         mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         Log.i("map", mapFragment.toString())
@@ -170,7 +170,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
                 when (exception.statusCode) {
                     LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> try {
                         val resolvable = exception as ResolvableApiException
-                        resolvable.startResolutionForResult(activity!!, REQUEST_CHECK_SETTINGS)
+                        resolvable.startResolutionForResult(
+                            activity!!,
+                            REQUEST_CHECK_SETTINGS
+                        )
                     } catch (e: IntentSender.SendIntentException) {
                     } catch (e: ClassCastException) {
                     }

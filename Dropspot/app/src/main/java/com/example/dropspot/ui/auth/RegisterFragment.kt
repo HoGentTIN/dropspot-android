@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.dropspot.databinding.FragmentRegisterBinding
+import com.example.dropspot.viewmodels.AuthViewModel
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.*
@@ -100,6 +101,13 @@ class RegisterFragment : Fragment(), Validator.ValidationListener {
             }
         })
 
+        authViewModel.spinner.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                progressBar_loading.visibility = View.VISIBLE
+            } else {
+                progressBar_loading.visibility = View.GONE
+            }
+        })
 
     }
 

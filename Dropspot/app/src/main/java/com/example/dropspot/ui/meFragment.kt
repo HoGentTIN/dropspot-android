@@ -1,13 +1,14 @@
-package com.example.dropspot.ui.me
+package com.example.dropspot.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import com.example.dropspot.R
 import com.example.dropspot.databinding.MeFragmentBinding
+import com.example.dropspot.viewmodels.MeViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class meFragment : Fragment() {

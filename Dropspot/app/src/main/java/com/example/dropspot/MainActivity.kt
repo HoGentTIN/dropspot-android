@@ -11,39 +11,47 @@ import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import com.example.dropspot.databinding.ActivityMainBinding
 import com.example.dropspot.utils.Anims
+import com.example.dropspot.viewmodels.UserViewModel
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
+
+    private val userViewModel: UserViewModel by viewModel()
     private lateinit var binding: ActivityMainBinding
+
+    //nav
+    private lateinit var toolbar: MaterialToolbar
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         navController = this.findNavController(R.id.myNavHostFragment)
-        setupNavigation()
+        setupNav()
         setupFab()
-
     }
 
     //floating action button
     private fun setupFab() {
         val fab: FloatingActionButton = binding.fab
 
-        fab.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View) {
-                view as FloatingActionButton
-                view.isExpanded = !view.isExpanded
-                if (view.isExpanded) {
-                    rotateForward(view)
-                } else {
-                    rotateBackward(view)
-                }
+        fab.setOnClickListener { view ->
+            view as FloatingActionButton
+            view.isExpanded = !view.isExpanded
+            if (view.isExpanded) {
+                rotateForward(view)
+            } else {
+                rotateBackward(view)
             }
-        })
+        }
 
         navController.addOnDestinationChangedListener { _, dest, _ ->
             if (dest.id == R.id.homeFragment) {
@@ -57,51 +65,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val addSpot: FloatingActionButton = binding.fabaddspot
-        addSpot.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View) {
-            }
-        })
     }
 
-    //navigation
-    private fun setupNavigation() {
-        initDrawer()
-        initBottomNav()
-    }
 
-    private fun initBottomNav() {
-        val navBottom = binding.bottomNavigation
-        navBottom.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.homeFragment -> {
-                    navController.navigate(R.id.homeFragment)
-                    true
-                }
-                R.id.meFragment -> {
-                    navController.navigate(R.id.meFragment)
-                    true
-                }
-                else -> false
-            }
-        }
-        navController.addOnDestinationChangedListener { _, dest, _ ->
-            if (dest.id == R.id.homeFragment ||
-                    dest.id == R.id.meFragment) {
-                navBottom.visibility = View.VISIBLE
-            } else {
-                navBottom.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun initDrawer() {
+    private fun setupNav() {
         drawerLayout = binding.drawerLayout
-        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
+        toolbar = binding.toolbar
         appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
-        NavigationUI.setupWithNavController(binding.navView, navController)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
+
         // prevent nav gesture if not on start destination
-        navController.addOnDestinationChangedListener { nc: NavController, nd: NavDestination,_->
+        navController.addOnDestinationChangedListener { nc: NavController, nd: NavDestination, _ ->
             if (nd.id == nc.graph.startDestination) {
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             } else {

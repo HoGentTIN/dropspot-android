@@ -11,36 +11,46 @@ import retrofit2.http.*
 interface SpotService {
     //spots
     @GET("spots")
-    fun getSpots(): Deferred<List<Spot>>
+    suspend fun getSpots(): Deferred<List<Spot>>
 
     @GET("spots/street")
-    fun getStreetSpots(): Deferred<List<StreetSpot>>
+    suspend fun getStreetSpots(): Deferred<List<StreetSpot>>
 
     @GET("spots/park")
-    fun getParkSpots(): Deferred<List<ParkSpot>>
+    suspend fun getParkSpots(): Deferred<List<ParkSpot>>
 
     @GET("spots/{spotId}")
-    fun getSpotById(@Path("spotId")id : Long): Deferred<Spot>
+    suspend fun getSpotById(@Path("spotId") id: Long): Deferred<Spot>
 
 
     @DELETE("spots/{spotId}")
-    fun deleteSpot(@Path("spotId")id : Long): Deferred<MessageResponse>
+    suspend fun deleteSpot(@Path("spotId") id: Long): Deferred<MessageResponse>
 
 
     @PUT("spots/street/{spotId}")
-    fun udpateStreetSpot(@Body spot: StreetSpotUpdateRequest, @Path("spotId")id : Long): Deferred<Spot>
+    suspend fun udpateStreetSpot(
+        @Body spot: StreetSpotUpdateRequest,
+        @Path("spotId") id: Long
+    ): Deferred<Spot>
 
     @PUT("spots/park/{spotId}")
-    fun udpateParkSpot(@Body spot: ParkSpotUpdateRequest, @Path("spotId")id : Long): Deferred<Spot>
+    suspend fun udpateParkSpot(
+        @Body spot: ParkSpotUpdateRequest,
+        @Path("spotId") id: Long
+    ): Deferred<Spot>
 
 
     @POST("spots/street")
-    fun addStreetSpot(@Body spot: StreetSpotRequest):Deferred<StreetSpot>
+    suspend fun addStreetSpot(@Body spot: StreetSpotRequest): Deferred<StreetSpot>
 
     @POST("spots/park")
-    fun addParkSpot(@Body spot: ParkSpotRequest):Deferred<ParkSpot>
+    suspend fun addParkSpot(@Body spot: ParkSpotRequest): Deferred<ParkSpot>
 
     @POST("spots/{spotId}/criteria/{criterionId}/vote")
-    fun voteForSpot(@Body voteRequest : VoteRequest, @Path("spotId") spotId : Long, @Path("criterionId") criterionId : Long):Deferred<MessageResponse>
+    suspend fun voteForSpot(
+        @Body voteRequest: VoteRequest,
+        @Path("spotId") spotId: Long,
+        @Path("criterionId") criterionId: Long
+    ): Deferred<MessageResponse>
 
 }

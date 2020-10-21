@@ -73,4 +73,8 @@
         <item name="android:maxHeight">40dp</item>
     </style>
 
+    <style name="bottomNav" parent="@style/Widget.MaterialComponents.BottomNavigationView.Colored">
+
+    </style>
+
 </resources>

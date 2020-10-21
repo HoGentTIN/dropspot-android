@@ -6,10 +6,11 @@ import com.example.dropspot.data.AppDatabase
 import com.example.dropspot.data.repos.SpotRepository
 import com.example.dropspot.network.AuthService
 import com.example.dropspot.network.SpotService
-import com.example.dropspot.ui.auth.AuthViewModel
-import com.example.dropspot.ui.home.HomeViewModel
-import com.example.dropspot.ui.me.MeViewModel
 import com.example.dropspot.utils.BASE_URL
+import com.example.dropspot.viewmodels.AuthViewModel
+import com.example.dropspot.viewmodels.HomeViewModel
+import com.example.dropspot.viewmodels.MeViewModel
+import com.example.dropspot.viewmodels.UserViewModel
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
@@ -71,7 +72,14 @@ val myModule: Module = module {
     //viewmodels
     viewModel { HomeViewModel(get()) }
     viewModel { MeViewModel() }
-    viewModel { AuthViewModel(get(), get(), get()) }
+    viewModel {
+        AuthViewModel(
+            get(),
+            get(),
+            get()
+        )
+    }
+    viewModel { UserViewModel() }
 
 }
 
