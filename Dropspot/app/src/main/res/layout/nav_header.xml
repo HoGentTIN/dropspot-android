@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical" android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <ImageView
-            android:id="@+id/profilepic"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="profile picture"
-            tools:srcCompat="@tools:sample/avatars"/>
+        android:id="@+id/avatar"
+        android:layout_width="match_parent"
+        android:layout_height="335dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:src="@drawable/ic_skater_profile" />
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/primary_color"
+        android:textSize="30sp" />
 </LinearLayout>

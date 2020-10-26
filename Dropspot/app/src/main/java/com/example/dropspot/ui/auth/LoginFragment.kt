@@ -1,7 +1,9 @@
 package com.example.dropspot.ui.auth
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +16,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
+import com.example.dropspot.AuthActivity
 import com.example.dropspot.MainActivity
-import com.example.dropspot.data.model.dto.responses.JwtResponse
 import com.example.dropspot.databinding.FragmentLoginBinding
 import com.example.dropspot.viewmodels.AuthViewModel
 import com.mobsandgeeks.saripaar.ValidationError
@@ -29,6 +33,7 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
     private lateinit var binding: FragmentLoginBinding
     private val validator = Validator(this)
     private val args: LoginFragmentArgs by navArgs()
+    private lateinit var sharedPreferences: SharedPreferences
 
     // UI components
     private lateinit var button_register: Button
@@ -49,9 +54,23 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
     ): View? {
         validator.setValidationListener(this)
         setupBinding(inflater, container)
+        setupSharedPref()
+        checkIfLoggedIn()
         setupListeners()
         setupUI()
         return binding.root
+    }
+
+    private fun setupSharedPref() {
+        val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
+        val masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
+        sharedPreferences = EncryptedSharedPreferences.create(
+            "AUTH_ENCRYPT",
+            masterKeyAlias,
+            this.requireContext(),
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
     }
 
     private fun setupBinding(inflater: LayoutInflater, container: ViewGroup?) {
@@ -79,6 +98,7 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
                     validator.validate()
+                    (this.activity as AuthActivity).hideKeyboard(this.requireView())
                 }
             }
             false
@@ -86,7 +106,11 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
 
         authViewModel.loginResponse.observe(viewLifecycleOwner, Observer {
             if (it.success) {
-                startMainActivity(it)
+                val token = it.token
+                val pw = input_password.text.toString().trim()
+                Log.i("succes", "succes")
+                saveSharedPref(token, pw)
+                startMainActivity(token, pw)
             } else {
                 Toast.makeText(this.requireContext(), it.message, Toast.LENGTH_SHORT).show()
             }
@@ -101,6 +125,14 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
         })
     }
 
+    private fun saveSharedPref(token: String, password: String) {
+        sharedPreferences
+            .edit()
+            .putString("TOKEN", token)
+            .putString("PASSWORD", password)
+            .apply()
+    }
+
     private fun setupUI() {
         // handling successful registration
         if (args.emailOrUsername.isNotBlank() && args.password.isNotBlank()) {
@@ -109,14 +141,27 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
         }
     }
 
+    private fun checkIfLoggedIn(): Boolean {
+        val token = sharedPreferences.getString("TOKEN", null)
+        val password = sharedPreferences.getString("PASSWORD", null)
+        Log.i("token_check", token ?: "no token in shared pref")
 
-    private fun startMainActivity(it: JwtResponse) {
+        if (token != null && password != null) {
+            startMainActivity(
+                token,
+                password
+            )
+            return true
+        }
+
+        return false
+    }
+
+
+    private fun startMainActivity(token: String, password: String) {
         val intent = Intent(this.context, MainActivity::class.java)
-        intent.putExtra("TOKEN", it.token)
-        intent.putExtra("ID", it.id)
-        intent.putExtra("EMAIL", it.email)
-        intent.putExtra("USERNAME", it.username)
-        intent.putExtra("PASSWORD", binding.inputPassword.text)
+        intent.putExtra("TOKEN", token)
+        intent.putExtra("PASSWORD", password)
         startActivity(intent)
         this.activity!!.finish()
     }

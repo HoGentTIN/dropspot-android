@@ -7,7 +7,7 @@ import java.io.IOException
 object AuthInterceptor : Interceptor {
 
     private var sessionToken: String = ""
-    private val AUTH_NAME = "authorization";
+    private val AUTH_NAME = "authorization"
 
 
     /**
@@ -15,6 +15,10 @@ object AuthInterceptor : Interceptor {
      * */
     fun setSessionToken(sessionToken: String) {
         this.sessionToken = sessionToken
+    }
+
+    fun clearSessionToken() {
+        this.sessionToken = ""
     }
 
     /**

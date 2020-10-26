@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.example.dropspot.AuthActivity
 import com.example.dropspot.databinding.FragmentRegisterBinding
 import com.example.dropspot.viewmodels.AuthViewModel
 import com.mobsandgeeks.saripaar.ValidationError
@@ -88,6 +89,7 @@ class RegisterFragment : Fragment(), Validator.ValidationListener {
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
                     validator.validate()
+                    (this.activity as AuthActivity).hideKeyboard(this.requireView())
                 }
             }
             false

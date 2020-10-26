@@ -27,10 +27,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -62,32 +59,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
         binding.vm = viewModel
 
         initMap()
-        // setupUI() // move to spot detail fragment
         return binding.root
     }
 
-    /*
-        private fun setupUI() {
-            adjustScreenToOrientation()
-            setRatingBar()
-        }
 
-        private fun setRatingBar() {
-            val ratingBar = binding.ratingBar
-            ratingBar.onRatingBarChangeListener = RatingBar.OnRatingBarChangeListener { ratingBar, rating, fromUser ->
-                Log.i("home", rating.toString())
-            }
-        }
-
-        private fun adjustScreenToOrientation() {
-            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                binding.descriptionNestedScrollView.visibility = View.GONE
-                binding.spotPhoto.visibility = View.GONE
-                binding.spotNameTextv.gravity = Gravity.CENTER
-                binding.creatorTextv.gravity = Gravity.CENTER
-            }
-        }
-    */
     private fun initMap() {
         mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         Log.i("map", mapFragment.toString())
@@ -105,18 +80,29 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+
         SetCurrentPos()
+        //styleMap()
+    }
+
+    private fun styleMap() {
+        val style_success = mMap.setMapStyle(
+            MapStyleOptions.loadRawResourceStyle(
+                this.activity, R.raw.vintage
+            )
+        )
+        Log.i("map_style", if (style_success) "succes" else "failed")
     }
 
 
     private fun SetCurrentPos() {
         if (isPermissionGiven()) {
             if (ActivityCompat.checkSelfPermission(
-                            this.requireContext(),
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                            this.requireContext(),
-                            Manifest.permission.ACCESS_COARSE_LOCATION
+                    this.requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this.requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED
             ) {
                 // TODO: Consider calling
@@ -130,7 +116,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
             }
             mMap.isMyLocationEnabled = true
             mMap.uiSettings.isMyLocationButtonEnabled = true
-            mMap.uiSettings.isZoomControlsEnabled = true
+
             getCurrentLocation()
         } else {
             givePermission()

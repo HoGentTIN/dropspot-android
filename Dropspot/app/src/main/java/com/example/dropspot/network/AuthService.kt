@@ -10,13 +10,13 @@ import retrofit2.http.POST
 
 interface AuthService {
     @POST("auth/signup/user")
-    fun register(@Body signUpRequest: RegisterRequest): Response<MessageResponse>
+    suspend fun register(@Body signUpRequest: RegisterRequest): Response<MessageResponse>
 
     @POST("auth/signup/mod")
-    fun registerMod(@Body signUpRequest: RegisterRequest): Response<MessageResponse>
+    suspend fun registerMod(@Body signUpRequest: RegisterRequest): Response<MessageResponse>
 
     @POST("auth/signup/admin")
-    fun registerAdmin(@Body signUpRequest: RegisterRequest): Response<MessageResponse>
+    suspend fun registerAdmin(@Body signUpRequest: RegisterRequest): Response<MessageResponse>
 
     @POST("auth/signin")
     suspend fun login(@Body loginRequest: LoginRequest): Response<JwtResponse>

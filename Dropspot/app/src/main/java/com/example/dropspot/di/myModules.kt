@@ -4,8 +4,10 @@ import android.content.Context
 import android.net.ConnectivityManager
 import com.example.dropspot.data.AppDatabase
 import com.example.dropspot.data.repos.SpotRepository
+import com.example.dropspot.network.AuthInterceptor
 import com.example.dropspot.network.AuthService
 import com.example.dropspot.network.SpotService
+import com.example.dropspot.network.UserService
 import com.example.dropspot.utils.BASE_URL
 import com.example.dropspot.viewmodels.AuthViewModel
 import com.example.dropspot.viewmodels.HomeViewModel
@@ -33,7 +35,7 @@ val myModule: Module = module {
     //custom client with auth interceptor and logging
     single {
         OkHttpClient.Builder()
-            //.addInterceptor(AuthInterceptor)
+            .addInterceptor(AuthInterceptor)
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
     }
@@ -54,6 +56,9 @@ val myModule: Module = module {
     }
     single {
         provideAuthService(get())
+    }
+    single {
+        provideUserService(get())
     }
     //connectivity_service
     single { androidContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager }
@@ -79,7 +84,7 @@ val myModule: Module = module {
             get()
         )
     }
-    viewModel { UserViewModel() }
+    viewModel { UserViewModel(get()) }
 
 }
 
@@ -91,3 +96,6 @@ private fun provideAuthService(retrofit: Retrofit): AuthService {
     return retrofit.create(AuthService::class.java)
 }
 
+private fun provideUserService(retrofit: Retrofit): UserService {
+    return retrofit.create(UserService::class.java)
+}

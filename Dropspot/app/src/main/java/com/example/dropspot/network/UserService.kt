@@ -5,11 +5,12 @@ import com.example.dropspot.data.model.Relation
 import com.example.dropspot.data.model.Spot
 import com.example.dropspot.data.model.dto.responses.MessageResponse
 import kotlinx.coroutines.Deferred
+import retrofit2.Response
 import retrofit2.http.*
 
 interface UserService {
     @GET("users/me")
-    fun getMe(): Deferred<AppUser>
+    suspend fun getMe(): Response<AppUser>
 
     @GET("user/mySpots")
     fun getMySpots(): Deferred<List<Spot>>
