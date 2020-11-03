@@ -15,6 +15,7 @@ open class Spot(@PrimaryKey
 
 ) : Serializable {
 
+
     override fun toString(): String {
         return "Spot(spotId=$spotId, name=$name, latitude=$latitude, longitude=$longitude, creatorId=$creatorId)"
     }

@@ -9,7 +9,6 @@ object AuthInterceptor : Interceptor {
     private var sessionToken: String = ""
     private val AUTH_NAME = "authorization"
 
-
     /**
      * sets the session token
      * */

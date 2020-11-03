@@ -3,22 +3,16 @@
     <color name="primary_color">#27353d</color>
     <color name="primary_color_light">#505f67</color>
     <color name="primary_color_dark">#000f17</color>
-    <color name="color_on_primary">#ffffff</color>
 
-    <color name="secondary_color">#5ab57f</color>
-    <color name="secondary_color_light">#8ce8af</color>
-    <color name="secondary_color_dark">#258552</color>
-    <color name="color_on_secondary">#eceff1</color>
+    <color name="secondary_color">#80e29d</color>
+    <color name="secondary_color_light">#b3ffce</color>
+    <color name="secondary_color_dark">#4daf6e</color>
 
-    <color name="surface_color">#eceff1</color>
-    <color name="color_on_surface">#000f17</color>
 
     <color name="error">#B00020</color>
-    <color name="color_on_error">#FFFFFF</color>
 
-    <color name="background">#eceff1</color>
-    <color name="color_on_background">#000000</color>
-
+    <color name="light_gray">#eceff1</color>
+    <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
 
     <color name="trans">@null</color>

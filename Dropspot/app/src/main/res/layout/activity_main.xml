@@ -16,8 +16,7 @@
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                app:elevation="0dp">
+                >
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"
@@ -30,6 +29,17 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/anim_no_connection"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="?attr/actionBarSize"
+                android:background="@color/trans"
+                android:visibility="invisible"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/no_connection" />
+
             <fragment
                 android:id="@+id/myNavHostFragment"
                 android:name="androidx.navigation.fragment.NavHostFragment"
@@ -39,19 +49,6 @@
                 android:layout_marginTop="?attr/actionBarSize"
                 app:navGraph="@navigation/navigation" />
 
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="16dp"
-                android:contentDescription="@string/add_spot_contentdescr"
-                android:scaleType="center"
-                android:tint="@color/color_on_primary"
-                app:backgroundTint="@color/primary_color"
-                app:fabSize="normal"
-                app:srcCompat="@drawable/ic_add_24px" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -9,6 +9,7 @@ import com.example.dropspot.data.model.AppUser
 import com.example.dropspot.network.AuthInterceptor
 import com.example.dropspot.network.UserService
 import kotlinx.coroutines.launch
+import java.net.SocketTimeoutException
 
 class UserViewModel(private val userService: UserService) : ViewModel() {
 
@@ -31,6 +32,10 @@ class UserViewModel(private val userService: UserService) : ViewModel() {
                         _isTokenExpired.value = true
                     }
                 }
+            } catch (e: SocketTimeoutException) {
+                setCurrentUser(token)
+                Log.i("current_user_req", "socket timeout")
+
             } catch (e: Throwable) {
                 Log.i("current_user_req", e.message ?: "fail")
             }

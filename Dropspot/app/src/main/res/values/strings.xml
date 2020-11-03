@@ -1,27 +1,24 @@
 <resources>
     <string name="app_name">Dropspot</string>
-    //home frag
-    <string name="name">Name</string>
-    <string name="creator">Creator</string>
-    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec sagittis nisl. Phasellus
-        nec pellentesque neque. Aliquam sed dolor molestie, porttitor sapien eu, eleifend magna. Proin quam nisl, semper
-        sed magna ut, auctor vulputate quam. Quisque dignissim massa et augue eleifend ultrices. Nullam in urna
-        pharetra, pharetra ex et, tempor.
-    </string>
-    <string name="photospot_description">photo of the selected spot</string>
-    <string name="title_activity_maps">Map</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
         AIzaSyDpf9jDOYfqasU41sUnMozgcMjf3pDPGnE
     </string>
+
+    // home frag
+    <string name="name">Name</string>
+    <string name="creator">Creator</string>
+    <string name="title_activity_maps">Map</string>
     <string name="home">Home</string>
-    //main
     <string name="add_spot_contentdescr">floating action button to add spot</string>
+
+    // nav
+    <string name="avatar_descr">avatar of user</string>
+    <string name="log_out">Log out</string>
+
+    // Me
     <string name="me">Me</string>
-    //add_spot_fragment
-    <string name="description_label">Description:</string>
-    <string name="name_label">Name:</string>
-    <string name="name_placeholder_add_spot">Name</string>
-    <string name="descr_placeholder_add_spot">Description</string>
+
+    // auth
     <string name="register">Register</string>
     <string name="login">Login</string>
     <string name="email_or_username">Email or username</string>
@@ -32,9 +29,36 @@
     <string name="username">Username</string>
     <string name="password_confirmation">Password Confirmation</string>
     <string name="dropspot_logo">Dropspot logo</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
+    // delete
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="avatar_descr">avatar of user</string>
-    <string name="log_out">Log out</string>
+
+    // add spot
+    <string name="damage">Damage</string>
+    <string name="street">Street</string>
+    <string name="house_number">House Number</string>
+    <string name="city">City</string>
+    <string name="postal_code">Postal Code</string>
+    <string name="state">State</string>
+    <string name="country">Country</string>
+    <string name="indoor">Indoor</string>
+    <string name="outdoor">Outdoor</string>
+    <string name="add">Add</string>
+    <string name="park">Park</string>
+    <string name="category">Category</string>
+    <string name="mark_new_spot_please">Mark spot on map</string>
+    <string name="help_img_descr">help image</string>
+    <string name="help_add_spot">Mark the map to determine the position of your new spot
+        \nand hold the marker to adjust</string>
+    <string name="no_park_cat_selected">No park category selected</string>
+    <string name="spot_name_req">Spot name is required</string>
+    <string name="street_req">Street is required</string>
+    <string name="house_number_req">House number is required</string>
+    <string name="city_req">City is required</string>
+    <string name="postal_code_req">Postal code is required</string>
+    <string name="state_req">State is required</string>
+    <string name="country_req">Country is required</string>
+    <string name="spot_added">Spot added</string>
+    <string name="failed_to_add_spot">Failed to add spot</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.example.dropspot.ui.auth
+package com.example.dropspot.controllers.auth
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,20 +8,20 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.dropspot.AuthActivity
 import com.example.dropspot.databinding.FragmentRegisterBinding
+import com.example.dropspot.utils.MyValidationListener
 import com.example.dropspot.viewmodels.AuthViewModel
-import com.mobsandgeeks.saripaar.ValidationError
+import com.google.android.material.snackbar.Snackbar
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.*
 import kotlinx.android.synthetic.main.fragment_register.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class RegisterFragment : Fragment(), Validator.ValidationListener {
+class RegisterFragment : Fragment() {
 
     private val authViewModel: AuthViewModel by viewModel()
     private lateinit var binding: FragmentRegisterBinding
@@ -50,6 +50,7 @@ class RegisterFragment : Fragment(), Validator.ValidationListener {
     @Password(min = 6, message = "password min length 6")
     private lateinit var input_password: EditText
 
+    @NotEmpty(message = "Password confirmation is required")
     @ConfirmPassword
     private lateinit var input_passwordConfirm: EditText
 
@@ -59,13 +60,6 @@ class RegisterFragment : Fragment(), Validator.ValidationListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        validator.setValidationListener(this)
-        setupBinding(inflater, container)
-        setupListeners()
-        return binding.root
-    }
-
-    private fun setupBinding(inflater: LayoutInflater, container: ViewGroup?) {
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
         binding.vm = authViewModel
         binding.lifecycleOwner = this
@@ -77,10 +71,22 @@ class RegisterFragment : Fragment(), Validator.ValidationListener {
         input_passwordConfirm = binding.inputPasswordConfirm
         button_register = binding.buttonRegister
         progressBar_loading = binding.progressBarLoading
+        return binding.root
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        setupListenersObservers()
+        validator.setValidationListener(object :
+            MyValidationListener(this.requireContext(), this.requireView()) {
+            override fun onValidationSucceeded() {
+                register()
+            }
 
-    private fun setupListeners() {
+        })
+    }
+
+    private fun setupListenersObservers() {
         button_register.setOnClickListener {
             validator.validate()
         }
@@ -99,7 +105,7 @@ class RegisterFragment : Fragment(), Validator.ValidationListener {
             if (it.success) {
                 navigateToLogin()
             } else {
-                Toast.makeText(this.requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                Snackbar.make(this.requireView(), it.message, Snackbar.LENGTH_SHORT).show()
             }
         })
 
@@ -107,7 +113,7 @@ class RegisterFragment : Fragment(), Validator.ValidationListener {
             if (it) {
                 progressBar_loading.visibility = View.VISIBLE
             } else {
-                progressBar_loading.visibility = View.GONE
+                progressBar_loading.visibility = View.INVISIBLE
             }
         })
 
@@ -129,22 +135,5 @@ class RegisterFragment : Fragment(), Validator.ValidationListener {
             , input_email.text.toString().trim()
             , input_password.text.toString().trim()
         )
-    }
-
-    override fun onValidationFailed(errors: MutableList<ValidationError>?) {
-        for (error: ValidationError in errors!!.iterator()) {
-            var view: View = error.view
-            val message: String = error.getCollatedErrorMessage(this.requireContext())
-            if (view is EditText) {
-                view.error = message
-            } else {
-                Toast.makeText(this.requireContext(), message, Toast.LENGTH_SHORT).show()
-            }
-
-        }
-    }
-
-    override fun onValidationSucceeded() {
-        register()
     }
 }

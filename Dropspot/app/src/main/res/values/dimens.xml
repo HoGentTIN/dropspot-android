@@ -6,5 +6,5 @@
     <dimen name="rating_width">100dp</dimen>
     <dimen name="subtitle">16sp</dimen>
     <dimen name="text">14sp</dimen>
-    <dimen name="add_spot_labels">100dp</dimen>
+    <dimen name="add_spot_field">100dp</dimen>
 </resources>

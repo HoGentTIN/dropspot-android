@@ -1,4 +1,4 @@
-package com.example.dropspot.ui.spot
+package com.example.dropspot.controllers.spot
 
 import android.content.res.Configuration
 import android.os.Bundle

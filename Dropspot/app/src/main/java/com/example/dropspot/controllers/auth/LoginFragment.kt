@@ -1,4 +1,4 @@
-package com.example.dropspot.ui.auth
+package com.example.dropspot.controllers.auth
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -11,7 +11,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -21,13 +20,14 @@ import androidx.security.crypto.MasterKeys
 import com.example.dropspot.AuthActivity
 import com.example.dropspot.MainActivity
 import com.example.dropspot.databinding.FragmentLoginBinding
+import com.example.dropspot.utils.MyValidationListener
 import com.example.dropspot.viewmodels.AuthViewModel
-import com.mobsandgeeks.saripaar.ValidationError
+import com.google.android.material.snackbar.Snackbar
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class LoginFragment : Fragment(), Validator.ValidationListener {
+class LoginFragment : Fragment() {
 
     private val authViewModel: AuthViewModel by viewModel()
     private lateinit var binding: FragmentLoginBinding
@@ -52,13 +52,30 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        validator.setValidationListener(this)
-        setupBinding(inflater, container)
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
+        binding.vm = authViewModel
+        binding.lifecycleOwner = this
+        input_email = binding.inputEmail
+        input_password = binding.inputPassword
+        button_login = binding.buttonLogin
+        button_register = binding.buttonRegister
+        progressBar_loading = binding.progressBarLoading
         setupSharedPref()
         checkIfLoggedIn()
-        setupListeners()
-        setupUI()
         return binding.root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        setupListenersObservers()
+        setupUI()
+        validator.setValidationListener(object :
+            MyValidationListener(this.requireContext(), this.requireView()) {
+            override fun onValidationSucceeded() {
+                login()
+            }
+
+        })
     }
 
     private fun setupSharedPref() {
@@ -73,18 +90,7 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
         )
     }
 
-    private fun setupBinding(inflater: LayoutInflater, container: ViewGroup?) {
-        binding = FragmentLoginBinding.inflate(inflater, container, false)
-        binding.vm = authViewModel
-        binding.lifecycleOwner = this
-        input_email = binding.inputEmail
-        input_password = binding.inputPassword
-        button_login = binding.buttonLogin
-        button_register = binding.buttonRegister
-        progressBar_loading = binding.progressBarLoading
-    }
-
-    private fun setupListeners() {
+    private fun setupListenersObservers() {
         button_login.setOnClickListener {
             validator.validate()
         }
@@ -112,7 +118,7 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
                 saveSharedPref(token, pw)
                 startMainActivity(token, pw)
             } else {
-                Toast.makeText(this.requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                Snackbar.make(this.requireView(), it.message, Snackbar.LENGTH_SHORT).show()
             }
         })
 
@@ -172,23 +178,5 @@ class LoginFragment : Fragment(), Validator.ValidationListener {
             , input_password.text.toString().trim()
         )
     }
-
-    override fun onValidationFailed(errors: MutableList<ValidationError>?) {
-        for (error: ValidationError in errors!!.iterator()) {
-            val view: View = error.view
-            val message: String = error.getCollatedErrorMessage(this.requireContext())
-            if (view is EditText) {
-                view.error = message
-            } else {
-                Toast.makeText(this.requireContext(), message, Toast.LENGTH_SHORT).show()
-            }
-
-        }
-    }
-
-    override fun onValidationSucceeded() {
-        login()
-    }
-
 
 }

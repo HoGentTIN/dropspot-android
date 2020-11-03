@@ -40,14 +40,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/description_textv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:text="@string/lorem_ipsum" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
@@ -57,8 +49,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="64dp"
-            android:contentDescription="@string/photospot_description"
-            android:src="@drawable/holly16"
+            android:contentDescription=""
+            android:src="@drawable/ic_skater"
             app:layout_constraintBottom_toTopOf="@+id/ratingBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/creator_textv" />

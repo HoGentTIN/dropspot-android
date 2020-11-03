@@ -1,7 +1,5 @@
 package com.example.dropspot.di
 
-import android.content.Context
-import android.net.ConnectivityManager
 import com.example.dropspot.data.AppDatabase
 import com.example.dropspot.data.repos.SpotRepository
 import com.example.dropspot.network.AuthInterceptor
@@ -14,10 +12,8 @@ import com.example.dropspot.viewmodels.HomeViewModel
 import com.example.dropspot.viewmodels.MeViewModel
 import com.example.dropspot.viewmodels.UserViewModel
 import com.google.gson.GsonBuilder
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -45,12 +41,11 @@ val myModule: Module = module {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(get()))
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .client(get())
             .build()
     }
 
-    //api services
+    //services
     single {
         provideSpotService(get())
     }
@@ -60,8 +55,6 @@ val myModule: Module = module {
     single {
         provideUserService(get())
     }
-    //connectivity_service
-    single { androidContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager }
 
     //daos
     single {
@@ -70,7 +63,7 @@ val myModule: Module = module {
 
     //repos
     single {
-        SpotRepository(get(), get(), get())
+        SpotRepository(get(), get())
     }
 
 
@@ -79,7 +72,6 @@ val myModule: Module = module {
     viewModel { MeViewModel() }
     viewModel {
         AuthViewModel(
-            get(),
             get(),
             get()
         )

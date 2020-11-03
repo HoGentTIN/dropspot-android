@@ -1,4 +1,4 @@
-package com.example.dropspot.ui
+package com.example.dropspot.controllers
 
 import android.os.Bundle
 import android.view.LayoutInflater

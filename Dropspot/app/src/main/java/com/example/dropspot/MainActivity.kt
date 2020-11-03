@@ -20,11 +20,11 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.example.dropspot.controllers.HomeFragmentDirections
 import com.example.dropspot.databinding.ActivityMainBinding
-import com.example.dropspot.ui.HomeFragmentDirections
+import com.example.dropspot.utils.Variables
 import com.example.dropspot.viewmodels.UserViewModel
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -46,8 +46,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
         setupNav()
-        setupFab()
-        setTokenInReqHeader()
         setupListeners()
     }
 
@@ -61,33 +59,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         userViewModel.isTokenExpired.observe(this, Observer {
             if (it) logout()
         })
+
+        // handles connection response
+        Variables.isNetworkConnected.observe(this, Observer {
+            if (it) {
+                setTokenInReqHeader()
+                binding.animNoConnection.visibility = View.INVISIBLE
+            } else {
+                binding.animNoConnection.visibility = View.VISIBLE
+                binding.animNoConnection.bringToFront()
+            }
+        })
     }
 
     private fun setTokenInReqHeader() {
         userViewModel.setCurrentUser(this.intent.getStringExtra("TOKEN")!!)
     }
 
-    //floating action button
-    private fun setupFab() {
-        val fab: FloatingActionButton = binding.fab
-
-        fab.setOnClickListener { view ->
-            Log.i("fab", "clicked")
-        }
-
-        navController.addOnDestinationChangedListener { _, dest, _ ->
-            if (dest.id == R.id.homeFragment) {
-                fab.visibility = View.VISIBLE
-            } else {
-                fab.visibility = View.GONE
-            }
-        }
-
-    }
-
-
     private fun setupNav() {
         navController = this.findNavController(R.id.myNavHostFragment)
+        navController.setGraph(R.navigation.navigation)
         drawerLayout = binding.drawerLayout
         toolbar = binding.toolbar
         navView = binding.navView

@@ -3,9 +3,13 @@ package com.example.dropspot.network
 import com.example.dropspot.data.model.ParkSpot
 import com.example.dropspot.data.model.Spot
 import com.example.dropspot.data.model.StreetSpot
-import com.example.dropspot.data.model.dto.requests.*
+import com.example.dropspot.data.model.dto.requests.ParkSpotRequest
+import com.example.dropspot.data.model.dto.requests.ParkSpotUpdateRequest
+import com.example.dropspot.data.model.dto.requests.StreetSpotRequest
+import com.example.dropspot.data.model.dto.requests.VoteRequest
 import com.example.dropspot.data.model.dto.responses.MessageResponse
 import kotlinx.coroutines.Deferred
+import retrofit2.Response
 import retrofit2.http.*
 
 interface SpotService {
@@ -29,7 +33,7 @@ interface SpotService {
 
     @PUT("spots/street/{spotId}")
     suspend fun udpateStreetSpot(
-        @Body spot: StreetSpotUpdateRequest,
+        @Body spot: StreetSpotRequest,
         @Path("spotId") id: Long
     ): Deferred<Spot>
 
@@ -41,16 +45,22 @@ interface SpotService {
 
 
     @POST("spots/street")
-    suspend fun addStreetSpot(@Body spot: StreetSpotRequest): Deferred<StreetSpot>
+    suspend fun addStreetSpot(@Body spot: StreetSpotRequest): Response<StreetSpot>
 
     @POST("spots/park")
-    suspend fun addParkSpot(@Body spot: ParkSpotRequest): Deferred<ParkSpot>
+    suspend fun addParkSpot(@Body spot: ParkSpotRequest): Response<ParkSpot>
 
     @POST("spots/{spotId}/criteria/{criterionId}/vote")
     suspend fun voteForSpot(
         @Body voteRequest: VoteRequest,
         @Path("spotId") spotId: Long,
         @Path("criterionId") criterionId: Long
-    ): Deferred<MessageResponse>
+    ): MessageResponse
 
+    @GET("spots/{lat}/{long}/{radius}")
+    suspend fun getSpotsInRadius(
+        @Path("lat") latitude: Double,
+        @Path("long") longitude: Double,
+        @Path("radius") radius: Double
+    ): List<Spot>
 }

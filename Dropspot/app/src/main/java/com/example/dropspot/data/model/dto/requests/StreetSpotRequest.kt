@@ -1,7 +1,7 @@
 package com.example.dropspot.data.model.dto.requests
 
-class StreetSpotRequest {
-    private val name: String? = null
-    private val latitude = 0.0
-    private val longitude = 0.0
-}
+data class StreetSpotRequest(
+    val name: String,
+    val latitude: Double,
+    val longitude: Double
+)

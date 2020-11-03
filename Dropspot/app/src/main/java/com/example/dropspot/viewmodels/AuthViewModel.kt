@@ -1,6 +1,6 @@
 package com.example.dropspot.viewmodels
 
-import android.net.ConnectivityManager
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,10 +12,10 @@ import com.example.dropspot.data.model.dto.responses.MessageResponse
 import com.example.dropspot.network.AuthService
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
+import java.net.SocketTimeoutException
 
 class AuthViewModel(
     private val authService: AuthService
-    , private val connectivityManager: ConnectivityManager
     , private val gson: Gson
 ) : ViewModel() {
 
@@ -32,7 +32,7 @@ class AuthViewModel(
         // start wheel
         _spinner.value = true
 
-        val request: LoginRequest = LoginRequest(emailOrUsername, password)
+        val request = LoginRequest(emailOrUsername, password)
 
         viewModelScope.launch {
             try {
@@ -49,6 +49,9 @@ class AuthViewModel(
                     }
                 }
 
+            } catch (e: SocketTimeoutException) {
+                login(emailOrUsername, password)
+                Log.i("login_req", "socket timeout")
             } catch (e: Throwable) {
                 _loginResponse.value = JwtResponse(
                     ""
@@ -71,7 +74,7 @@ class AuthViewModel(
     ) {
         // start wheel
         _spinner.value = true
-        val request: RegisterRequest =
+        val request =
             RegisterRequest(firstName, lastName, username, email, password)
         viewModelScope.launch {
             try {
@@ -89,6 +92,9 @@ class AuthViewModel(
                             )
                     }
                 }
+            } catch (e: SocketTimeoutException) {
+                register(firstName, lastName, username, email, password)
+                Log.i("register_req", "socket timeout")
 
             } catch (e: Throwable) {
                 _registerResponse.value = MessageResponse(false, "Something went wrong")
