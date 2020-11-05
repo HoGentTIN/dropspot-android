@@ -1,4 +1,4 @@
-package com.example.dropspot.utils
+package com.example.dropspot.network
 
 import android.app.Application
 import android.content.Context
@@ -7,6 +7,7 @@ import android.net.Network
 import android.net.NetworkInfo
 import android.net.NetworkRequest
 import androidx.annotation.RequiresPermission
+import com.example.dropspot.utils.Variables
 
 class NetworkMonitor
 @RequiresPermission(android.Manifest.permission.ACCESS_NETWORK_STATE)

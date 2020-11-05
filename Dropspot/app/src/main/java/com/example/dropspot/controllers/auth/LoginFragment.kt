@@ -20,6 +20,7 @@ import androidx.security.crypto.MasterKeys
 import com.example.dropspot.AuthActivity
 import com.example.dropspot.MainActivity
 import com.example.dropspot.databinding.FragmentLoginBinding
+import com.example.dropspot.utils.InputLayoutTextWatcher
 import com.example.dropspot.utils.MyValidationListener
 import com.example.dropspot.viewmodels.AuthViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -56,7 +57,9 @@ class LoginFragment : Fragment() {
         binding.vm = authViewModel
         binding.lifecycleOwner = this
         input_email = binding.inputEmail
+        input_email.addTextChangedListener(InputLayoutTextWatcher(binding.fieldEmail))
         input_password = binding.inputPassword
+        input_password.addTextChangedListener(InputLayoutTextWatcher(binding.fieldPassword))
         button_login = binding.buttonLogin
         button_register = binding.buttonRegister
         progressBar_loading = binding.progressBarLoading

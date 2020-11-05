@@ -32,7 +32,7 @@
             android:orientation="vertical"
             android:visibility="invisible"
             app:layout_behavior="com.google.android.material.transformation.FabTransformationSheetBehavior"
-            tools:visibility="visible">
+            tools:visibility="invisible">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/container"

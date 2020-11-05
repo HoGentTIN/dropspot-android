@@ -2,7 +2,7 @@ package com.example.dropspot
 
 import android.app.Application
 import com.example.dropspot.di.myModule
-import com.example.dropspot.utils.NetworkMonitor
+import com.example.dropspot.network.NetworkMonitor
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin

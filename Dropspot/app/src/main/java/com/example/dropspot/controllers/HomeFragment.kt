@@ -1,10 +1,7 @@
 package com.example.dropspot.controllers
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -24,24 +21,21 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.dropspot.R
 import com.example.dropspot.databinding.HomeFragmentBinding
+import com.example.dropspot.utils.InputLayoutTextWatcher
 import com.example.dropspot.utils.MyValidationListener
 import com.example.dropspot.viewmodels.HomeViewModel
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Order
@@ -51,21 +45,24 @@ import java.text.NumberFormat
 import java.util.*
 
 
-class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
+class HomeFragment : Fragment(), OnMapReadyCallback {
     private val viewModel: HomeViewModel by viewModel()
     private lateinit var binding: HomeFragmentBinding
 
     // google maps api
-    private lateinit var mMap: GoogleMap
+    private var map: GoogleMap? = null
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private var mapFragment: SupportMapFragment? = null
     private lateinit var gcd: Geocoder
-    private var posMarker: Marker? = null
-
-    private
+    private lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
+    private var locationPermissionGranted: Boolean = false
+    private var lastKnownLocation: Location? = null
+    private val defaultLocation: LatLng = LatLng(0.0, 0.0)
 
     companion object {
-        const val REQUEST_CHECK_SETTINGS = 43
+        private val TAG = "home"
+        private const val DEFAULT_ZOOM = 15
+        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
     }
 
     // new spot
@@ -115,6 +112,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
         binding.lifecycleOwner = this
         binding.vm = viewModel
 
+        // sets coords if new spot marker was already added in session
+        val coords = savedInstanceState?.getDoubleArray("NEW_SPOT_MARKER_COORDS")
+        if (coords != null) {
+            newSpotLatitude = coords[0]
+            newSpotLongitude = coords[1]
+        }
+
         setupUI()
         return binding.root
     }
@@ -130,19 +134,18 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
             }
 
         })
+
+        gcd = Geocoder(context, Locale.getDefault())
+        mFusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(this.requireContext())
         initMap()
 
-        // sets coords if new spot marker was already added in session
-        val coords = savedInstanceState?.getDoubleArray("NEW_SPOT_MARKER_COORDS")
-        if (coords != null) {
-            newSpotLatitude = coords[0]
-            newSpotLongitude = coords[1]
-        }
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        Log.i("home", "saveinstance")
+        Log.i(TAG, "saveinstance")
         // saves coords of new spot marker
         if (newSpotMarker != null) {
             outState.putDoubleArray(
@@ -218,6 +221,14 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
         inputPostal = binding.inputPostalCode
         inputState = binding.inputState
         inputCountry = binding.inputCountry
+        inputName.addTextChangedListener(InputLayoutTextWatcher(binding.layoutName))
+        inputStreet.addTextChangedListener(InputLayoutTextWatcher(binding.layoutStreet))
+        inputNumber.addTextChangedListener(InputLayoutTextWatcher(binding.layoutHouseNumber))
+        inputCity.addTextChangedListener(InputLayoutTextWatcher(binding.layoutCity))
+        inputPostal.addTextChangedListener(InputLayoutTextWatcher(binding.layoutPostalCode))
+        inputState.addTextChangedListener(InputLayoutTextWatcher(binding.layoutState))
+        inputCountry.addTextChangedListener(InputLayoutTextWatcher(binding.layoutCountry))
+        binding.dropdownParkCategory.addTextChangedListener(InputLayoutTextWatcher(binding.layoutParkCategory))
 
         //add spot response handling
         viewModel.addParkSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -277,7 +288,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
         }
     }
 
-    // map
     private fun initMap() {
         mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
 
@@ -287,6 +297,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
             mapFragment = SupportMapFragment.newInstance()
             ft?.replace(R.id.map, mapFragment as SupportMapFragment)?.commit()
         }
+
         fusedLocationProviderClient = FusedLocationProviderClient(activity!!)
         mapFragment!!.getMapAsync(this)
     }
@@ -294,10 +305,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
 
     override fun onMapReady(googleMap: GoogleMap) {
         Log.i("home", "map ready")
-        mMap = googleMap
+        map = googleMap
 
         // sets map type
-        mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+        map!!.mapType = GoogleMap.MAP_TYPE_NORMAL
 
         // sets marker if already created in session
         if (newSpotLatitude != null && newSpotLongitude != null) {
@@ -305,11 +316,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
             drawNewSpotMarker(newSpotLatitude!!, newSpotLongitude!!)
         }
 
-        // sets current pos on map
-        setCurrentPos()
-
         // handles marker dragging
-        mMap.setOnMarkerDragListener(
+        map!!.setOnMarkerDragListener(
             object : GoogleMap.OnMarkerDragListener {
                 override fun onMarkerDragEnd(m: Marker) {
                     m.setIcon(
@@ -335,9 +343,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
             }
         )
 
-
         // handles map clicks for new spot creation
-        mMap.setOnMapClickListener {
+        map!!.setOnMapClickListener {
             if (binding.fab.isExpanded && newSpotMarker == null) {
                 Log.i("home", "marker creation")
 
@@ -347,8 +354,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
         }
 
         // handles camera movement
-        mMap.setOnCameraIdleListener {
-            val visibleRegion = mMap.projection.visibleRegion
+        map!!.setOnCameraIdleListener {
+            val visibleRegion = map!!.projection.visibleRegion
 
             val center = visibleRegion.latLngBounds.center
             val farLeft = visibleRegion.farLeft
@@ -369,11 +376,19 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
             viewModel.setCameraCenterAndRadius(center, radiusInMeter.toDouble())
         }
 
-        //handles user movement
+        // Prompt the user for permission.
+        getLocationPermission()
+
+        // Turn on the My Location layer and the related control on the map.
+        updateLocationUI()
+
+        // Get the current location of the device and set the position of the map.
+        getDeviceLocation()
+
     }
 
     private fun drawNewSpotMarker(latitude: Double, longitude: Double) {
-        newSpotMarker = mMap.addMarker(
+        newSpotMarker = map!!.addMarker(
             com.google.android.gms.maps.model.MarkerOptions()
                 .draggable(true)
                 .position(
@@ -395,156 +410,28 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
     }
 
     private fun updateNewSpotLocation(latitude: Double, longitude: Double) {
-        val possibleAddresses = gcd.getFromLocation(latitude, longitude, 10)
+        var possibleAddresses: List<Address>? = null
+        try {
+            possibleAddresses = gcd.getFromLocation(latitude, longitude, 10)
+        } catch (ex: IOException) {
+
+        }
         setAddressFields(possibleAddresses)
-        possibleAddresses.forEach {
+        possibleAddresses?.forEach {
             Log.i("address", it.toString())
         }
         newSpotLatitude = latitude
         newSpotLongitude = longitude
     }
 
-    private fun setAddressFields(possibleAddresses: List<Address>) {
-        val mostPossibleAddress: Address = possibleAddresses[0]
-        binding.inputStreet.setText(mostPossibleAddress.thoroughfare ?: "")
-        binding.inputHouseNumber.setText(mostPossibleAddress.featureName ?: "")
-        binding.inputCity.setText(mostPossibleAddress.locality ?: "")
-        binding.inputPostalCode.setText(mostPossibleAddress.postalCode ?: "")
-        binding.inputState.setText(mostPossibleAddress.subAdminArea ?: "")
-        binding.inputCountry.setText(mostPossibleAddress.countryName ?: "")
-    }
-
-    private fun setCurrentPos() {
-        if (isPermissionGiven()) {
-            if (ActivityCompat.checkSelfPermission(
-                    this.requireContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    this.requireContext(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return
-            }
-            mMap.isMyLocationEnabled = true
-            mMap.uiSettings.isMyLocationButtonEnabled = true
-
-            getCurrentLocation()
-        } else {
-            givePermission()
-        }
-    }
-
-    private fun isPermissionGiven(): Boolean {
-        return ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun givePermission() {
-        Dexter.withActivity(activity!!)
-                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                .withListener(this)
-                .check()
-    }
-
-    private fun getCurrentLocation() {
-        val locationRequest = LocationRequest()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = (10 * 1000).toLong()
-        locationRequest.fastestInterval = 2000
-
-        val builder = LocationSettingsRequest.Builder()
-        builder.addLocationRequest(locationRequest)
-        val locationSettingsRequest = builder.build()
-
-        val result = LocationServices.getSettingsClient(context!!).checkLocationSettings(locationSettingsRequest)
-        result.addOnCompleteListener { task ->
-            try {
-                val response = task.getResult(ApiException::class.java)
-                if (response!!.locationSettingsStates.isLocationPresent) {
-                    getLastLocation()
-                }
-            } catch (exception: ApiException) {
-                when (exception.statusCode) {
-                    LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> try {
-                        val resolvable = exception as ResolvableApiException
-                        resolvable.startResolutionForResult(
-                            activity!!,
-                            REQUEST_CHECK_SETTINGS
-                        )
-                    } catch (e: IntentSender.SendIntentException) {
-                    } catch (e: ClassCastException) {
-                    }
-
-                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getLastLocation() {
-        if (ActivityCompat.checkSelfPermission(this.context!!, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.context!!, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-        fusedLocationProviderClient.lastLocation.addOnCompleteListener(activity!!) { task ->
-            if (task.isSuccessful && task.result != null) {
-                val mLastLocation = task.result
-
-                var address = "No known address"
-                gcd = Geocoder(context, Locale.getDefault())
-
-                val addresses: List<Address>
-                try {
-                    addresses =
-                        gcd.getFromLocation(mLastLocation!!.latitude, mLastLocation.longitude, 1)
-                    if (addresses.isNotEmpty()) {
-                        address = addresses[0].getAddressLine(0)
-                    }
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-
-                posMarker = mMap.addMarker(
-                    MarkerOptions()
-                        .position(LatLng(mLastLocation!!.latitude, mLastLocation.longitude))
-                        .title("Current Location")
-                        .snippet(address)
-                        .icon(
-                            bitmapDescriptorFromVector(
-                                this.requireContext(),
-                                R.drawable.ic_skater
-                            )
-                        ) // custom position marker
-                )
-
-                val cameraPosition = CameraPosition.Builder()
-                    .target(LatLng(mLastLocation.latitude, mLastLocation.longitude))
-                    .zoom(17f)
-                    .build()
-                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-
-            } else {
-                Snackbar.make(
-                    this.requireView(),
-                    "Current location not found",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            }
-        }
+    private fun setAddressFields(possibleAddresses: List<Address>?) {
+        val mostPossibleAddress: Address? = possibleAddresses?.get(0)
+        binding.inputStreet.setText(mostPossibleAddress?.thoroughfare ?: "")
+        binding.inputHouseNumber.setText(mostPossibleAddress?.featureName ?: "")
+        binding.inputCity.setText(mostPossibleAddress?.locality ?: "")
+        binding.inputPostalCode.setText(mostPossibleAddress?.postalCode ?: "")
+        binding.inputState.setText(mostPossibleAddress?.subAdminArea ?: "")
+        binding.inputCountry.setText(mostPossibleAddress?.countryName ?: "")
     }
 
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
@@ -557,37 +444,102 @@ class HomeFragment : Fragment(), OnMapReadyCallback, PermissionListener {
         }
     }
 
+    /*
+     * Request location permission, so that we can get the location of the
+     * device. The result of the permission request is handled by a callback,
+     * onRequestPermissionsResult.
+     */
+    private fun getLocationPermission() {
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (ContextCompat.checkSelfPermission(
+                this.requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            locationPermissionGranted = true
+        } else {
+            ActivityCompat.requestPermissions(
+                this.requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+            )
+        }
+    }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        locationPermissionGranted = false
         when (requestCode) {
-            REQUEST_CHECK_SETTINGS -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    getCurrentLocation()
+            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
+
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.isNotEmpty() &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
+                    locationPermissionGranted = true
                 }
             }
         }
-        super.onActivityResult(requestCode, resultCode, data)
-
+        updateLocationUI()
     }
 
-    // permissionListener
-    override fun onPermissionGranted(response: PermissionGrantedResponse?) {
-        getCurrentLocation()
+    private fun updateLocationUI() {
+        if (map == null) {
+            return
+        }
+        try {
+            if (locationPermissionGranted) {
+                map?.isMyLocationEnabled = true
+                map?.uiSettings?.isMyLocationButtonEnabled = true
+            } else {
+                map?.isMyLocationEnabled = false
+                map?.uiSettings?.isMyLocationButtonEnabled = false
+                lastKnownLocation = null
+                getLocationPermission()
+            }
+        } catch (e: SecurityException) {
+            Log.e("Exception: %s", e.message, e)
+        }
     }
 
-    override fun onPermissionRationaleShouldBeShown(
-            permission: PermissionRequest?,
-            token: PermissionToken?
-    ) {
-        token!!.continuePermissionRequest()
-    }
-
-    override fun onPermissionDenied(response: PermissionDeniedResponse?) {
-        Snackbar.make(
-            this.requireView(),
-            "Permission required for showing location",
-            Snackbar.LENGTH_SHORT
-        ).show()
+    private fun getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (locationPermissionGranted) {
+                val locationResult = fusedLocationProviderClient.lastLocation
+                locationResult.addOnCompleteListener(this.requireActivity()) { task ->
+                    if (task.isSuccessful) {
+                        // Set the map's camera position to the current location of the device.
+                        lastKnownLocation = task.result
+                        if (lastKnownLocation != null) {
+                            map!!.moveCamera(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    LatLng(
+                                        lastKnownLocation!!.latitude,
+                                        lastKnownLocation!!.longitude
+                                    ), DEFAULT_ZOOM.toFloat()
+                                )
+                            )
+                        }
+                    } else {
+                        Log.d(TAG, "Current location is null. Using defaults.")
+                        Log.e(TAG, "Exception: %s", task.exception)
+                        map!!.moveCamera(
+                            CameraUpdateFactory
+                                .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat())
+                        )
+                        map!!.uiSettings?.isMyLocationButtonEnabled = false
+                    }
+                }
+            }
+        } catch (e: SecurityException) {
+            Log.e("Exception: %s", e.message, e)
+        }
     }
 }

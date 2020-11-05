@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">Dropspot</string>
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
-        AIzaSyDpf9jDOYfqasU41sUnMozgcMjf3pDPGnE
-    </string>
 
     // home frag
     <string name="name">Name</string>

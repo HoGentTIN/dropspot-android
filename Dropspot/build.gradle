@@ -15,16 +15,20 @@ buildscript {
         gradle_version = '4.0.0'
         saripaar_version='2.0.3'
         lottie_version='3.4.0'
+        dokka_version='0.9.17'
     }
 
     repositories {
         google()
         jcenter()
     }
+
     dependencies {
         classpath "com.android.tools.build:gradle:$gradle_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigation_version"
+        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version"
+
     }
 }
 
@@ -34,6 +38,7 @@ allprojects {
         jcenter()
 
     }
+
 }
 
 task clean(type: Delete) {

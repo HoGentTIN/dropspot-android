@@ -29,7 +29,7 @@ class SpotRepository(
                 saveInLocalDb(onlineSpots)
                 this.spots.value = onlineSpots + offlineSpots
             } catch (e: Exception) {
-                Log.d("spotRepo", e.message ?: "Something went wrong with getAllSpots")
+                Log.d("spot_response", e.message ?: "Something went wrong with getAllSpots")
             }
 
         } else {
@@ -52,7 +52,7 @@ class SpotRepository(
                 saveInLocalDb(onlineSpots)
                 this.spotsInRadius.value = onlineSpots //+ offlineSpots
             } catch (e: Exception) {
-                Log.d("spotRepo", e.message ?: "something went wrong with getSpotsInRadius")
+                Log.d("spot_response", e.message ?: "something went wrong with getSpotsInRadius")
             }
 
         } else {
@@ -70,15 +70,17 @@ class SpotRepository(
             try {
                 val spotResponse = spotService.addStreetSpot(request)
                 Log.i("spot_response", spotResponse.toString())
+                /*
                 if (spotResponse.isSuccessful) {
                     spotDao.insert(spotResponse.body()!!)
                     return spotResponse.body()
                 } else {
                     return null
-                }
+                }*/
+                return null
 
             } catch (e: Exception) {
-                Log.d("spotRepo", e.message ?: "something went wrong with addStreetSpot")
+                Log.d("spot_response", e.message ?: "something went wrong with addStreetSpot")
                 return null
             }
         } else {
@@ -127,7 +129,7 @@ class SpotRepository(
                     return null
                 }
             } catch (e: Exception) {
-                Log.d("spotRepo", e.message ?: "something went wrong with addParkSpot")
+                Log.d("spot_response", e.message ?: "something went wrong with addParkSpot")
                 return null
             }
         } else {

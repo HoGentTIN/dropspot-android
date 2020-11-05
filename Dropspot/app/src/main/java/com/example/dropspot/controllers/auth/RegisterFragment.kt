@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.dropspot.AuthActivity
 import com.example.dropspot.databinding.FragmentRegisterBinding
+import com.example.dropspot.utils.InputLayoutTextWatcher
 import com.example.dropspot.utils.MyValidationListener
 import com.example.dropspot.viewmodels.AuthViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -64,13 +65,20 @@ class RegisterFragment : Fragment() {
         binding.vm = authViewModel
         binding.lifecycleOwner = this
         input_firstName = binding.inputFirstname
+        input_firstName.addTextChangedListener(InputLayoutTextWatcher(binding.fieldFirstname))
         input_lastName = binding.inputLastname
+        input_lastName.addTextChangedListener(InputLayoutTextWatcher(binding.fieldLastname))
         input_email = binding.inputEmail
+        input_email.addTextChangedListener(InputLayoutTextWatcher(binding.fieldEmail))
         input_username = binding.inputUsername
+        input_username.addTextChangedListener(InputLayoutTextWatcher(binding.fieldUsername))
         input_password = binding.inputPassword
+        input_password.addTextChangedListener(InputLayoutTextWatcher(binding.fieldPassword))
         input_passwordConfirm = binding.inputPasswordConfirm
+        input_passwordConfirm.addTextChangedListener(InputLayoutTextWatcher(binding.fieldPasswordConfirm))
         button_register = binding.buttonRegister
         progressBar_loading = binding.progressBarLoading
+
         return binding.root
     }
 

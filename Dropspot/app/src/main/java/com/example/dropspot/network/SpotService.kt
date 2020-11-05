@@ -26,10 +26,8 @@ interface SpotService {
     @GET("spots/{spotId}")
     suspend fun getSpotById(@Path("spotId") id: Long): Deferred<Spot>
 
-
     @DELETE("spots/{spotId}")
     suspend fun deleteSpot(@Path("spotId") id: Long): Deferred<MessageResponse>
-
 
     @PUT("spots/street/{spotId}")
     suspend fun udpateStreetSpot(
@@ -45,7 +43,7 @@ interface SpotService {
 
 
     @POST("spots/street")
-    suspend fun addStreetSpot(@Body spot: StreetSpotRequest): Response<StreetSpot>
+    suspend fun addStreetSpot(@Body spot: StreetSpotRequest): Response<Any>
 
     @POST("spots/park")
     suspend fun addParkSpot(@Body spot: ParkSpotRequest): Response<ParkSpot>
