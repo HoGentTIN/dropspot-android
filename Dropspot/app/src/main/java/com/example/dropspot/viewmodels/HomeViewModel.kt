@@ -1,5 +1,6 @@
 package com.example.dropspot.viewmodels
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,13 +13,13 @@ import kotlinx.coroutines.launch
 class HomeViewModel(private val spotRepository: SpotRepository) : ViewModel() {
 
     private val _spotsInRadius: MutableLiveData<List<Spot>> = spotRepository.spotsInRadius
-    val spotsInRadius get() = _spotsInRadius
+    val spotsInRadius: LiveData<List<Spot>> get() = _spotsInRadius
 
     private val _addStreetSpotSuccess = MutableLiveData<Boolean>()
-    val addStreetSpotSuccess get() = _addStreetSpotSuccess
+    val addStreetSpotSuccess: LiveData<Boolean> get() = _addStreetSpotSuccess
 
     private val _addParkSpotSuccess = MutableLiveData<Boolean>()
-    val addParkSpotSuccess get() = _addParkSpotSuccess
+    val addParkSpotSuccess: LiveData<Boolean> get() = _addParkSpotSuccess
 
     fun addStreetSpot(name: String, latitude: Double, longitude: Double) {
         viewModelScope.launch {
@@ -67,6 +68,7 @@ class HomeViewModel(private val spotRepository: SpotRepository) : ViewModel() {
 
     }
 
+    // gets called after map is created
     fun setCameraCenterAndRadius(center: LatLng, radiusInMeter: Double) {
         viewModelScope.launch {
             spotRepository.getSpotsInRadius(center.latitude, center.longitude, radiusInMeter)

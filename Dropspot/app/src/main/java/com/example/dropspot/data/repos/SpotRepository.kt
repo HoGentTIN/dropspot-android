@@ -4,9 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.dropspot.data.dao.SpotDao
 import com.example.dropspot.data.model.ParkCategory
-import com.example.dropspot.data.model.ParkSpot
 import com.example.dropspot.data.model.Spot
-import com.example.dropspot.data.model.StreetSpot
 import com.example.dropspot.data.model.dto.requests.ParkSpotRequest
 import com.example.dropspot.data.model.dto.requests.StreetSpotRequest
 import com.example.dropspot.network.SpotService
@@ -48,7 +46,8 @@ class SpotRepository(
             try {
                 val onlineSpots: List<Spot> =
                     spotService.getSpotsInRadius(latitude, longitude, radius)
-                // val offlineSpots: List<Spot> = spotDao.getSpotsInRadius(latitude,longitude,radius).value?: emptyList()
+                //val offlineSpots: List<Spot> =
+                //    spotDao.getSpotsInRadius(latitude,longitude,radius).value?: emptyList()
                 saveInLocalDb(onlineSpots)
                 this.spotsInRadius.value = onlineSpots //+ offlineSpots
             } catch (e: Exception) {
@@ -61,7 +60,7 @@ class SpotRepository(
         }
     }
 
-    suspend fun addStreetSpot(name: String, latitude: Double, longitude: Double): StreetSpot? {
+    suspend fun addStreetSpot(name: String, latitude: Double, longitude: Double): Spot? {
 
         val request = StreetSpotRequest(name, latitude, longitude)
         Log.i("spot_request", request.toString())
@@ -69,16 +68,8 @@ class SpotRepository(
         if (Variables.isNetworkConnected.value!!) {
             try {
                 val spotResponse = spotService.addStreetSpot(request)
-                Log.i("spot_response", spotResponse.toString())
-                /*
-                if (spotResponse.isSuccessful) {
-                    spotDao.insert(spotResponse.body()!!)
-                    return spotResponse.body()
-                } else {
-                    return null
-                }*/
-                return null
-
+                spotDao.insert(spotResponse)
+                return spotResponse
             } catch (e: Exception) {
                 Log.d("spot_response", e.message ?: "something went wrong with addStreetSpot")
                 return null
@@ -101,7 +92,7 @@ class SpotRepository(
         country: String,
         parkCategory: ParkCategory,
         fee: Double
-    ): ParkSpot? {
+    ): Spot? {
 
         val request = ParkSpotRequest(
             name,
@@ -121,13 +112,9 @@ class SpotRepository(
         if (Variables.isNetworkConnected.value!!) {
             try {
                 val spotResponse = spotService.addParkSpot(request)
-                Log.i("spot_response", spotResponse.toString())
-                if (spotResponse.isSuccessful) {
-                    spotDao.insert(spotResponse.body()!!)
-                    return spotResponse.body()
-                } else {
-                    return null
-                }
+                spotDao.insert(spotResponse)
+                return spotResponse
+
             } catch (e: Exception) {
                 Log.d("spot_response", e.message ?: "something went wrong with addParkSpot")
                 return null

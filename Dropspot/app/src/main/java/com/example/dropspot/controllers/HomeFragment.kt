@@ -30,10 +30,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.mobsandgeeks.saripaar.Validator
@@ -58,6 +55,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var locationPermissionGranted: Boolean = false
     private var lastKnownLocation: Location? = null
     private val defaultLocation: LatLng = LatLng(0.0, 0.0)
+
+    private val spotMarkers: MutableList<Marker> = mutableListOf()
 
     companion object {
         private val TAG = "home"
@@ -126,6 +125,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        // validation setup
         validator.validationMode = Validator.Mode.IMMEDIATE
         validator.setValidationListener(object :
             MyValidationListener(this.requireContext(), this.requireView()) {
@@ -135,6 +135,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         })
 
+        // maps init
         gcd = Geocoder(context, Locale.getDefault())
         mFusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(this.requireContext())
@@ -232,16 +233,61 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         //add spot response handling
         viewModel.addParkSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val message = if (it) resources.getString(R.string.spot_added) else
+            val message = if (it) resources.getString(R.string.park_spot_added) else
                 resources.getString(R.string.failed_to_add_spot)
             Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
+            removeNewSpotMarker()
         })
 
-        viewModel.addParkSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val message = if (it) resources.getString(R.string.spot_added) else
+        viewModel.addStreetSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            val message = if (it) resources.getString(R.string.street_spot_added) else
                 resources.getString(R.string.failed_to_add_spot)
             Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
+            removeNewSpotMarker()
         })
+
+        viewModel.spotsInRadius.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+
+            it.forEach { spot ->
+                if (map != null) {
+                    // don't draw to map and add to markers if already added in sesh
+                    if (!spotMarkers.any { drawnMarker ->
+                            drawnMarker.position.latitude == spot.latitude && drawnMarker.position.longitude == spot.longitude
+                        }) {
+                        spotMarkers.add(
+                            map!!.addMarker(
+                                MarkerOptions()
+                                    .position(LatLng(spot.latitude, spot.longitude))
+                                    .title(spot.name)
+                                    .icon(
+                                        bitmapDescriptorFromVector(
+                                            requireContext(),
+                                            R.drawable.ic_spot_marker_colored
+                                        )
+                                    )
+                            )
+                        )
+                    }
+
+                }
+            }
+        }
+        )
+    }
+
+    private fun removeNewSpotMarker() {
+        if (newSpotMarker != null) {
+            newSpotMarker!!.setIcon(
+                bitmapDescriptorFromVector(
+                    requireContext(),
+                    R.drawable.ic_spot_marker_colored
+                )
+            )
+            spotMarkers.add(newSpotMarker!!)
+            newSpotMarker = null
+            newSpotLatitude = null
+            newSpotLongitude = null
+        }
 
     }
 
@@ -310,10 +356,33 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         // sets map type
         map!!.mapType = GoogleMap.MAP_TYPE_NORMAL
 
-        // sets marker if already created in session
+        // sets markers if already created in session
         if (newSpotLatitude != null && newSpotLongitude != null) {
             Log.i("home", "redraw marker")
             drawNewSpotMarker(newSpotLatitude!!, newSpotLongitude!!)
+        }
+
+        Log.i("home", spotMarkers.toString())
+        val markers = mutableMapOf<LatLng, String>()
+        spotMarkers.forEach {
+            Log.i("home", it.title)
+            markers.putIfAbsent(it.position, it.title)
+        }
+
+        markers.forEach { k, v ->
+            spotMarkers.add(
+                map!!.addMarker(
+                    MarkerOptions()
+                        .position(LatLng(k.latitude, k.longitude))
+                        .title(v)
+                        .icon(
+                            bitmapDescriptorFromVector(
+                                requireContext(),
+                                R.drawable.ic_spot_marker_colored
+                            )
+                        )
+                )
+            )
         }
 
         // handles marker dragging

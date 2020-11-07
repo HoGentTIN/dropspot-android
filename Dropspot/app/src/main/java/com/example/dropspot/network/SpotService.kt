@@ -9,7 +9,6 @@ import com.example.dropspot.data.model.dto.requests.StreetSpotRequest
 import com.example.dropspot.data.model.dto.requests.VoteRequest
 import com.example.dropspot.data.model.dto.responses.MessageResponse
 import kotlinx.coroutines.Deferred
-import retrofit2.Response
 import retrofit2.http.*
 
 interface SpotService {
@@ -41,12 +40,11 @@ interface SpotService {
         @Path("spotId") id: Long
     ): Deferred<Spot>
 
-
     @POST("spots/street")
-    suspend fun addStreetSpot(@Body spot: StreetSpotRequest): Response<Any>
+    suspend fun addStreetSpot(@Body spot: StreetSpotRequest): Spot
 
     @POST("spots/park")
-    suspend fun addParkSpot(@Body spot: ParkSpotRequest): Response<ParkSpot>
+    suspend fun addParkSpot(@Body spot: ParkSpotRequest): Spot
 
     @POST("spots/{spotId}/criteria/{criterionId}/vote")
     suspend fun voteForSpot(
@@ -55,7 +53,7 @@ interface SpotService {
         @Path("criterionId") criterionId: Long
     ): MessageResponse
 
-    @GET("spots/{lat}/{long}/{radius}")
+    @GET("spots/getByRadius/{lat}/{long}/{radius}")
     suspend fun getSpotsInRadius(
         @Path("lat") latitude: Double,
         @Path("long") longitude: Double,

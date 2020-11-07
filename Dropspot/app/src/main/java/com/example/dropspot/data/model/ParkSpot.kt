@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 
 
-@Entity
+@Entity(tableName = "parkspots")
 data class ParkSpot(
     override val spotId: Long,
     override val creatorId: Long,
