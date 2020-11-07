@@ -55,6 +55,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var locationPermissionGranted: Boolean = false
     private var lastKnownLocation: Location? = null
     private val defaultLocation: LatLng = LatLng(0.0, 0.0)
+    private var cameraPosition: CameraPosition? = null
 
     private val spotMarkers: MutableList<Marker> = mutableListOf()
 
@@ -62,6 +63,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         private val TAG = "home"
         private const val DEFAULT_ZOOM = 15
         private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+        private const val DRAWABLE_SPOT_MARKER = R.drawable.ic_spot_marker_filled
+        private const val DRAWABLE_NEW_SPOT_MARKER = R.drawable.ic_flag_secondary
+        private const val DRAWABLE_NEW_SPOT_MARKER_ON_DRAG = R.drawable.ic_flag_thick
+        private const val KEY_NEW_SPOT_MARKER_COORDS = "NEW_SPOT_MARKER_COORDS"
+        private const val KEY_CAMERA_POS = "CAMERA_POS"
     }
 
     // new spot
@@ -111,19 +117,23 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         binding.lifecycleOwner = this
         binding.vm = viewModel
 
-        // sets coords if new spot marker was already added in session
-        val coords = savedInstanceState?.getDoubleArray("NEW_SPOT_MARKER_COORDS")
-        if (coords != null) {
-            newSpotLatitude = coords[0]
-            newSpotLongitude = coords[1]
-        }
-
         setupUI()
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        // sets coords if new spot marker was already added in session
+        val coords = savedInstanceState?.getDoubleArray(KEY_NEW_SPOT_MARKER_COORDS)
+        if (coords != null) {
+            newSpotLatitude = coords[0]
+            newSpotLongitude = coords[1]
+        }
+        val pos = savedInstanceState?.getParcelable<CameraPosition>(KEY_CAMERA_POS)
+        if (pos != null) {
+            cameraPosition = pos
+        }
 
         // validation setup
         validator.validationMode = Validator.Mode.IMMEDIATE
@@ -147,15 +157,19 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         Log.i(TAG, "saveinstance")
-        // saves coords of new spot marker
+        // saves coords of new spot marker is present
         if (newSpotMarker != null) {
             outState.putDoubleArray(
-                "NEW_SPOT_MARKER_COORDS",
+                KEY_NEW_SPOT_MARKER_COORDS,
                 doubleArrayOf(
                     newSpotMarker!!.position.latitude,
                     newSpotMarker!!.position.longitude
                 )
             )
+        }
+        // save camera pos
+        map?.let { map ->
+            outState.putParcelable(KEY_CAMERA_POS, map.cameraPosition)
         }
     }
 
@@ -262,7 +276,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                                     .icon(
                                         bitmapDescriptorFromVector(
                                             requireContext(),
-                                            R.drawable.ic_spot_marker_colored
+                                            DRAWABLE_SPOT_MARKER
                                         )
                                     )
                             )
@@ -280,7 +294,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             newSpotMarker!!.setIcon(
                 bitmapDescriptorFromVector(
                     requireContext(),
-                    R.drawable.ic_spot_marker_colored
+                    DRAWABLE_SPOT_MARKER
                 )
             )
             spotMarkers.add(newSpotMarker!!)
@@ -378,7 +392,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                         .icon(
                             bitmapDescriptorFromVector(
                                 requireContext(),
-                                R.drawable.ic_spot_marker_colored
+                                DRAWABLE_SPOT_MARKER
                             )
                         )
                 )
@@ -392,7 +406,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                     m.setIcon(
                         bitmapDescriptorFromVector(
                             requireContext(),
-                            R.drawable.ic_flag_secondary
+                            DRAWABLE_NEW_SPOT_MARKER
                         )
                     )
                     updateNewSpotLocation(m.position.latitude, m.position.longitude)
@@ -402,7 +416,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                     m.setIcon(
                         bitmapDescriptorFromVector(
                             requireContext(),
-                            R.drawable.ic_flag_thick
+                            DRAWABLE_NEW_SPOT_MARKER_ON_DRAG
                         )
                     )
                 }
@@ -587,14 +601,24 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                         // Set the map's camera position to the current location of the device.
                         lastKnownLocation = task.result
                         if (lastKnownLocation != null) {
-                            map!!.moveCamera(
-                                CameraUpdateFactory.newLatLngZoom(
-                                    LatLng(
-                                        lastKnownLocation!!.latitude,
-                                        lastKnownLocation!!.longitude
-                                    ), DEFAULT_ZOOM.toFloat()
+                            // checks if camera position is already in session
+                            if (cameraPosition != null) {
+                                map!!.moveCamera(
+                                    CameraUpdateFactory.newCameraPosition(
+                                        cameraPosition
+                                    )
                                 )
-                            )
+                            } else {
+                                map!!.moveCamera(
+                                    CameraUpdateFactory.newLatLngZoom(
+                                        LatLng(
+                                            lastKnownLocation!!.latitude,
+                                            lastKnownLocation!!.longitude
+                                        ), DEFAULT_ZOOM.toFloat()
+                                    )
+                                )
+                            }
+
                         }
                     } else {
                         Log.d(TAG, "Current location is null. Using defaults.")
