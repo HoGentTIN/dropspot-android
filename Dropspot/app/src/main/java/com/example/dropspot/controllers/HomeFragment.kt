@@ -1,10 +1,7 @@
 package com.example.dropspot.controllers
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -20,9 +17,11 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.dropspot.R
+import com.example.dropspot.data.model.Spot
 import com.example.dropspot.databinding.HomeFragmentBinding
 import com.example.dropspot.utils.InputLayoutTextWatcher
 import com.example.dropspot.utils.MyValidationListener
+import com.example.dropspot.utils.Utils
 import com.example.dropspot.viewmodels.HomeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -30,7 +29,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.mobsandgeeks.saripaar.Validator
@@ -43,6 +45,7 @@ import java.util.*
 
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
+
     private val viewModel: HomeViewModel by viewModel()
     private lateinit var binding: HomeFragmentBinding
 
@@ -76,7 +79,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var newSpotLongitude: Double? = null
 
 
-    //field validation
+    // validation
     private val validator = Validator(this)
 
     // street val
@@ -116,7 +119,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         binding = DataBindingUtil.inflate(inflater, R.layout.home_fragment, container, false)
         binding.lifecycleOwner = this
         binding.vm = viewModel
-
         setupUI()
         return binding.root
     }
@@ -130,6 +132,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             newSpotLatitude = coords[0]
             newSpotLongitude = coords[1]
         }
+
+        // sets position of camera if already set in session
         val pos = savedInstanceState?.getParcelable<CameraPosition>(KEY_CAMERA_POS)
         if (pos != null) {
             cameraPosition = pos
@@ -190,10 +194,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         // add btn
         binding.btnAdd.setOnClickListener {
             if (binding.toggleSpotSort.checkedButtonId == R.id.toggle_street) {
-                Log.i("home", "street validation")
+                Log.i(TAG, "street validation")
                 validator.validateBefore(inputStreet)
             } else {
-                Log.i("home", "park validation")
+                Log.i(TAG, "park validation")
                 validator.validate()
             }
         }
@@ -218,7 +222,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         )
 
         binding.dropdownParkCategory.setAdapter(dropdown_adapter)
-
 
         // fee slider
         binding.sliderFee.setLabelFormatter {
@@ -247,39 +250,35 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         //add spot response handling
         viewModel.addParkSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val message = if (it) resources.getString(R.string.park_spot_added) else
-                resources.getString(R.string.failed_to_add_spot)
-            Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
-            removeNewSpotMarker()
+            it?.let {
+                handleAddSpotResponse(it, false)
+            }
         })
 
         viewModel.addStreetSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val message = if (it) resources.getString(R.string.street_spot_added) else
-                resources.getString(R.string.failed_to_add_spot)
-            Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
-            removeNewSpotMarker()
+            it?.let {
+                handleAddSpotResponse(it)
+            }
         })
 
+        // spots in visible field
         viewModel.spotsInRadius.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
 
             it.forEach { spot ->
                 if (map != null) {
-                    // don't draw to map and add to markers if already added in sesh
+                    // don't draw to map and add to markers if already added in session
                     if (!spotMarkers.any { drawnMarker ->
-                            drawnMarker.position.latitude == spot.latitude && drawnMarker.position.longitude == spot.longitude
+                            (drawnMarker.tag as Spot).spotId == spot.spotId
                         }) {
+                        val newMarker = drawMarker(
+                            spot.latitude, spot.longitude, spot.name,
+                            DRAWABLE_SPOT_MARKER
+                        )
+
+                        // sets extra data object tag to spot
+                        newMarker.tag = spot
                         spotMarkers.add(
-                            map!!.addMarker(
-                                MarkerOptions()
-                                    .position(LatLng(spot.latitude, spot.longitude))
-                                    .title(spot.name)
-                                    .icon(
-                                        bitmapDescriptorFromVector(
-                                            requireContext(),
-                                            DRAWABLE_SPOT_MARKER
-                                        )
-                                    )
-                            )
+                            newMarker
                         )
                     }
 
@@ -289,18 +288,65 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         )
     }
 
+    private fun drawMarker(latitude: Double, longitude: Double, name: String, iconId: Int): Marker {
+        return map!!.addMarker(
+            MarkerOptions()
+                .position(LatLng(latitude, longitude))
+                .title(name)
+                .icon(
+                    Utils.bitmapDescriptorFromVector(
+                        requireContext(),
+                        iconId
+                    )
+                )
+
+        )
+    }
+
+    private fun handleAddSpotResponse(success: Boolean, isStreet: Boolean = true) {
+        Log.i(TAG, "handling add spot response... success:$success isStreet:$isStreet")
+        val message: String
+        if (success) {
+            if (isStreet) message = resources.getString(R.string.street_spot_added) else
+                message = resources.getString(R.string.street_spot_added)
+            removeNewSpotMarker()
+            clearFields()
+
+        } else {
+            message = resources.getString(R.string.failed_to_add_spot)
+        }
+        Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT)
+            .setAnchorView(binding.addSpotContainer)
+            .show()
+    }
+
+    private fun clearFields() {
+        inputName.setText("")
+        inputStreet.setText("")
+        inputNumber.setText("")
+        inputCity.setText("")
+        inputPostal.setText("")
+        inputState.setText("")
+        inputCountry.setText("")
+        binding.dropdownParkCategory.setText("")
+    }
+
     private fun removeNewSpotMarker() {
         if (newSpotMarker != null) {
             newSpotMarker!!.setIcon(
-                bitmapDescriptorFromVector(
+                Utils.bitmapDescriptorFromVector(
                     requireContext(),
                     DRAWABLE_SPOT_MARKER
                 )
             )
+            newSpotMarker!!.title = "Just added"
             spotMarkers.add(newSpotMarker!!)
             newSpotMarker = null
             newSpotLatitude = null
             newSpotLongitude = null
+
+            // flag indicator filled
+            binding.flag.setImageResource(R.drawable.ic_flag_24px)
         }
 
     }
@@ -364,38 +410,33 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
 
     override fun onMapReady(googleMap: GoogleMap) {
-        Log.i("home", "map ready")
+        Log.i(TAG, "map ready")
         map = googleMap
 
         // sets map type
         map!!.mapType = GoogleMap.MAP_TYPE_NORMAL
 
+        // on click marker no toolbar gets shown
+        map!!.uiSettings.isMapToolbarEnabled = false
+
         // sets markers if already created in session
         if (newSpotLatitude != null && newSpotLongitude != null) {
-            Log.i("home", "redraw marker")
+            Log.i(TAG, "redraw marker")
             drawNewSpotMarker(newSpotLatitude!!, newSpotLongitude!!)
         }
 
-        Log.i("home", spotMarkers.toString())
-        val markers = mutableMapOf<LatLng, String>()
+        val markersHelper = mutableListOf<Spot>()
+        Log.i(TAG, "SPOT MARKERS IN SESSION:")
         spotMarkers.forEach {
-            Log.i("home", it.title)
-            markers.putIfAbsent(it.position, it.title)
+            Log.i(TAG, it.tag.toString())
+            markersHelper.add(it.tag as Spot)
         }
 
-        markers.forEach { k, v ->
+        markersHelper.forEach { spot ->
+            val marker = drawMarker(spot.latitude, spot.longitude, spot.name, DRAWABLE_SPOT_MARKER)
+            marker.tag = spot
             spotMarkers.add(
-                map!!.addMarker(
-                    MarkerOptions()
-                        .position(LatLng(k.latitude, k.longitude))
-                        .title(v)
-                        .icon(
-                            bitmapDescriptorFromVector(
-                                requireContext(),
-                                DRAWABLE_SPOT_MARKER
-                            )
-                        )
-                )
+                marker
             )
         }
 
@@ -404,7 +445,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             object : GoogleMap.OnMarkerDragListener {
                 override fun onMarkerDragEnd(m: Marker) {
                     m.setIcon(
-                        bitmapDescriptorFromVector(
+                        Utils.bitmapDescriptorFromVector(
                             requireContext(),
                             DRAWABLE_NEW_SPOT_MARKER
                         )
@@ -414,7 +455,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
                 override fun onMarkerDragStart(m: Marker) {
                     m.setIcon(
-                        bitmapDescriptorFromVector(
+                        Utils.bitmapDescriptorFromVector(
                             requireContext(),
                             DRAWABLE_NEW_SPOT_MARKER_ON_DRAG
                         )
@@ -429,7 +470,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         // handles map clicks for new spot creation
         map!!.setOnMapClickListener {
             if (binding.fab.isExpanded && newSpotMarker == null) {
-                Log.i("home", "marker creation")
+                Log.i(TAG, "marker creation")
 
                 drawNewSpotMarker(it.latitude, it.longitude)
                 updateNewSpotLocation(it.latitude, it.longitude)
@@ -471,24 +512,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun drawNewSpotMarker(latitude: Double, longitude: Double) {
-        newSpotMarker = map!!.addMarker(
-            com.google.android.gms.maps.model.MarkerOptions()
-                .draggable(true)
-                .position(
-                    com.google.android.gms.maps.model.LatLng(
-                        latitude,
-                        longitude
-                    )
-                )
-                .title("New Spot")
-                .icon(
-                    bitmapDescriptorFromVector(
-                        this.requireContext(),
-                        com.example.dropspot.R.drawable.ic_flag_secondary
-                    )
-                )
-        )
-        Log.i("home", "marker:($latitude,$longitude)")
+        newSpotMarker = drawMarker(latitude, longitude, "New Spot", R.drawable.ic_flag_secondary)
+        newSpotMarker!!.isDraggable = true
+
+        Log.i(TAG, "new spot marker:($latitude,$longitude)")
+
+        // flag indicator empty
         binding.flag.setImageResource(R.drawable.ic_outlined_flag_24px)
     }
 
@@ -497,17 +526,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         try {
             possibleAddresses = gcd.getFromLocation(latitude, longitude, 10)
         } catch (ex: IOException) {
-
+            possibleAddresses = null
         }
-        setAddressFields(possibleAddresses)
-        possibleAddresses?.forEach {
-            Log.i("address", it.toString())
-        }
-        newSpotLatitude = latitude
-        newSpotLongitude = longitude
-    }
-
-    private fun setAddressFields(possibleAddresses: List<Address>?) {
         val mostPossibleAddress: Address? = possibleAddresses?.get(0)
         binding.inputStreet.setText(mostPossibleAddress?.thoroughfare ?: "")
         binding.inputHouseNumber.setText(mostPossibleAddress?.featureName ?: "")
@@ -515,17 +535,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         binding.inputPostalCode.setText(mostPossibleAddress?.postalCode ?: "")
         binding.inputState.setText(mostPossibleAddress?.subAdminArea ?: "")
         binding.inputCountry.setText(mostPossibleAddress?.countryName ?: "")
+
+        newSpotLatitude = latitude
+        newSpotLongitude = longitude
     }
 
-    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
-        return ContextCompat.getDrawable(context, vectorResId)?.run {
-            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-            val bitmap =
-                Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
-            draw(Canvas(bitmap))
-            BitmapDescriptorFactory.fromBitmap(bitmap)
-        }
-    }
 
     /*
      * Request location permission, so that we can get the location of the

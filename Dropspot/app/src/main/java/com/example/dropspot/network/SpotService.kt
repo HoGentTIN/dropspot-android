@@ -14,13 +14,13 @@ import retrofit2.http.*
 interface SpotService {
     //spots
     @GET("spots")
-    suspend fun getSpots(): Deferred<List<Spot>>
+    suspend fun getSpots(): List<Spot>
 
     @GET("spots/street")
-    suspend fun getStreetSpots(): Deferred<List<StreetSpot>>
+    suspend fun getStreetSpots(): List<StreetSpot>
 
     @GET("spots/park")
-    suspend fun getParkSpots(): Deferred<List<ParkSpot>>
+    suspend fun getParkSpots(): List<ParkSpot>
 
     @GET("spots/{spotId}")
     suspend fun getSpotById(@Path("spotId") id: Long): Deferred<Spot>
@@ -40,18 +40,18 @@ interface SpotService {
         @Path("spotId") id: Long
     ): Deferred<Spot>
 
-    @POST("spots/street")
-    suspend fun addStreetSpot(@Body spot: StreetSpotRequest): Spot
-
-    @POST("spots/park")
-    suspend fun addParkSpot(@Body spot: ParkSpotRequest): Spot
-
     @POST("spots/{spotId}/criteria/{criterionId}/vote")
     suspend fun voteForSpot(
         @Body voteRequest: VoteRequest,
         @Path("spotId") spotId: Long,
         @Path("criterionId") criterionId: Long
     ): MessageResponse
+
+    @POST("spots/street")
+    suspend fun addStreetSpot(@Body spot: StreetSpotRequest): Spot
+
+    @POST("spots/park")
+    suspend fun addParkSpot(@Body spot: ParkSpotRequest): Spot
 
     @GET("spots/getByRadius/{lat}/{long}/{radius}")
     suspend fun getSpotsInRadius(

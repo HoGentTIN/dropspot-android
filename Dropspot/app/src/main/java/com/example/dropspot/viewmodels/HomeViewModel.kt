@@ -15,16 +15,17 @@ class HomeViewModel(private val spotRepository: SpotRepository) : ViewModel() {
     private val _spotsInRadius: MutableLiveData<List<Spot>> = spotRepository.spotsInRadius
     val spotsInRadius: LiveData<List<Spot>> get() = _spotsInRadius
 
-    private val _addStreetSpotSuccess = MutableLiveData<Boolean>()
-    val addStreetSpotSuccess: LiveData<Boolean> get() = _addStreetSpotSuccess
+    private val _addStreetSpotSuccess = MutableLiveData<Boolean?>()
+    val addStreetSpotSuccess: LiveData<Boolean?> get() = _addStreetSpotSuccess
 
-    private val _addParkSpotSuccess = MutableLiveData<Boolean>()
-    val addParkSpotSuccess: LiveData<Boolean> get() = _addParkSpotSuccess
+    private val _addParkSpotSuccess = MutableLiveData<Boolean?>()
+    val addParkSpotSuccess: LiveData<Boolean?> get() = _addParkSpotSuccess
 
     fun addStreetSpot(name: String, latitude: Double, longitude: Double) {
         viewModelScope.launch {
             _addStreetSpotSuccess.value =
                 spotRepository.addStreetSpot(name, latitude, longitude) != null
+            _addParkSpotSuccess.value = null
         }
     }
 
@@ -64,6 +65,7 @@ class HomeViewModel(private val spotRepository: SpotRepository) : ViewModel() {
                 , parkCategory
                 , fee
             ) != null
+            _addParkSpotSuccess.value = null
         }
 
     }

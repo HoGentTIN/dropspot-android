@@ -14,6 +14,9 @@ class SpotRepository(
     private val spotDao: SpotDao,
     private val spotService: SpotService
 ) {
+    companion object {
+        private val TAG = "spot_repo"
+    }
 
     var spots = MutableLiveData<List<Spot>>()
     var spotsInRadius = MutableLiveData<List<Spot>>()
@@ -22,12 +25,12 @@ class SpotRepository(
     suspend fun getAllSpots() {
         if (Variables.isNetworkConnected.value!!) {
             try {
-                val onlineSpots: List<Spot> = spotService.getSpots().await()
+                val onlineSpots: List<Spot> = spotService.getSpots()
                 val offlineSpots: List<Spot> = spotDao.getAllSpots().value!!
                 saveInLocalDb(onlineSpots)
                 this.spots.value = onlineSpots + offlineSpots
             } catch (e: Exception) {
-                Log.d("spot_response", e.message ?: "Something went wrong with getAllSpots")
+                Log.d(TAG, e.message ?: "Something went wrong with getAllSpots")
             }
 
         } else {
@@ -46,24 +49,24 @@ class SpotRepository(
             try {
                 val onlineSpots: List<Spot> =
                     spotService.getSpotsInRadius(latitude, longitude, radius)
-                //val offlineSpots: List<Spot> =
-                //    spotDao.getSpotsInRadius(latitude,longitude,radius).value?: emptyList()
+                val offlineSpots: List<Spot> =
+                    spotDao.getAllSpots().value ?: listOf()
+                Log.i(TAG, "offline_spots:\n" + offlineSpots.toString())
                 saveInLocalDb(onlineSpots)
-                this.spotsInRadius.value = onlineSpots //+ offlineSpots
+                this.spotsInRadius.value = onlineSpots + offlineSpots
             } catch (e: Exception) {
-                Log.d("spot_response", e.message ?: "something went wrong with getSpotsInRadius")
+                Log.d(TAG, e.message ?: "something went wrong with getSpotsInRadius")
             }
 
         } else {
-            this.spotsInRadius.value =
-                spotDao.getAllSpots().value//getSpotsInRadius(latitude,longitude,radius).value?: emptyList()
+            this.spotsInRadius.value = spotDao.getAllSpots().value ?: listOf()
         }
     }
 
     suspend fun addStreetSpot(name: String, latitude: Double, longitude: Double): Spot? {
 
         val request = StreetSpotRequest(name, latitude, longitude)
-        Log.i("spot_request", request.toString())
+        Log.i(TAG, request.toString())
 
         if (Variables.isNetworkConnected.value!!) {
             try {
@@ -71,7 +74,7 @@ class SpotRepository(
                 spotDao.insert(spotResponse)
                 return spotResponse
             } catch (e: Exception) {
-                Log.d("spot_response", e.message ?: "something went wrong with addStreetSpot")
+                Log.d(TAG, e.message ?: "something went wrong with addStreetSpot")
                 return null
             }
         } else {
@@ -107,7 +110,7 @@ class SpotRepository(
             state,
             country
         )
-        Log.i("spot_request", request.toString())
+        Log.i(TAG, request.toString())
 
         if (Variables.isNetworkConnected.value!!) {
             try {
