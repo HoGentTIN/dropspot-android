@@ -262,11 +262,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         })
 
         // spots in visible field
-        viewModel.spotsInRadius.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.spots.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
 
             it.forEach { spot ->
                 if (map != null) {
-                    // don't draw to map and add to markers if already added in session
+                    // don't draw to map and add to markers if already added to map in session
                     if (!spotMarkers.any { drawnMarker ->
                             (drawnMarker.tag as Spot).spotId == spot.spotId
                         }) {
@@ -286,6 +286,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             }
         }
         )
+
     }
 
     private fun drawMarker(latitude: Double, longitude: Double, name: String, iconId: Int): Marker {

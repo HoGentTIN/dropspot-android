@@ -1,16 +1,16 @@
 package com.example.dropspot.data
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.example.dropspot.data.dao.SpotDao
-import com.example.dropspot.data.model.AppUser
 import com.example.dropspot.data.model.Spot
 
-@Database(entities = [Spot::class,
-AppUser::class], version = 4, exportSchema = false)
+@Database(entities = [Spot::class], version = 5, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract val spotDao: SpotDao
+    abstract fun spotDao(): SpotDao
 
     companion object {
 

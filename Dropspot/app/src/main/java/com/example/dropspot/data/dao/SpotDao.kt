@@ -8,7 +8,10 @@ import com.example.dropspot.data.model.Spot
 interface SpotDao {
     //onconflict replace handles duplicate inserts
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(spot: Spot): Long
+    suspend fun insert(spot: Spot)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(spots: List<Spot>)
 
     @Update
     suspend fun update(spot: Spot)
@@ -25,6 +28,4 @@ interface SpotDao {
     @Query("SELECT * FROM spots WHERE creatorId=:id")
     fun getSpotByCreatorId(id: Long): LiveData<List<Spot>>
 
-    //@Query("SELECT * FROM spots WHERE latitude < (:latitude + :radius) AND latitude > (:latitude - :radius) AND longitude < (:longitude + :radius) and longitude > (:longitude - :radius)")
-    //suspend fun getSpotsInRadius(latitude: Double, longitude: Double, radius: Float): LiveData<List<Spot>>
 }

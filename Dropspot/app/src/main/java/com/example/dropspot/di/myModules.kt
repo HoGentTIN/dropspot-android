@@ -19,6 +19,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 val myModule: Module = module {
 
@@ -31,6 +32,7 @@ val myModule: Module = module {
     //custom client with auth interceptor and logging
     single {
         OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
             .addInterceptor(AuthInterceptor)
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
@@ -58,7 +60,7 @@ val myModule: Module = module {
 
     //daos
     single {
-        AppDatabase.getInstance(get()).spotDao
+        AppDatabase.getInstance(get()).spotDao()
     }
 
     //repos

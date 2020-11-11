@@ -1,7 +1,7 @@
 package com.example.dropspot.data.repos
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import com.example.dropspot.data.dao.SpotDao
 import com.example.dropspot.data.model.ParkCategory
 import com.example.dropspot.data.model.Spot
@@ -18,48 +18,33 @@ class SpotRepository(
         private val TAG = "spot_repo"
     }
 
-    var spots = MutableLiveData<List<Spot>>()
-    var spotsInRadius = MutableLiveData<List<Spot>>()
-
+    private val _spots = spotDao.getAllSpots()
+    val spots: LiveData<List<Spot>> get() = _spots
 
     suspend fun getAllSpots() {
         if (Variables.isNetworkConnected.value!!) {
             try {
                 val onlineSpots: List<Spot> = spotService.getSpots()
-                val offlineSpots: List<Spot> = spotDao.getAllSpots().value!!
-                saveInLocalDb(onlineSpots)
-                this.spots.value = onlineSpots + offlineSpots
+                spotDao.insertAll(onlineSpots)
             } catch (e: Exception) {
                 Log.d(TAG, e.message ?: "Something went wrong with getAllSpots")
             }
 
-        } else {
-            this.spots.value = spotDao.getAllSpots().value
         }
     }
 
-    suspend fun saveInLocalDb(onlineSpots: List<Spot>) {
-        onlineSpots.forEach {
-            spotDao.insert(it)
-        }
-    }
 
     suspend fun getSpotsInRadius(latitude: Double, longitude: Double, radius: Double) {
         if (Variables.isNetworkConnected.value!!) {
+            var onlineSpots: List<Spot> = listOf()
             try {
-                val onlineSpots: List<Spot> =
+                onlineSpots =
                     spotService.getSpotsInRadius(latitude, longitude, radius)
-                val offlineSpots: List<Spot> =
-                    spotDao.getAllSpots().value ?: listOf()
-                Log.i(TAG, "offline_spots:\n" + offlineSpots.toString())
-                saveInLocalDb(onlineSpots)
-                this.spotsInRadius.value = onlineSpots + offlineSpots
+                Log.i(TAG, "online_spots_insertion:\n" + onlineSpots.toString())
+                spotDao.insertAll(onlineSpots)
             } catch (e: Exception) {
                 Log.d(TAG, e.message ?: "something went wrong with getSpotsInRadius")
             }
-
-        } else {
-            this.spotsInRadius.value = spotDao.getAllSpots().value ?: listOf()
         }
     }
 
