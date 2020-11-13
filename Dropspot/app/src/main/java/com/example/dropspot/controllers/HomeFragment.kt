@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.example.dropspot.R
 import com.example.dropspot.data.model.Spot
 import com.example.dropspot.databinding.HomeFragmentBinding
@@ -51,7 +52,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     // google maps api
     private var map: GoogleMap? = null
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private var mapFragment: SupportMapFragment? = null
     private lateinit var gcd: Geocoder
     private lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
@@ -277,6 +277,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
                         // sets extra data object tag to spot
                         newMarker.tag = spot
+
                         spotMarkers.add(
                             newMarker
                         )
@@ -405,7 +406,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             ft?.replace(R.id.map, mapFragment as SupportMapFragment)?.commit()
         }
 
-        fusedLocationProviderClient = FusedLocationProviderClient(activity!!)
+        mFusedLocationProviderClient = FusedLocationProviderClient(activity!!)
         mapFragment!!.getMapAsync(this)
     }
 
@@ -439,6 +440,21 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             spotMarkers.add(
                 marker
             )
+        }
+
+        //handle marker clicking
+        map!!.setOnMarkerClickListener {
+            Log.i(TAG, "marker clicked")
+            if (it.tag != null) {
+                Log.i(TAG, "tag not null")
+                val tag = it.tag
+                if (tag is Spot) {
+                    Log.i(TAG, "tag is spot")
+                    Navigation.findNavController(requireView())
+                        .navigate(HomeFragmentDirections.actionHomeFragmentToSpotDetailFragment(tag.spotId))
+                }
+            }
+            true
         }
 
         // handles marker dragging
@@ -610,7 +626,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
          */
         try {
             if (locationPermissionGranted) {
-                val locationResult = fusedLocationProviderClient.lastLocation
+                val locationResult = mFusedLocationProviderClient.lastLocation
                 locationResult.addOnCompleteListener(this.requireActivity()) { task ->
                     if (task.isSuccessful) {
                         // Set the map's camera position to the current location of the device.

@@ -59,4 +59,9 @@
     <string name="street_spot_added">Street spot added</string>
     <string name="failed_to_add_spot">Failed to add spot</string>
 
+    // Spot detail
+    <string name="skate_park_icon_descr">a picture of a skate park</string>
+    <string name="location">Location</string>
+    <string name="creator_label">Creator:</string>
+
 </resources>

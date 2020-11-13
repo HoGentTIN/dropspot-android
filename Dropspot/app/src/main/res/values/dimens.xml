@@ -4,7 +4,8 @@
     <dimen name="map_height">200dp</dimen>
     <dimen name="description_width">200dp</dimen>
     <dimen name="rating_width">100dp</dimen>
-    <dimen name="subtitle">16sp</dimen>
+    <dimen name="subtitle">18sp</dimen>
+    <dimen name="card_title">16sp</dimen>
     <dimen name="text">14sp</dimen>
     <dimen name="add_spot_field">100dp</dimen>
 </resources>

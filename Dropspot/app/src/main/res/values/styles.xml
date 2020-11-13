@@ -51,7 +51,7 @@
     <style name="title">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginTop">16dp</item>
         <item name="android:textSize">@dimen/title</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -81,6 +81,28 @@
         <item name="android:textColor">@color/primary_color</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="card_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:textSize">@dimen/card_title</item>
+    </style>
+
+    <style name="card_top_icon">
+        <item name="android:layout_width">18dp</item>
+        <item name="android:layout_height">18dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+    </style>
+
+    <style name="card_left_top_icon" parent="card_top_icon">
+        <item name="android:layout_marginStart">16dp</item>
+    </style>
+
+    <style name="card_right_top_icon" parent="card_top_icon">
+        <item name="android:layout_marginEnd">16dp</item>
     </style>
 
 

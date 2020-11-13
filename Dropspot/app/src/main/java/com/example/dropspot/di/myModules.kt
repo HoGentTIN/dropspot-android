@@ -1,16 +1,14 @@
 package com.example.dropspot.di
 
 import com.example.dropspot.data.AppDatabase
+import com.example.dropspot.data.repos.SpotDetailRepository
 import com.example.dropspot.data.repos.SpotRepository
 import com.example.dropspot.network.AuthInterceptor
 import com.example.dropspot.network.AuthService
 import com.example.dropspot.network.SpotService
 import com.example.dropspot.network.UserService
 import com.example.dropspot.utils.BASE_URL
-import com.example.dropspot.viewmodels.AuthViewModel
-import com.example.dropspot.viewmodels.HomeViewModel
-import com.example.dropspot.viewmodels.MeViewModel
-import com.example.dropspot.viewmodels.UserViewModel
+import com.example.dropspot.viewmodels.*
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -51,9 +49,11 @@ val myModule: Module = module {
     single {
         provideSpotService(get())
     }
+
     single {
         provideAuthService(get())
     }
+
     single {
         provideUserService(get())
     }
@@ -62,10 +62,17 @@ val myModule: Module = module {
     single {
         AppDatabase.getInstance(get()).spotDao()
     }
+    single {
+        AppDatabase.getInstance(get()).spotDetailDao()
+    }
 
     //repos
     single {
         SpotRepository(get(), get())
+    }
+
+    single {
+        SpotDetailRepository(get(), get())
     }
 
 
@@ -79,6 +86,7 @@ val myModule: Module = module {
         )
     }
     viewModel { UserViewModel(get()) }
+    viewModel { SpotDetailViewModel(get()) }
 
 }
 

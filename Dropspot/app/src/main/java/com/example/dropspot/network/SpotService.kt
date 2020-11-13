@@ -2,6 +2,7 @@ package com.example.dropspot.network
 
 import com.example.dropspot.data.model.ParkSpot
 import com.example.dropspot.data.model.Spot
+import com.example.dropspot.data.model.SpotDetail
 import com.example.dropspot.data.model.StreetSpot
 import com.example.dropspot.data.model.dto.requests.ParkSpotRequest
 import com.example.dropspot.data.model.dto.requests.ParkSpotUpdateRequest
@@ -23,7 +24,10 @@ interface SpotService {
     suspend fun getParkSpots(): List<ParkSpot>
 
     @GET("spots/{spotId}")
-    suspend fun getSpotById(@Path("spotId") id: Long): Deferred<Spot>
+    suspend fun getSpotById(@Path("spotId") id: Long): Spot
+
+    @GET("spots/{spotId}/detail")
+    suspend fun getSpotDetailById(@Path("spotId") id: Long): SpotDetail
 
     @DELETE("spots/{spotId}")
     suspend fun deleteSpot(@Path("spotId") id: Long): Deferred<MessageResponse>

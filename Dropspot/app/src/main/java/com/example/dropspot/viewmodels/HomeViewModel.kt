@@ -12,14 +12,13 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(private val spotRepository: SpotRepository) : ViewModel() {
 
-    val spots: LiveData<List<Spot>> get() = spotRepository.spots
+    val spots: LiveData<List<Spot>> = spotRepository.spots
 
     private val _addStreetSpotSuccess = MutableLiveData<Boolean?>()
     val addStreetSpotSuccess: LiveData<Boolean?> get() = _addStreetSpotSuccess
 
     private val _addParkSpotSuccess = MutableLiveData<Boolean?>()
     val addParkSpotSuccess: LiveData<Boolean?> get() = _addParkSpotSuccess
-
 
     fun addStreetSpot(name: String, latitude: Double, longitude: Double) {
         viewModelScope.launch {
