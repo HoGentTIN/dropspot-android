@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dropspot.data.model.AppUser
+import com.example.dropspot.data.model.dto.AppUser
 import com.example.dropspot.network.AuthInterceptor
 import com.example.dropspot.network.UserService
 import kotlinx.coroutines.launch

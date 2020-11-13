@@ -3,7 +3,7 @@ package com.example.dropspot.data.repos
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.dropspot.data.dao.SpotDetailDao
-import com.example.dropspot.data.model.SpotDetail
+import com.example.dropspot.data.model.dto.SpotDetail
 import com.example.dropspot.network.SpotService
 import com.example.dropspot.utils.Variables
 

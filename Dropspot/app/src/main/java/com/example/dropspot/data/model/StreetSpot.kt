@@ -1,6 +1,7 @@
 package com.example.dropspot.data.model
 
 import androidx.room.Entity
+import com.example.dropspot.data.model.dto.Spot
 
 @Entity(tableName = "streetspots")
 data class StreetSpot(

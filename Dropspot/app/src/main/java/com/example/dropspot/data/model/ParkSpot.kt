@@ -2,6 +2,7 @@ package com.example.dropspot.data.model
 
 import androidx.room.Embedded
 import androidx.room.Entity
+import com.example.dropspot.data.model.dto.Spot
 
 
 @Entity(tableName = "parkspots")

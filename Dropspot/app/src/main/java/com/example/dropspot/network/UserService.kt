@@ -1,8 +1,8 @@
 package com.example.dropspot.network
 
-import com.example.dropspot.data.model.AppUser
 import com.example.dropspot.data.model.Relation
-import com.example.dropspot.data.model.Spot
+import com.example.dropspot.data.model.dto.AppUser
+import com.example.dropspot.data.model.dto.Spot
 import com.example.dropspot.data.model.dto.responses.MessageResponse
 import kotlinx.coroutines.Deferred
 import retrofit2.Response

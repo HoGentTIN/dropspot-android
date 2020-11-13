@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.dropspot.data.dao.SpotDao
 import com.example.dropspot.data.model.ParkCategory
-import com.example.dropspot.data.model.Spot
+import com.example.dropspot.data.model.dto.Spot
 import com.example.dropspot.data.model.dto.requests.ParkSpotRequest
 import com.example.dropspot.data.model.dto.requests.StreetSpotRequest
 import com.example.dropspot.network.SpotService

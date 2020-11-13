@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dropspot.data.model.ParkCategory
-import com.example.dropspot.data.model.Spot
+import com.example.dropspot.data.model.dto.Spot
 import com.example.dropspot.data.repos.SpotRepository
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.example.dropspot.data.model
+package com.example.dropspot.data.model.dto
 
 
 import androidx.room.Entity

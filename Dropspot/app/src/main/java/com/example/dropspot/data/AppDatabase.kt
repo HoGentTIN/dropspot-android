@@ -5,14 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.dropspot.data.converters.RatingMapConverter
+import com.example.dropspot.data.converters.CriterionScoreListConverter
 import com.example.dropspot.data.dao.SpotDao
 import com.example.dropspot.data.dao.SpotDetailDao
-import com.example.dropspot.data.model.Spot
-import com.example.dropspot.data.model.SpotDetail
+import com.example.dropspot.data.model.dto.Spot
+import com.example.dropspot.data.model.dto.SpotDetail
 
-@Database(entities = [Spot::class, SpotDetail::class], version = 9, exportSchema = false)
-@TypeConverters(RatingMapConverter::class)
+@Database(entities = [Spot::class, SpotDetail::class], version = 14, exportSchema = false)
+@TypeConverters(CriterionScoreListConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun spotDao(): SpotDao

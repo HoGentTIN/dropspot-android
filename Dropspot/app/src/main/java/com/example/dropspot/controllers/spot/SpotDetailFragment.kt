@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.example.dropspot.data.model.SpotDetail
+import com.example.dropspot.data.model.dto.SpotDetail
 import com.example.dropspot.databinding.FragmentSpotDetailBinding
 import com.example.dropspot.viewmodels.SpotDetailViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel

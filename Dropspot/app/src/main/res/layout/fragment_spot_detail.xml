@@ -11,7 +11,7 @@
 
         <variable
             name="spot_detail"
-            type="com.example.dropspot.data.model.SpotDetail" />
+            type="com.example.dropspot.data.model.dto.SpotDetail" />
 
     </data>
 

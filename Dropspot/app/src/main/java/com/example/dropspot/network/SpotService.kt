@@ -1,9 +1,9 @@
 package com.example.dropspot.network
 
 import com.example.dropspot.data.model.ParkSpot
-import com.example.dropspot.data.model.Spot
-import com.example.dropspot.data.model.SpotDetail
 import com.example.dropspot.data.model.StreetSpot
+import com.example.dropspot.data.model.dto.Spot
+import com.example.dropspot.data.model.dto.SpotDetail
 import com.example.dropspot.data.model.dto.requests.ParkSpotRequest
 import com.example.dropspot.data.model.dto.requests.ParkSpotUpdateRequest
 import com.example.dropspot.data.model.dto.requests.StreetSpotRequest
