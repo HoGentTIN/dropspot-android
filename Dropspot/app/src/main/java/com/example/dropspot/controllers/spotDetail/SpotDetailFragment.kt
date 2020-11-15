@@ -1,4 +1,4 @@
-package com.example.dropspot.controllers.spot
+package com.example.dropspot.controllers.spotDetail
 
 import android.content.Intent
 import android.net.Uri
@@ -7,11 +7,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.example.dropspot.R
 import com.example.dropspot.data.model.dto.SpotDetail
 import com.example.dropspot.databinding.FragmentSpotDetailBinding
 import com.example.dropspot.viewmodels.SpotDetailViewModel
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -24,6 +27,7 @@ class SpotDetailFragment : Fragment() {
     private lateinit var binding: FragmentSpotDetailBinding
     private val spotDetailViewModel: SpotDetailViewModel by viewModel()
     private var currentSpotDetail: SpotDetail? = null
+    private lateinit var criterionScoreAdapter: CriterionScoreAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +38,9 @@ class SpotDetailFragment : Fragment() {
         binding.vm = spotDetailViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        // load spot detail
+        criterionScoreAdapter = CriterionScoreAdapter()
+        binding.ratingList.adapter = criterionScoreAdapter
         val spotId = arguments!!.getLong("spotId")
         Log.i(TAG, "args_spot_id: $spotId")
         spotDetailViewModel.setSpotId(spotId)
@@ -45,8 +52,10 @@ class SpotDetailFragment : Fragment() {
                 updateUI(it)
                 currentSpotDetail = it
                 binding.navigateIcon.alpha = 1F
+                criterionScoreAdapter.submitList(it.criteriaScore)
             }
         })
+
 
         return binding.root
     }
@@ -54,6 +63,7 @@ class SpotDetailFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        // maps navigate intent
         binding.navigateIcon.setOnClickListener {
             if (currentSpotDetail != null) {
                 val gmmIntentUri = Uri.parse(
@@ -70,6 +80,21 @@ class SpotDetailFragment : Fragment() {
                 }
             }
         }
+
+        // de/favorite spot
+        binding.likeIcon.setOnClickListener {
+            var icon = it as ImageView
+            icon.setImageResource(R.drawable.ic_like_filled)
+        }
+
+        //vote
+        spotDetailViewModel.voteSuccess.observe(viewLifecycleOwner,
+            Observer {
+                if (it != null) {
+                    Snackbar.make(requireView(), it.message, Snackbar.LENGTH_SHORT).show()
+                }
+            }
+        )
     }
 
     private fun updateUI(detail: SpotDetail) {
@@ -82,14 +107,6 @@ class SpotDetailFragment : Fragment() {
         }
     }
 
-    /*
-    private fun setRatingBar() {
-        val ratingBar = binding.ratingBar
-        ratingBar.onRatingBarChangeListener =
-            RatingBar.OnRatingBarChangeListener { ratingBar, rating, fromUser ->
-                Log.i("home", rating.toString())
-            }
-    }*/
 
 
 }

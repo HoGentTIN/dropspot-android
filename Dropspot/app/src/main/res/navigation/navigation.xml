@@ -36,7 +36,7 @@
         tools:layout="@layout/me_fragment" />
     <fragment
         android:id="@+id/spotDetailFragment"
-        android:name="com.example.dropspot.controllers.spot.SpotDetailFragment"
+        android:name="com.example.dropspot.controllers.spotDetail.SpotDetailFragment"
         android:label=""
         tools:layout="@layout/fragment_spot_detail">
         <argument

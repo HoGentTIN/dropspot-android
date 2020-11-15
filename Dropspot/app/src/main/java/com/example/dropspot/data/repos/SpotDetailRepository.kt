@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.dropspot.data.dao.SpotDetailDao
 import com.example.dropspot.data.model.dto.SpotDetail
+import com.example.dropspot.data.model.dto.requests.VoteRequest
+import com.example.dropspot.data.model.dto.responses.MessageResponse
 import com.example.dropspot.network.SpotService
 import com.example.dropspot.utils.Variables
 
@@ -14,6 +16,7 @@ class SpotDetailRepository(
     companion object {
         private val TAG = "spot_detail_repo"
     }
+
 
     fun getSpotDetailBySpotId(id: Long): LiveData<SpotDetail> {
         return spotDetailDao.getSpotDetailById(id)
@@ -28,6 +31,21 @@ class SpotDetailRepository(
             } catch (e: Exception) {
                 Log.d(TAG, e.message ?: "Something went wrong with getSpotDetail")
             }
+        }
+    }
+
+    suspend fun vote(spotId: Long, criterionId: Long, voteRequest: VoteRequest): MessageResponse {
+        if (Variables.isNetworkConnected.value!!) {
+            try {
+                val response: MessageResponse =
+                    spotService.voteForSpot(voteRequest, spotId, criterionId)
+                Log.i(TAG, "response: $response")
+                return response
+            } catch (e: Exception) {
+                return MessageResponse(false, "Failed to vote: " + e.message)
+            }
+        } else {
+            return MessageResponse(false, "Failed to vote: No Connection")
         }
     }
 

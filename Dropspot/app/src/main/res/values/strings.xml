@@ -63,5 +63,8 @@
     <string name="skate_park_icon_descr">a picture of a skate park</string>
     <string name="location">Location</string>
     <string name="creator_label">Creator:</string>
+    <string name="nav_icon">Navigation icon</string>
+    <string name="like_icon">Like icon</string>
+    <string name="criterion_descr">tooltip icon description criterion</string>
 
 </resources>
