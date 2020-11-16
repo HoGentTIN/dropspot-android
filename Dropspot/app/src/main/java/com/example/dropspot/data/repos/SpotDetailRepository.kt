@@ -7,11 +7,13 @@ import com.example.dropspot.data.model.dto.SpotDetail
 import com.example.dropspot.data.model.dto.requests.VoteRequest
 import com.example.dropspot.data.model.dto.responses.MessageResponse
 import com.example.dropspot.network.SpotService
+import com.example.dropspot.network.UserService
 import com.example.dropspot.utils.Variables
 
 class SpotDetailRepository(
     private val spotService: SpotService,
-    private val spotDetailDao: SpotDetailDao
+    private val spotDetailDao: SpotDetailDao,
+    private val userService: UserService
 ) {
     companion object {
         private val TAG = "spot_detail_repo"
@@ -46,6 +48,35 @@ class SpotDetailRepository(
             }
         } else {
             return MessageResponse(false, "Failed to vote: No Connection")
+        }
+    }
+
+    suspend fun favoriteSpot(spotId: Long): MessageResponse {
+        if (Variables.isNetworkConnected.value!!) {
+            try {
+                val response: MessageResponse =
+                    userService.addFavoriteSpot(spotId)
+                return response
+            } catch (e: Exception) {
+                return MessageResponse(false, "Failed to favorite: " + e.message)
+            }
+
+        } else {
+            return MessageResponse(false, "Failed to favorite: No Connection")
+        }
+    }
+
+    suspend fun unfavoriteSpot(spotId: Long): MessageResponse {
+        if (Variables.isNetworkConnected.value!!) {
+            try {
+                val response: MessageResponse =
+                    userService.removeFavoriteSpot(spotId)
+                return response
+            } catch (e: Exception) {
+                return MessageResponse(false, "Failed to unfavorite: " + e.message)
+            }
+        } else {
+            return MessageResponse(false, "Failed to unfavorite: No Connection")
         }
     }
 

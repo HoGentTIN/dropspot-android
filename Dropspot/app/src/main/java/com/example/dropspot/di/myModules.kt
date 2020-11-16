@@ -72,7 +72,7 @@ val myModule: Module = module {
     }
 
     single {
-        SpotDetailRepository(get(), get())
+        SpotDetailRepository(get(), get(), get())
     }
 
 

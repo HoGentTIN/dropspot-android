@@ -16,5 +16,6 @@ data class SpotDetail(
     val longitude: Double,
     @Embedded
     var address: Address?,
-    var criteriaScore: ArrayList<CriterionScore>
+    var criteriaScore: ArrayList<CriterionScore>,
+    var liked: Boolean
 )

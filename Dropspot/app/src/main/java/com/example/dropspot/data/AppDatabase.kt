@@ -11,7 +11,7 @@ import com.example.dropspot.data.dao.SpotDetailDao
 import com.example.dropspot.data.model.dto.Spot
 import com.example.dropspot.data.model.dto.SpotDetail
 
-@Database(entities = [Spot::class, SpotDetail::class], version = 14, exportSchema = false)
+@Database(entities = [Spot::class, SpotDetail::class], version = 15, exportSchema = false)
 @TypeConverters(CriterionScoreListConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 

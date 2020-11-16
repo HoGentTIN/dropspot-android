@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.example.dropspot.R
 import com.example.dropspot.data.model.dto.SpotDetail
 import com.example.dropspot.databinding.FragmentSpotDetailBinding
 import com.example.dropspot.viewmodels.SpotDetailViewModel
@@ -67,8 +66,25 @@ class SpotDetailFragment : Fragment() {
 
         // de/favorite spot
         binding.likeIcon.setOnClickListener {
-            var icon = it as ImageView
-            icon.setImageResource(R.drawable.ic_like_filled)
+
+            if (currentSpotDetail != null) {
+                var icon = it as ImageView
+
+                if (!currentSpotDetail!!.liked) {
+                    Log.i(TAG, "favorite")
+
+                    currentSpotDetail!!.liked = true
+                    binding.spotDetail = currentSpotDetail
+                    spotDetailViewModel.favoriteOrUnFavorite(currentSpotDetail!!.spotId, true)
+
+                } else {
+                    Log.i(TAG, "unfavorite")
+
+                    currentSpotDetail!!.liked = false
+                    binding.spotDetail = currentSpotDetail
+                    spotDetailViewModel.favoriteOrUnFavorite(currentSpotDetail!!.spotId, false)
+                }
+            }
         }
 
         //vote
@@ -79,6 +95,14 @@ class SpotDetailFragment : Fragment() {
                 }
             }
         )
+
+        //favor
+        spotDetailViewModel.favoriteSuccess.observe(viewLifecycleOwner,
+            Observer {
+                if (it != null) {
+                    Snackbar.make(requireView(), it.message, Snackbar.LENGTH_SHORT).show()
+                }
+            })
     }
 
     private fun loadSpotDetail() {

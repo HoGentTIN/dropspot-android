@@ -18,3 +18,13 @@ fun bindRankingImgFromScore(view: ImageView, score: Int) {
     }
 }
 
+@BindingAdapter("LikeImgFromLiked")
+fun bindLikeImgFromSpotAlreadyLiked(view: ImageView, alreadyLiked: Boolean) {
+    if (alreadyLiked) {
+        view.setImageResource(R.drawable.ic_like_filled)
+    } else {
+        view.setImageResource(R.drawable.ic_like_outlined)
+    }
+}
+
+
