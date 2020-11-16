@@ -16,13 +16,13 @@ interface UserService {
     fun getMySpots(): Deferred<List<Spot>>
 
     @GET("users/favorites")
-    fun getMyFavoriteSpots(): Deferred<List<Spot>>
+    suspend fun getMyFavoriteSpots(): List<Spot>
 
     @POST("users/favorites/{spotId}")
-    fun addFavoriteSpot(@Path("spotId") id : Long): Deferred<MessageResponse>
+    suspend fun addFavoriteSpot(@Path("spotId") id: Long): MessageResponse
 
     @DELETE("users/favorites/{spotId}")
-    fun removeFavoriteSpot(@Path("spotId") id:Long):Deferred<MessageResponse>
+    suspend fun removeFavoriteSpot(@Path("spotId") id: Long): MessageResponse
 
     @POST("/friendRequests/{userId}")
     fun requestFriend(@Path("userId") userId :Long): Deferred<MessageResponse>

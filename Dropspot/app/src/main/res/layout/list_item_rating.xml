@@ -13,32 +13,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <ImageView
+            android:id="@+id/ranking"
+            style="@style/icon"
+            app:layout_constraintBottom_toTopOf="@id/criterionName"
+            app:layout_constraintStart_toEndOf="@id/criterionName"
+            app:rankingImgFromScore="@{criterionScore.ratingBarScore}"
+            app:srcCompat="@drawable/ic_zero" />
+
         <com.example.dropspot.utils.ui.RatingBarSvg
             android:id="@+id/ratingBar"
             style="@style/myCustomRatingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="48dp"
+            android:layout_marginEnd="32dp"
             android:layout_marginBottom="8dp"
             android:numStars="5"
-            android:rating="@{criterionScore.ratingBarScore}"
             android:stepSize="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/criterionName"
+            app:layout_constraintStart_toStartOf="@+id/guideline_rating_list_item"
             app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
             android:id="@+id/criterionName"
             style="@style/card_title"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="@{criterionScore.criterionName}"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_rating_list_item"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,6 +59,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_help_outline_24px" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_rating_list_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.25" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -66,7 +66,7 @@
 
     <style name="myCustomRatingBar" parent="@android:style/Widget.Material.RatingBar">
         <item name="android:progressDrawable">@drawable/rating_bar_layer_list</item>
-        <item name="android:maxHeight">40dp</item>
+        <item name="android:maxHeight">@dimen/customRatingBarHeight</item>
     </style>
 
     <style name="text_layout_main" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
@@ -94,9 +94,12 @@
 
     </style>
 
-    <style name="card_top_icon">
+    <style name="icon">
         <item name="android:layout_width">18dp</item>
         <item name="android:layout_height">18dp</item>
+    </style>
+
+    <style name="card_top_icon" parent="icon">
         <item name="android:layout_marginTop">16dp</item>
     </style>
 
@@ -109,4 +112,5 @@
     </style>
 
 
+    <dimen name="customRatingBarHeight">32dp</dimen>
 </resources>

@@ -37,25 +37,9 @@ class SpotDetailFragment : Fragment() {
         binding = FragmentSpotDetailBinding.inflate(inflater)
         binding.vm = spotDetailViewModel
         binding.lifecycleOwner = viewLifecycleOwner
+        criterionScoreAdapter = CriterionScoreAdapter(spotDetailViewModel)
 
-        // load spot detail
-        criterionScoreAdapter = CriterionScoreAdapter()
-        binding.ratingList.adapter = criterionScoreAdapter
-        val spotId = arguments!!.getLong("spotId")
-        Log.i(TAG, "args_spot_id: $spotId")
-        spotDetailViewModel.setSpotId(spotId)
-        val liveData = spotDetailViewModel.getSpotDetail(spotId)
-        liveData.observe(viewLifecycleOwner, Observer {
-            Log.i(TAG, "spot_detail: $it")
-            binding.spotDetail = it
-            if (it != null) {
-                updateUI(it)
-                currentSpotDetail = it
-                binding.navigateIcon.alpha = 1F
-                criterionScoreAdapter.submitList(it.criteriaScore)
-            }
-        })
-
+        loadSpotDetail()
 
         return binding.root
     }
@@ -97,6 +81,24 @@ class SpotDetailFragment : Fragment() {
         )
     }
 
+    private fun loadSpotDetail() {
+        binding.ratingList.adapter = criterionScoreAdapter
+        val spotId = arguments!!.getLong("spotId")
+        Log.i(TAG, "args_spot_id: $spotId")
+        spotDetailViewModel.setSpotId(spotId)
+        val liveData = spotDetailViewModel.getSpotDetail()
+        liveData.observe(viewLifecycleOwner, Observer {
+            Log.i(TAG, "spot_detail: $it")
+            binding.spotDetail = it
+            if (it != null) {
+                updateUI(it)
+                currentSpotDetail = it
+                binding.navigateIcon.alpha = 1F
+                criterionScoreAdapter.submitList(it.criteriaScore)
+            }
+        })
+    }
+
     private fun updateUI(detail: SpotDetail) {
         val v = binding.locationAddress
         val isParkSpot = detail.address != null
@@ -106,6 +108,8 @@ class SpotDetailFragment : Fragment() {
             v.text = "LAT: ${detail.latitude}\nLONG: ${detail.longitude}"
         }
     }
+
+
 
 
 
