@@ -8,8 +8,8 @@ import androidx.room.TypeConverters
 import com.example.dropspot.data.converters.CriterionScoreListConverter
 import com.example.dropspot.data.dao.SpotDao
 import com.example.dropspot.data.dao.SpotDetailDao
-import com.example.dropspot.data.model.dto.Spot
-import com.example.dropspot.data.model.dto.SpotDetail
+import com.example.dropspot.data.model.Spot
+import com.example.dropspot.data.model.SpotDetail
 
 @Database(entities = [Spot::class, SpotDetail::class], version = 15, exportSchema = false)
 @TypeConverters(CriterionScoreListConverter::class)

@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dropspot.data.model.dto.SpotDetail
-import com.example.dropspot.data.model.dto.requests.VoteRequest
-import com.example.dropspot.data.model.dto.responses.MessageResponse
+import com.example.dropspot.data.model.SpotDetail
+import com.example.dropspot.data.model.requests.VoteRequest
+import com.example.dropspot.data.model.responses.MessageResponse
 import com.example.dropspot.data.repos.SpotDetailRepository
 import kotlinx.coroutines.launch
 

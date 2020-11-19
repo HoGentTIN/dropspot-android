@@ -1,4 +1,4 @@
-package com.example.dropspot.data.model.dto.requests
+package com.example.dropspot.data.model.requests
 
 data class RegisterRequest(
     val firstName: String,

@@ -4,9 +4,10 @@ package com.example.dropspot
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
@@ -20,18 +21,20 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-import com.example.dropspot.controllers.HomeFragmentDirections
 import com.example.dropspot.databinding.ActivityMainBinding
+import com.example.dropspot.fragments.HomeFragmentDirections
 import com.example.dropspot.utils.Variables
 import com.example.dropspot.viewmodels.UserViewModel
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    private lateinit var sessionExpiredDialog: AlertDialog
     private val userViewModel: UserViewModel by viewModel()
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
 
     //nav
     private lateinit var toolbar: MaterialToolbar
@@ -40,30 +43,47 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
 
+    companion object {
+        private const val TAG = "main_activity"
+        private const val AUTH_ENC_SHARED_PREF_KEY = "AUTH_ENCRYPT"
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
+
+        setupLoggedInUser()
         setupNav()
-        setupListeners()
+        setupObservers()
     }
 
-    private fun setupListeners() {
+    private fun setupLoggedInUser() {
+        userViewModel.setSessionToken(this.intent.getStringExtra("TOKEN")!!)
+        userViewModel.isSessionExpired.observe(this, Observer {
+            if (it) {
+                showSessionExpiredAndLogout()
+            }
+        })
+        userViewModel.fetchUser()
+    }
+
+    private fun setupObservers() {
         // update side nav username
         userViewModel.currentUser.observe(this, Observer {
-            navView.getHeaderView(0).findViewById<TextView>(R.id.username).text = it.username
-        })
-
-        // logs out if token is expired
-        userViewModel.isTokenExpired.observe(this, Observer {
-            if (it) logout()
+            if (it != null) {
+                Log.i(TAG, "fetched user: $it")
+                binding.loggedInUser = it
+            }
         })
 
         // handles connection response
         Variables.isNetworkConnected.observe(this, Observer {
             if (it) {
-                setTokenInReqHeader()
+                if (userViewModel.currentUser.value == null) {
+                    userViewModel.fetchUser()
+                }
                 binding.animNoConnection.visibility = View.INVISIBLE
             } else {
                 binding.animNoConnection.visibility = View.VISIBLE
@@ -72,9 +92,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
-    private fun setTokenInReqHeader() {
-        userViewModel.setCurrentUser(this.intent.getStringExtra("TOKEN")!!)
-    }
 
     private fun setupNav() {
         navController = this.findNavController(R.id.myNavHostFragment)
@@ -99,16 +116,50 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = this.findNavController(R.id.myNavHostFragment)
-        return NavigationUI.navigateUp(navController, drawerLayout)
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.logout -> {
+                logout()
+            }
+            R.id.meFragment -> {
+                navController.navigate(
+                    HomeFragmentDirections.actionHomeFragmentToMeFragment(
+                        userViewModel.currentUser.value!!
+                    )
+                )
+                // no toolbar elevation
+                binding.toolbarLayout.elevation = 0F
+            }
+            else -> {
+
+                // sets toolbar elevation to default
+                val default_dp = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 4.toFloat(),
+                    this.resources.displayMetrics
+                )
+                binding.toolbarLayout.elevation = default_dp
+            }
+        }
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
+    }
+
+    fun showSessionExpiredAndLogout() {
+        sessionExpiredDialog = MaterialAlertDialogBuilder(this)
+            .setTitle(resources.getString(R.string.alert_dialog_session_expired_title))
+            .setMessage(resources.getString(R.string.alert_dialog_session_expired_message))
+            .setPositiveButton(resources.getString(R.string.ok)) { _, _ ->
+                logout()
+            }
+            .setCancelable(false)
+            .show()
     }
 
     private fun logout() {
         val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
         val masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
         val sharedPreferences = EncryptedSharedPreferences.create(
-            "AUTH_ENCRYPT",
+            AUTH_ENC_SHARED_PREF_KEY,
             masterKeyAlias,
             this.applicationContext,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
@@ -117,24 +168,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         sharedPreferences.remove("TOKEN")
         sharedPreferences.remove("PASSWORD")
         sharedPreferences.apply()
+
         val intent = Intent(this, AuthActivity::class.java)
         startActivity(intent)
         finish()
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.logout -> {
-                Log.i("nav", "logout")
-                logout()
-            }
-            R.id.meFragment -> {
-                navController.navigate(HomeFragmentDirections.actionHomeFragmentToMeFragment())
-            }
-        }
-        drawerLayout.closeDrawer(GravityCompat.START)
-        return true
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = this.findNavController(R.id.myNavHostFragment)
+        return NavigationUI.navigateUp(navController, drawerLayout)
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        sessionExpiredDialog.dismiss()
+    }
 }

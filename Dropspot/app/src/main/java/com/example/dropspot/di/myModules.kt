@@ -78,7 +78,7 @@ val myModule: Module = module {
 
     //viewmodels
     viewModel { HomeViewModel(get()) }
-    viewModel { MeViewModel() }
+    viewModel { MeViewModel(get()) }
     viewModel {
         AuthViewModel(
             get(),

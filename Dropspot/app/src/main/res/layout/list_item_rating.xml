@@ -6,7 +6,7 @@
 
         <variable
             name="criterionScore"
-            type="com.example.dropspot.data.model.dto.CriterionScore" />
+            type="com.example.dropspot.data.model.CriterionScore" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,9 +26,9 @@
             style="@style/myCustomRatingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="16dp"
             android:numStars="5"
             android:stepSize="1"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -39,7 +39,6 @@
 
         <TextView
             android:id="@+id/criterionName"
-            style="@style/card_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

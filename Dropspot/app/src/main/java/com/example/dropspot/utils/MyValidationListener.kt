@@ -16,14 +16,20 @@ abstract class MyValidationListener(private val context: Context, private val vi
             val v: View = error.view.parent.parent as TextInputLayout
 
             val Errors: List<*> = error.failedRules
-            val rule: Rule<Any> = Errors[0] as Rule<Any>
-            val message: String = rule.getMessage(context)
 
-            if (v is TextInputLayout) {
-                v.error = message
-            } else {
-                Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
+            val firstError = Errors[0]
+
+            if (firstError is Rule<*>) {
+                val rule: Rule<Any> = Errors[0] as Rule<Any>
+                val message: String = rule.getMessage(context)
+
+                if (v is TextInputLayout) {
+                    v.error = message
+                } else {
+                    Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
+                }
             }
+
 
         }
     }

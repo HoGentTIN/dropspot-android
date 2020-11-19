@@ -2,7 +2,7 @@ package com.example.dropspot.data.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.dropspot.data.model.dto.SpotDetail
+import com.example.dropspot.data.model.SpotDetail
 
 @Dao
 interface SpotDetailDao {

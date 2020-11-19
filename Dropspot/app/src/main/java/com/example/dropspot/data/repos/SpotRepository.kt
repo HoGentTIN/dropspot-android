@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.dropspot.data.dao.SpotDao
 import com.example.dropspot.data.model.ParkCategory
-import com.example.dropspot.data.model.dto.Spot
-import com.example.dropspot.data.model.dto.requests.ParkSpotRequest
-import com.example.dropspot.data.model.dto.requests.StreetSpotRequest
+import com.example.dropspot.data.model.Spot
+import com.example.dropspot.data.model.requests.ParkSpotRequest
+import com.example.dropspot.data.model.requests.StreetSpotRequest
 import com.example.dropspot.network.SpotService
 import com.example.dropspot.utils.Variables
 
@@ -36,9 +36,8 @@ class SpotRepository(
 
     suspend fun getSpotsInRadius(latitude: Double, longitude: Double, radius: Double) {
         if (Variables.isNetworkConnected.value!!) {
-            var onlineSpots: List<Spot> = listOf()
             try {
-                onlineSpots =
+                val onlineSpots: List<Spot> =
                     spotService.getSpotsInRadius(latitude, longitude, radius)
                 Log.i(TAG, "online_spots_insertion:\n" + onlineSpots.toString())
                 spotDao.insertAll(onlineSpots)

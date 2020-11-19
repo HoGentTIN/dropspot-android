@@ -5,10 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dropspot.data.model.dto.requests.LoginRequest
-import com.example.dropspot.data.model.dto.requests.RegisterRequest
-import com.example.dropspot.data.model.dto.responses.JwtResponse
-import com.example.dropspot.data.model.dto.responses.MessageResponse
+import com.example.dropspot.data.model.requests.LoginRequest
+import com.example.dropspot.data.model.requests.RegisterRequest
+import com.example.dropspot.data.model.responses.JwtResponse
+import com.example.dropspot.data.model.responses.MessageResponse
 import com.example.dropspot.network.AuthService
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -53,10 +53,11 @@ class AuthViewModel(
                 login(emailOrUsername, password)
                 Log.i("login_req", "socket timeout")
             } catch (e: Throwable) {
-                _loginResponse.value = JwtResponse(
-                    ""
-                    , -1L, "", "", listOf(), false, "Something went wrong"
-                )
+                _loginResponse.value =
+                    JwtResponse(
+                        ""
+                        , -1L, "", "", listOf(), false, "Something went wrong"
+                    )
             } finally {
                 // end wheel
                 _spinner.value = false
@@ -97,7 +98,11 @@ class AuthViewModel(
                 Log.i("register_req", "socket timeout")
 
             } catch (e: Throwable) {
-                _registerResponse.value = MessageResponse(false, "Something went wrong")
+                _registerResponse.value =
+                    MessageResponse(
+                        false,
+                        "Something went wrong"
+                    )
             } finally {
                 // end wheel
                 _spinner.value = false

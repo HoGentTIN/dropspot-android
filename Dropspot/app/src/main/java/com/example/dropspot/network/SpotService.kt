@@ -1,14 +1,12 @@
 package com.example.dropspot.network
 
-import com.example.dropspot.data.model.ParkSpot
-import com.example.dropspot.data.model.StreetSpot
-import com.example.dropspot.data.model.dto.Spot
-import com.example.dropspot.data.model.dto.SpotDetail
-import com.example.dropspot.data.model.dto.requests.ParkSpotRequest
-import com.example.dropspot.data.model.dto.requests.ParkSpotUpdateRequest
-import com.example.dropspot.data.model.dto.requests.StreetSpotRequest
-import com.example.dropspot.data.model.dto.requests.VoteRequest
-import com.example.dropspot.data.model.dto.responses.MessageResponse
+import com.example.dropspot.data.model.Spot
+import com.example.dropspot.data.model.SpotDetail
+import com.example.dropspot.data.model.requests.ParkSpotRequest
+import com.example.dropspot.data.model.requests.ParkSpotUpdateRequest
+import com.example.dropspot.data.model.requests.StreetSpotRequest
+import com.example.dropspot.data.model.requests.VoteRequest
+import com.example.dropspot.data.model.responses.MessageResponse
 import kotlinx.coroutines.Deferred
 import retrofit2.http.*
 
@@ -16,12 +14,6 @@ interface SpotService {
     //spots
     @GET("spots")
     suspend fun getSpots(): List<Spot>
-
-    @GET("spots/street")
-    suspend fun getStreetSpots(): List<StreetSpot>
-
-    @GET("spots/park")
-    suspend fun getParkSpots(): List<ParkSpot>
 
     @GET("spots/{spotId}")
     suspend fun getSpotById(@Path("spotId") id: Long): Spot

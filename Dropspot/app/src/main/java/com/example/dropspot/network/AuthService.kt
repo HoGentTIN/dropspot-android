@@ -1,9 +1,9 @@
 package com.example.dropspot.network
 
-import com.example.dropspot.data.model.dto.requests.LoginRequest
-import com.example.dropspot.data.model.dto.requests.RegisterRequest
-import com.example.dropspot.data.model.dto.responses.JwtResponse
-import com.example.dropspot.data.model.dto.responses.MessageResponse
+import com.example.dropspot.data.model.requests.LoginRequest
+import com.example.dropspot.data.model.requests.RegisterRequest
+import com.example.dropspot.data.model.responses.JwtResponse
+import com.example.dropspot.data.model.responses.MessageResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST

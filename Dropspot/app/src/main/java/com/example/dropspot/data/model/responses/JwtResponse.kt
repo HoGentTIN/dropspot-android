@@ -1,4 +1,4 @@
-package com.example.dropspot.data.model.dto.responses
+package com.example.dropspot.data.model.responses
 
 data class JwtResponse(
     val token: String,

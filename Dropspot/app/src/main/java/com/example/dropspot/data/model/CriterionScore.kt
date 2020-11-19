@@ -1,4 +1,4 @@
-package com.example.dropspot.data.model.dto
+package com.example.dropspot.data.model
 
 import kotlin.math.roundToInt
 

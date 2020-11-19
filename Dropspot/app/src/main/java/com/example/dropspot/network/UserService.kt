@@ -1,19 +1,19 @@
 package com.example.dropspot.network
 
-import com.example.dropspot.data.model.Relation
-import com.example.dropspot.data.model.dto.AppUser
-import com.example.dropspot.data.model.dto.Spot
-import com.example.dropspot.data.model.dto.responses.MessageResponse
-import kotlinx.coroutines.Deferred
-import retrofit2.Response
-import retrofit2.http.*
+import com.example.dropspot.data.model.AppUser
+import com.example.dropspot.data.model.Spot
+import com.example.dropspot.data.model.responses.MessageResponse
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface UserService {
     @GET("users/me")
-    suspend fun getMe(): Response<AppUser>
+    suspend fun getMe(): AppUser
 
     @GET("user/mySpots")
-    fun getMySpots(): Deferred<List<Spot>>
+    suspend fun getMySpots(): List<Spot>
 
     @GET("users/favorites")
     suspend fun getMyFavoriteSpots(): List<Spot>
@@ -24,6 +24,7 @@ interface UserService {
     @DELETE("users/favorites/{spotId}")
     suspend fun removeFavoriteSpot(@Path("spotId") id: Long): MessageResponse
 
+    /*
     @POST("/friendRequests/{userId}")
     fun requestFriend(@Path("userId") userId :Long): Deferred<MessageResponse>
 
@@ -41,5 +42,6 @@ interface UserService {
 
     @DELETE("/friends/{userId}")
     fun deleteFriend(@Path("userId") userId : Long):Deferred<MessageResponse>
+     */
 
 }

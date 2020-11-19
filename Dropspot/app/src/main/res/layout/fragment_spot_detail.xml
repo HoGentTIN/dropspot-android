@@ -12,7 +12,7 @@
 
         <variable
             name="spot_detail"
-            type="com.example.dropspot.data.model.dto.SpotDetail" />
+            type="com.example.dropspot.data.model.SpotDetail" />
 
     </data>
 
@@ -33,7 +33,7 @@
 
         <TextView
             android:id="@+id/spot_name"
-            style="@style/title"
+            style="@style/title_left"
             android:layout_width="0dp"
             android:layout_marginEnd="16dp"
             android:text="@{spot_detail.spotName}"
@@ -44,7 +44,7 @@
         <ImageView
             android:id="@+id/spot_photo"
             android:layout_width="0dp"
-            android:layout_height="150dp"
+            android:layout_height="@dimen/img_banner"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
@@ -132,13 +132,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/location_container">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rating_list"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:context="com.example.dropspot.MainActivity"
-                tools:listitem="@layout/list_item_rating" />
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/card_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rating" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rating_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:context="com.example.dropspot.MainActivity"
+                    tools:listitem="@layout/list_item_rating" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </com.google.android.material.card.MaterialCardView>
 

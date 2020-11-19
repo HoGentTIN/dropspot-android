@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.dropspot.controllers.HomeFragment"
+        android:name="com.example.dropspot.fragments.HomeFragment"
         android:label=""
         tools:layout="@layout/home_fragment">
 
@@ -31,12 +31,16 @@
     </fragment>
     <fragment
         android:id="@+id/meFragment"
-        android:name="com.example.dropspot.controllers.MeFragment"
+        android:name="com.example.dropspot.fragments.MeFragment"
         android:label=""
-        tools:layout="@layout/me_fragment" />
+        tools:layout="@layout/me_fragment">
+        <argument
+            android:name="user"
+            app:argType="com.example.dropspot.data.model.AppUser" />
+    </fragment>
     <fragment
         android:id="@+id/spotDetailFragment"
-        android:name="com.example.dropspot.controllers.spotDetail.SpotDetailFragment"
+        android:name="com.example.dropspot.fragments.spotDetail.SpotDetailFragment"
         android:label=""
         tools:layout="@layout/fragment_spot_detail">
         <argument

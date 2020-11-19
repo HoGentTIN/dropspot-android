@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
->
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="logged_in_user"
+            type="com.example.dropspot.data.model.AppUser" />
+    </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawerLayout"
@@ -16,6 +22,7 @@
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/toolbar_layout"
                 >
 
                 <com.google.android.material.appbar.MaterialToolbar
@@ -58,8 +65,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
-                app:headerLayout="@layout/nav_header"
-                app:menu="@menu/navdrawer"/>
+            app:headerLayout="@layout/nav_header"
+            app:navViewPresentationFromUser="@{logged_in_user}"
+            app:menu="@menu/navdrawer"/>
 
     </androidx.drawerlayout.widget.DrawerLayout>
 

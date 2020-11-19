@@ -1,4 +1,4 @@
-package com.example.dropspot.data.model.dto.requests
+package com.example.dropspot.data.model.requests
 
 import com.example.dropspot.data.model.ParkCategory
 

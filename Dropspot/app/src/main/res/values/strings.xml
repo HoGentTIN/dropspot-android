@@ -66,5 +66,9 @@
     <string name="nav_icon">Navigation icon</string>
     <string name="like_icon">Like icon</string>
     <string name="criterion_descr">tooltip icon description criterion</string>
+    <string name="rating">Rating</string>
+    <string name="alert_dialog_session_expired_title">Session Expired</string>
+    <string name="alert_dialog_session_expired_message">Your session token is expired\nplease login again to regain access</string>
+    <string name="ok">OK</string>
 
 </resources>

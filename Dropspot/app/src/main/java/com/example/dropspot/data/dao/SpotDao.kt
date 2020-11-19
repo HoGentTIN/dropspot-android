@@ -2,7 +2,7 @@ package com.example.dropspot.data.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.dropspot.data.model.dto.Spot
+import com.example.dropspot.data.model.Spot
 
 @Dao
 interface SpotDao {
@@ -12,9 +12,6 @@ interface SpotDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(spots: List<Spot>)
-
-    @Update
-    suspend fun update(spot: Spot)
 
     @Delete
     suspend fun delete(spot: Spot)

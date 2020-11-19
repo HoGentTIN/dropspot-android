@@ -3,9 +3,9 @@ package com.example.dropspot.data.repos
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.dropspot.data.dao.SpotDetailDao
-import com.example.dropspot.data.model.dto.SpotDetail
-import com.example.dropspot.data.model.dto.requests.VoteRequest
-import com.example.dropspot.data.model.dto.responses.MessageResponse
+import com.example.dropspot.data.model.SpotDetail
+import com.example.dropspot.data.model.requests.VoteRequest
+import com.example.dropspot.data.model.responses.MessageResponse
 import com.example.dropspot.network.SpotService
 import com.example.dropspot.network.UserService
 import com.example.dropspot.utils.Variables
@@ -44,10 +44,16 @@ class SpotDetailRepository(
                 Log.i(TAG, "response: $response")
                 return response
             } catch (e: Exception) {
-                return MessageResponse(false, "Failed to vote: " + e.message)
+                return MessageResponse(
+                    false,
+                    "Failed to vote: " + e.message
+                )
             }
         } else {
-            return MessageResponse(false, "Failed to vote: No Connection")
+            return MessageResponse(
+                false,
+                "Failed to vote: No Connection"
+            )
         }
     }
 
@@ -58,11 +64,17 @@ class SpotDetailRepository(
                     userService.addFavoriteSpot(spotId)
                 return response
             } catch (e: Exception) {
-                return MessageResponse(false, "Failed to favorite: " + e.message)
+                return MessageResponse(
+                    false,
+                    "Failed to favorite: " + e.message
+                )
             }
 
         } else {
-            return MessageResponse(false, "Failed to favorite: No Connection")
+            return MessageResponse(
+                false,
+                "Failed to favorite: No Connection"
+            )
         }
     }
 
@@ -73,10 +85,16 @@ class SpotDetailRepository(
                     userService.removeFavoriteSpot(spotId)
                 return response
             } catch (e: Exception) {
-                return MessageResponse(false, "Failed to unfavorite: " + e.message)
+                return MessageResponse(
+                    false,
+                    "Failed to unfavorite: " + e.message
+                )
             }
         } else {
-            return MessageResponse(false, "Failed to unfavorite: No Connection")
+            return MessageResponse(
+                false,
+                "Failed to unfavorite: No Connection"
+            )
         }
     }
 

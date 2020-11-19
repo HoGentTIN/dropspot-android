@@ -1,4 +1,4 @@
-package com.example.dropspot.controllers.spotDetail
+package com.example.dropspot.fragments.spotDetail
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,7 @@ import android.widget.RatingBar
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.dropspot.data.model.dto.CriterionScore
+import com.example.dropspot.data.model.CriterionScore
 import com.example.dropspot.databinding.ListItemRatingBinding
 import com.example.dropspot.viewmodels.SpotDetailViewModel
 
@@ -37,7 +37,7 @@ class CriterionScoreAdapter(private val spotDetailViewModel: SpotDetailViewModel
         fun bind(criterionScore: CriterionScore, spotDetailViewModel: SpotDetailViewModel) {
             binding.criterionScore = criterionScore
             binding.ratingBar.onRatingBarChangeListener =
-                RatingBar.OnRatingBarChangeListener { ratingBar, rating, fromUser ->
+                RatingBar.OnRatingBarChangeListener { _, rating, _ ->
                     spotDetailViewModel.vote(criterionScore.criterionId, rating.toDouble())
                 }
         }

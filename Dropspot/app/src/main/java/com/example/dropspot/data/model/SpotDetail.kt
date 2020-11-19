@@ -1,9 +1,8 @@
-package com.example.dropspot.data.model.dto
+package com.example.dropspot.data.model
 
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.dropspot.data.model.Address
 
 @Entity(tableName = "spot_details")
 data class SpotDetail(

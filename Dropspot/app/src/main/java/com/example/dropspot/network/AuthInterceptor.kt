@@ -1,5 +1,7 @@
 package com.example.dropspot.network
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -8,6 +10,8 @@ object AuthInterceptor : Interceptor {
 
     private var sessionToken: String = ""
     private val AUTH_NAME = "authorization"
+    private val _isSessionExpired = MutableLiveData<Boolean>()
+    val isSessionExpired: LiveData<Boolean> get() = _isSessionExpired
 
     /**
      * sets the session token
@@ -27,6 +31,7 @@ object AuthInterceptor : Interceptor {
         return sessionToken
     }
 
+
     /**
      * intercepts the request and if it does not already contains
      * a auth header it adds the current token properly formatted
@@ -39,7 +44,16 @@ object AuthInterceptor : Interceptor {
         if (request.header(AUTH_NAME) == null) {
             requestBuilder.addHeader(AUTH_NAME, generateFormattedToken())
         }
-        return chain.proceed(requestBuilder.build())
+        val response: Response = chain.proceed(requestBuilder.build())
+
+        // handle 401: Unauthorized
+        if (response.code() == 401) {
+            _isSessionExpired.postValue(true)
+        } else {
+            _isSessionExpired.postValue(false)
+        }
+
+        return response
     }
 
     /**
