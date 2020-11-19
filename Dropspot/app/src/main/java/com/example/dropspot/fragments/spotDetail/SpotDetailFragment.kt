@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
+import com.example.dropspot.R
 import com.example.dropspot.data.model.SpotDetail
 import com.example.dropspot.databinding.FragmentSpotDetailBinding
 import com.example.dropspot.viewmodels.SpotDetailViewModel
@@ -131,7 +132,11 @@ class SpotDetailFragment : Fragment() {
         if (isParkSpot) {
             v.text = detail.address!!.getAddressString()
         } else {
-            v.text = "LAT: ${detail.latitude}\nLONG: ${detail.longitude}"
+            v.text = resources.getString(
+                R.string.spot_detail_latitude_longitude_representation,
+                detail.latitude,
+                detail.longitude
+            )
         }
     }
 

@@ -17,10 +17,9 @@ abstract class MyValidationListener(private val context: Context, private val vi
 
             val Errors: List<*> = error.failedRules
 
-            val firstError = Errors[0]
+            val rule = Errors[0]
 
-            if (firstError is Rule<*>) {
-                val rule: Rule<Any> = Errors[0] as Rule<Any>
+            if (rule is Rule<*>) {
                 val message: String = rule.getMessage(context)
 
                 if (v is TextInputLayout) {

@@ -35,8 +35,8 @@ android {
         }
     }
 
-    dataBinding {
-        enabled = true
+    buildFeatures{
+        dataBinding true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -60,7 +60,7 @@ android {
 dependencies {
     //CORE DEPENDENCIES
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
@@ -108,8 +108,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
 
-
-    //gson
+    //json de/serialization
     implementation "com.google.code.gson:gson:$gson_version"
 
     //form validation
@@ -120,8 +119,5 @@ dependencies {
 
     //encryption
     implementation "androidx.security:security-crypto:1.1.0-alpha02"
-
-    // ratingBar
-
 
 }

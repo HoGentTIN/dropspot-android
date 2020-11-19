@@ -83,7 +83,7 @@ class RatingBarSvg @JvmOverloads constructor(
             shapeDrawable.paint.colorFilter = drawable.paint.colorFilter
             return if (clip)
                 ClipDrawable(
-                    shapeDrawable, Gravity.LEFT,
+                    shapeDrawable, Gravity.START,
                     ClipDrawable.HORIZONTAL
                 )
             else

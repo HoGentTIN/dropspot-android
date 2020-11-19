@@ -529,7 +529,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun drawNewSpotMarker(latitude: Double, longitude: Double) {
-        newSpotMarker = drawMarker(latitude, longitude, "New Spot", R.drawable.ic_flag_secondary)
+        newSpotMarker = drawMarker(latitude, longitude, "New Spot", DRAWABLE_NEW_SPOT_MARKER)
         newSpotMarker!!.isDraggable = true
 
         Log.i(TAG, "new spot marker:($latitude,$longitude)")

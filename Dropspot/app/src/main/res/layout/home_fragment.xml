@@ -48,6 +48,7 @@
                     android:layout_marginTop="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/flag_icon_descr"
                     app:srcCompat="@drawable/ic_flag_24px" />
 
                 <ImageView
