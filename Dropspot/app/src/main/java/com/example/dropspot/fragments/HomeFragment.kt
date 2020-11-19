@@ -63,7 +63,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private val spotMarkers: MutableList<Marker> = mutableListOf()
 
     companion object {
-        private val TAG = "home"
+        private const val TAG = "home"
         private const val DEFAULT_ZOOM = 15
         private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
         private const val DRAWABLE_SPOT_MARKER = R.drawable.ic_spot_marker_filled
@@ -400,10 +400,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
 
         if (mapFragment == null) {
-            val fm = fragmentManager
-            val ft = fm?.beginTransaction()
+            val fm = parentFragmentManager
+            val ft = fm.beginTransaction()
             mapFragment = SupportMapFragment.newInstance()
-            ft?.replace(R.id.map, mapFragment as SupportMapFragment)?.commit()
+            ft.replace(R.id.map, mapFragment as SupportMapFragment).commit()
         }
 
         mFusedLocationProviderClient = FusedLocationProviderClient(activity!!)
@@ -539,7 +539,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun updateNewSpotLocation(latitude: Double, longitude: Double) {
-        var possibleAddresses: List<Address>? = null
+        var possibleAddresses: List<Address>?
         try {
             possibleAddresses = gcd.getFromLocation(latitude, longitude, 10)
         } catch (ex: IOException) {

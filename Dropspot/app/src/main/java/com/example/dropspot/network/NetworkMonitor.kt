@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
-import android.net.NetworkInfo
 import android.net.NetworkRequest
 import androidx.annotation.RequiresPermission
 import com.example.dropspot.utils.Variables
@@ -38,14 +37,4 @@ constructor(private val application: Application) {
         cm.unregisterNetworkCallback(ConnectivityManager.NetworkCallback())
     }
 
-    //Deprecated in API 29
-    fun oldNetwork() {
-        fun isNetworkAvailable(): Boolean {
-            val connectivityManager = application.getSystemService(Context.CONNECTIVITY_SERVICE)
-            return if (connectivityManager is ConnectivityManager) {
-                val networkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
-                networkInfo?.isConnected ?: false
-            } else false
-        }
-    }
 }

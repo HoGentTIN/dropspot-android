@@ -23,6 +23,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.example.dropspot.databinding.ActivityMainBinding
 import com.example.dropspot.fragments.HomeFragmentDirections
+import com.example.dropspot.utils.Constants.AUTH_ENC_SHARED_PREF_KEY
 import com.example.dropspot.utils.Variables
 import com.example.dropspot.viewmodels.UserViewModel
 import com.google.android.material.appbar.MaterialToolbar
@@ -46,7 +47,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     companion object {
         private const val TAG = "main_activity"
-        private const val AUTH_ENC_SHARED_PREF_KEY = "AUTH_ENCRYPT"
     }
 
 
