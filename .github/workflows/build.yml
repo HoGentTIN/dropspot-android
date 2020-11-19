@@ -22,6 +22,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         
+      #echo dir 
+      - name: echo dir
+        run: echo pwd
+        
       # Ktlinting
       - name: Execute the linting
         run: ./Dropspot/gradlew ktlintCheck
