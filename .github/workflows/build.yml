@@ -24,7 +24,7 @@ jobs:
         
         # make gradlew executable
       - name: Make gradlew executable
-        run: chmod +x ./gradlew
+        run: chmod +x ./Dropspot/gradlew
         
       # Ktlinting
       - name: Execute the linting
