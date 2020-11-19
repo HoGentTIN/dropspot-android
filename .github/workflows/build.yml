@@ -22,23 +22,20 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         
-      #echo dir 
-      - name: echo dir
-        run: echo $PWD
+        # make gradlew executable
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
         
-      #show dir content
-      - name: dir content
-        run: ls
-        
-      #change directory
-      - name: change dir
-        run: cd Dropspot
+      # Ktlinting
+      - name: Execute the linting
+        run: ./Dropspot/gradlew ktlintCheck
         
       # Linting
       - name: Execute the linting
-        run: ./gradlew lint
-
+        run: ./Dropspot/gradlew lint
+        
       # Build the application and invoke both the assemble and check tasks
       - name: Execute the build
-        run: ./gradlew build
+        run: ./Dropspot/gradlew build
+      
 
