@@ -1,12 +1,12 @@
 package com.example.dropspot.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.example.dropspot.R
 import com.example.dropspot.data.model.AppUser
 import com.example.dropspot.databinding.MeFragmentBinding
@@ -22,6 +22,7 @@ class MeFragment : Fragment() {
 
     private val viewModel: MeViewModel by viewModel()
     private lateinit var binding: MeFragmentBinding
+    private val args: MeFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,8 +32,7 @@ class MeFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.vm = viewModel
 
-        val user: AppUser = arguments!!.getParcelable<AppUser>("user")!!
-        Log.i(TAG, "user from main activity: $user")
+        val user: AppUser = args.user
         binding.user = user
         viewModel.setUser(user)
 

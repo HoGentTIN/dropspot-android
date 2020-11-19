@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.navArgs
 import com.example.dropspot.data.model.SpotDetail
 import com.example.dropspot.databinding.FragmentSpotDetailBinding
 import com.example.dropspot.viewmodels.SpotDetailViewModel
@@ -26,6 +27,8 @@ class SpotDetailFragment : Fragment() {
     private val spotDetailViewModel: SpotDetailViewModel by viewModel()
     private var currentSpotDetail: SpotDetail? = null
     private lateinit var criterionScoreAdapter: CriterionScoreAdapter
+    private val args: SpotDetailFragmentArgs by navArgs()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -105,7 +108,7 @@ class SpotDetailFragment : Fragment() {
 
     private fun loadSpotDetail() {
         binding.ratingList.adapter = criterionScoreAdapter
-        val spotId = arguments!!.getLong("spotId")
+        val spotId = args.spotId
         Log.i(TAG, "args_spot_id: $spotId")
         spotDetailViewModel.setSpotId(spotId)
         val liveData = spotDetailViewModel.getSpotDetail()
