@@ -24,13 +24,13 @@ jobs:
         
       # Ktlinting
       - name: Execute the linting
-        run: ./gradlew ktlintCheck
+        run: ./Dropspot/gradlew ktlintCheck
         
       # Linting
       - name: Execute the linting
-        run: ./gradlew lint
+        run: ./Dropspot/gradlew lint
 
       # Build the application and invoke both the assemble and check tasks
       - name: Execute the build
-        run: ./gradlew build
+        run: ./Dropspot/gradlew build
 
