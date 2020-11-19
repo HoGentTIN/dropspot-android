@@ -3,7 +3,6 @@ package com.example.dropspot.fragments.auth
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,13 +62,14 @@ class LoginFragment : Fragment() {
         button_login = binding.buttonLogin
         button_register = binding.buttonRegister
         progressBar_loading = binding.progressBarLoading
-        setupSharedPref()
-        checkIfLoggedIn()
+
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        setupSharedPref()
+        checkIfLoggedIn()
         setupListenersObservers()
         setupUI()
         validator.setValidationListener(object :
@@ -116,10 +116,8 @@ class LoginFragment : Fragment() {
         authViewModel.loginResponse.observe(viewLifecycleOwner, Observer {
             if (it.success) {
                 val token = it.token
-                val pw = input_password.text.toString().trim()
-                Log.i("succes", "succes")
-                saveSharedPref(token, pw)
-                startMainActivity(token, pw)
+                saveSharedPref(token)
+                startMainActivity(token)
             } else {
                 Snackbar.make(this.requireView(), it.message, Snackbar.LENGTH_SHORT).show()
             }
@@ -134,11 +132,10 @@ class LoginFragment : Fragment() {
         })
     }
 
-    private fun saveSharedPref(token: String, password: String) {
+    private fun saveSharedPref(token: String) {
         sharedPreferences
             .edit()
             .putString("TOKEN", token)
-            .putString("PASSWORD", password)
             .apply()
     }
 
@@ -150,27 +147,21 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun checkIfLoggedIn(): Boolean {
+    private fun checkIfLoggedIn() {
         val token = sharedPreferences.getString("TOKEN", null)
-        val password = sharedPreferences.getString("PASSWORD", null)
-        Log.i("token_check", token ?: "no token in shared pref")
 
-        if (token != null && password != null) {
+        if (token != null) {
             startMainActivity(
-                token,
-                password
+                token
             )
-            return true
         }
 
-        return false
     }
 
 
-    private fun startMainActivity(token: String, password: String) {
+    private fun startMainActivity(token: String) {
         val intent = Intent(this.context, MainActivity::class.java)
         intent.putExtra("TOKEN", token)
-        intent.putExtra("PASSWORD", password)
         startActivity(intent)
         this.activity!!.finish()
     }

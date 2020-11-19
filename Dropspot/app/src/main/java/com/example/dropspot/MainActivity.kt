@@ -32,7 +32,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private lateinit var sessionExpiredDialog: AlertDialog
+    private var sessionExpiredDialog: AlertDialog? = null
     private val userViewModel: UserViewModel by viewModel()
     lateinit var binding: ActivityMainBinding
 
@@ -166,7 +166,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         ).edit()
         sharedPreferences.remove("TOKEN")
-        sharedPreferences.remove("PASSWORD")
         sharedPreferences.apply()
 
         val intent = Intent(this, AuthActivity::class.java)
@@ -181,6 +180,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onDestroy() {
         super.onDestroy()
-        sessionExpiredDialog.dismiss()
+        if (sessionExpiredDialog != null) {
+            sessionExpiredDialog!!.dismiss()
+        }
     }
 }
