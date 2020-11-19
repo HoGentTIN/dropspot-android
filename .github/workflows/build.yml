@@ -24,7 +24,7 @@ jobs:
         
       #echo dir 
       - name: echo dir
-        run: echo pwd
+        run: echo $PWD
         
       # Ktlinting
       - name: Execute the linting
