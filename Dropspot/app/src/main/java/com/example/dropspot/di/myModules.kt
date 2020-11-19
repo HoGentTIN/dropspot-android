@@ -1,5 +1,6 @@
 package com.example.dropspot.di
 
+import com.example.dropspot.BuildConfig
 import com.example.dropspot.data.AppDatabase
 import com.example.dropspot.data.repos.SpotDetailRepository
 import com.example.dropspot.data.repos.SpotRepository
@@ -7,7 +8,6 @@ import com.example.dropspot.network.AuthInterceptor
 import com.example.dropspot.network.AuthService
 import com.example.dropspot.network.SpotService
 import com.example.dropspot.network.UserService
-import com.example.dropspot.utils.BASE_URL
 import com.example.dropspot.viewmodels.*
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -17,7 +17,6 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 
 val myModule: Module = module {
 
@@ -29,17 +28,13 @@ val myModule: Module = module {
 
     //custom client with auth interceptor and logging
     single {
-        OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .addInterceptor(AuthInterceptor)
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .build()
+        provideOkHttpClient()
     }
 
     //retrofit
     single {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(get()))
             .client(get())
             .build()
@@ -89,6 +84,16 @@ val myModule: Module = module {
     viewModel { SpotDetailViewModel(get()) }
 
 }
+
+private fun provideOkHttpClient() = if (BuildConfig.DEBUG) {
+    OkHttpClient.Builder()
+        .addInterceptor(AuthInterceptor)
+        .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        .build()
+} else OkHttpClient
+    .Builder()
+    .addInterceptor(AuthInterceptor)
+    .build()
 
 private fun provideSpotService(retrofit: Retrofit): SpotService {
     return retrofit.create(SpotService::class.java)

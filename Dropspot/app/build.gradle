@@ -26,6 +26,7 @@ android {
             file("../keystore.properties")?.withInputStream { secureProps.load(it) }
         }
         resValue "string", "maps_api_key", (secureProps.getProperty("MAPS_API_KEY") ?: "")
+        buildConfigField 'String','BASE_URL', "\"https://dropspot-rest-api.herokuapp.com/\""
     }
     buildTypes {
         release {
