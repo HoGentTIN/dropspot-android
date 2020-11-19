@@ -70,5 +70,6 @@
     <string name="alert_dialog_session_expired_title">Session Expired</string>
     <string name="alert_dialog_session_expired_message">Your session token is expired\nplease login again to regain access</string>
     <string name="ok">OK</string>
+    <string name="user_not_loaded">Wait until user is loaded</string>
 
 </resources>

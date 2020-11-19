@@ -39,14 +39,16 @@ class SpotDetailFragment : Fragment() {
         binding.vm = spotDetailViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         criterionScoreAdapter = CriterionScoreAdapter(spotDetailViewModel)
+        binding.ratingList.adapter = criterionScoreAdapter
 
-        loadSpotDetail()
 
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        loadSpotDetail()
 
         // maps navigate intent
         binding.navigateIcon.setOnClickListener {
@@ -107,7 +109,6 @@ class SpotDetailFragment : Fragment() {
     }
 
     private fun loadSpotDetail() {
-        binding.ratingList.adapter = criterionScoreAdapter
         val spotId = args.spotId
         Log.i(TAG, "args_spot_id: $spotId")
         spotDetailViewModel.setSpotId(spotId)

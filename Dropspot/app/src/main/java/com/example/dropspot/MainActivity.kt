@@ -28,6 +28,7 @@ import com.example.dropspot.viewmodels.UserViewModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -122,13 +123,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 logout()
             }
             R.id.meFragment -> {
-                navController.navigate(
-                    HomeFragmentDirections.actionHomeFragmentToMeFragment(
-                        userViewModel.currentUser.value!!
+                if (userViewModel.currentUser.value != null) {
+                    navController.navigate(
+                        HomeFragmentDirections.actionHomeFragmentToMeFragment(
+                            userViewModel.currentUser.value!!
+                        )
                     )
-                )
-                // no toolbar elevation
-                binding.toolbarLayout.elevation = 0F
+                    // no toolbar elevation
+                    binding.toolbarLayout.elevation = 0F
+                } else {
+                    Snackbar
+                        .make(
+                            binding.root,
+                            getString(R.string.user_not_loaded),
+                            Snackbar.LENGTH_SHORT
+                        )
+                        .show()
+                }
+
             }
             else -> {
 
