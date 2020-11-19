@@ -3,6 +3,8 @@ package com.example.dropspot
 
 import android.content.Intent
 import android.os.Bundle
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import android.util.Log
 import android.util.TypedValue
 import android.view.MenuItem
@@ -20,7 +22,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
 import com.example.dropspot.databinding.ActivityMainBinding
 import com.example.dropspot.fragments.HomeFragmentDirections
 import com.example.dropspot.utils.Constants.AUTH_ENC_SHARED_PREF_KEY
@@ -168,15 +170,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun logout() {
-        val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
-        val masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
+        val spec = KeyGenParameterSpec.Builder(
+            MasterKey.DEFAULT_MASTER_KEY_ALIAS,
+            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+        )
+            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            .setKeySize(MasterKey.DEFAULT_AES_GCM_MASTER_KEY_SIZE)
+            .build()
+
+        val masterKey = MasterKey.Builder(this)
+            .setKeyGenParameterSpec(spec)
+            .build()
+
         val sharedPreferences = EncryptedSharedPreferences.create(
+            this,
             AUTH_ENC_SHARED_PREF_KEY,
-            masterKeyAlias,
-            this.applicationContext,
+            masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         ).edit()
+
         sharedPreferences.remove("TOKEN")
         sharedPreferences.apply()
 

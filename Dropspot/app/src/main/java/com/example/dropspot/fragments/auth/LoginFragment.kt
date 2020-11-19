@@ -3,6 +3,8 @@ package com.example.dropspot.fragments.auth
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +17,11 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
 import com.example.dropspot.AuthActivity
 import com.example.dropspot.MainActivity
 import com.example.dropspot.databinding.FragmentLoginBinding
+import com.example.dropspot.utils.Constants.AUTH_ENC_SHARED_PREF_KEY
 import com.example.dropspot.utils.InputLayoutTextWatcher
 import com.example.dropspot.utils.MyValidationListener
 import com.example.dropspot.viewmodels.AuthViewModel
@@ -82,15 +85,28 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupSharedPref() {
-        val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
-        val masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
+
+        val spec = KeyGenParameterSpec.Builder(
+            MasterKey.DEFAULT_MASTER_KEY_ALIAS,
+            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+        )
+            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            .setKeySize(MasterKey.DEFAULT_AES_GCM_MASTER_KEY_SIZE)
+            .build()
+
+        val masterKey = MasterKey.Builder(requireContext())
+            .setKeyGenParameterSpec(spec)
+            .build()
+
         sharedPreferences = EncryptedSharedPreferences.create(
-            "AUTH_ENCRYPT",
-            masterKeyAlias,
-            this.requireContext(),
+            requireContext(),
+            AUTH_ENC_SHARED_PREF_KEY,
+            masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
+
     }
 
     private fun setupListenersObservers() {
