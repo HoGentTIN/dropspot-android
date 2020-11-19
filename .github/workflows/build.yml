@@ -26,6 +26,11 @@ jobs:
       - name: echo dir
         run: echo $PWD
         
+      #show dir content
+      - name: dir content
+        run: ls
+        
+        
       # Ktlinting
       - name: Execute the linting
         run: ./Dropspot/gradlew ktlintCheck
