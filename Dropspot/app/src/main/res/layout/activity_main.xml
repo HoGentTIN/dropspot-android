@@ -47,7 +47,7 @@
                 app:lottie_loop="true"
                 app:lottie_rawRes="@raw/no_connection" />
 
-            <fragment
+            <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/myNavHostFragment"
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
