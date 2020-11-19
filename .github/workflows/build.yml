@@ -30,16 +30,15 @@ jobs:
       - name: dir content
         run: ls
         
-        
-      # Ktlinting
-      - name: Execute the linting
-        run: ./Dropspot/gradlew ktlintCheck
+      #change directory
+      - name: change dir
+        run: cd Dropspot
         
       # Linting
       - name: Execute the linting
-        run: ./Dropspot/gradlew lint
+        run: ./gradlew lint
 
       # Build the application and invoke both the assemble and check tasks
       - name: Execute the build
-        run: ./Dropspot/gradlew build
+        run: ./gradlew build
 
