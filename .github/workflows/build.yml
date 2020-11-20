@@ -42,6 +42,16 @@ jobs:
         working-directory: ./Dropspot
         run: ./gradlew tasks
         
+      # Ktlinting
+      - name: Execute the ktlinting
+        working-directory: ./Dropspot
+        run: ./gradlew ktlintCheck
+        
+      # Linting
+      - name: Execute the linting
+        working-directory: ./Dropspot
+        run: ./gradlew lint
+        
       # Build the application and invoke both the assemble and check tasks
       - name: Execute the build
         working-directory: ./Dropspot
