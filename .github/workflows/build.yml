@@ -21,17 +21,31 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      - name: setup CI
         
+      # echo dir
+      - name: Echo dir
+        working-directory: ./Dropspot
+        run: echo $PWD
+      
+      # show content
+      - name: dir content
+        working-directory: ./Dropspot
+        run: ls -a
+      
         # make gradlew executable
       - name: Make gradlew executable
-        run: chmod +x ./Dropspot/gradlew
+        working-directory: ./Dropspot
+        run: chmod +x gradlew
         
-      # Linting
-      - name: Execute the linting
-        run: ./Dropspot/gradlew tasks
+      # show available tasks
+      - name: Show available tasks
+        working-directory: ./Dropspot
+        run: ./gradlew tasks
         
       # Build the application and invoke both the assemble and check tasks
       - name: Execute the build
-        run: ./Dropspot/gradlew build
+        working-directory: ./Dropspot
+        run: ./gradlew build
       
 
