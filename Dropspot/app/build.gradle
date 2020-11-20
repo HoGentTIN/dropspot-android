@@ -1,22 +1,20 @@
-apply plugin: 'com.android.application'
-
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
-
-apply plugin: 'kotlin-kapt'
-
-apply plugin: 'androidx.navigation.safeargs'
-
-apply plugin:  'org.jetbrains.dokka-android'
+plugins{
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'kotlin-android-extensions'
+    id 'androidx.navigation.safeargs.kotlin'
+    id 'org.jetbrains.dokka-android'
+    id "org.jlleitschuh.gradle.ktlint"
+}
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
     defaultConfig {
         applicationId "com.example.dropspot"
         minSdkVersion 26
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner
@@ -47,6 +45,10 @@ android {
         experimental = true
     }
 
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
     dokka{
         outputFormat = 'html'
         outputDirectory = '$buildDir/javadoc'
@@ -54,6 +56,11 @@ android {
         skipDeprecated = true
         // Emit warnings about not documented members.
         reportUndocumented = true
+    }
+
+    lintOptions {
+        disable "UnsafeExperimentalUsageError",
+                "UnsafeExperimentalUsageWarning"
     }
 }
 
