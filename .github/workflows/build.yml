@@ -22,6 +22,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         
+        # make gradlew executable
+      - name: Make gradlew executable
+        run: chmod +x ./Dropspot/gradlew
+        
       # Ktlinting
       - name: Execute the linting
         run: ./Dropspot/gradlew ktlintCheck
@@ -29,8 +33,9 @@ jobs:
       # Linting
       - name: Execute the linting
         run: ./Dropspot/gradlew lint
-
+        
       # Build the application and invoke both the assemble and check tasks
       - name: Execute the build
         run: ./Dropspot/gradlew build
+      
 
