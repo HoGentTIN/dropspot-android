@@ -10,7 +10,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.dropspot.databinding.ActivityAuthBinding
 
-
 class AuthActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAuthBinding
@@ -18,10 +17,10 @@ class AuthActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //binding
+        // binding
         binding = DataBindingUtil.setContentView(this, R.layout.activity_auth)
 
-        //actionbar provided with return action
+        // actionbar provided with return action
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_auth) as NavHostFragment
         val navController = navHostFragment.navController
@@ -29,9 +28,9 @@ class AuthActivity : AppCompatActivity() {
         binding.toolbar.setupWithNavController(navController)
     }
 
-
     fun hideKeyboard(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
+    
 }
