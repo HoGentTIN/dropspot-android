@@ -26,10 +26,6 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./Dropspot/gradlew
         
-      # Ktlinting
-      - name: Execute the linting
-        run: ./Dropspot/gradlew ktlintCheck
-        
       # Linting
       - name: Execute the linting
         run: ./Dropspot/gradlew lint
