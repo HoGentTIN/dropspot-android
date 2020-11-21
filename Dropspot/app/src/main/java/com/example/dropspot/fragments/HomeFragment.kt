@@ -152,11 +152,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 if (map != null) {
 
                     val markerAlreadyDrawnOnMap = spotMarkers.any { drawnMarker ->
-                        Log.i(TAG, "drawnMarker: ${drawnMarker.tag}")
                         (drawnMarker.tag as Spot).spotId == incomingSpot.spotId
                     }
 
                     if (!markerAlreadyDrawnOnMap) {
+                        Log.i(TAG, "spot not already drawn: $incomingSpot")
+
                         val newMarker = drawMarker(
                             incomingSpot.latitude, incomingSpot.longitude, incomingSpot.name,
                             DRAWABLE_SPOT_MARKER
@@ -168,7 +169,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             }
         }
         )
-
+        
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -478,7 +479,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         // handles camera movement
         map!!.setOnCameraIdleListener {
-            cameraPosition = map!!.cameraPosition
             val visibleRegion = map!!.projection.visibleRegion
 
             val center = visibleRegion.latLngBounds.center
@@ -599,7 +599,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 map?.isMyLocationEnabled = false
                 map?.uiSettings?.isMyLocationButtonEnabled = false
                 lastKnownLocation = null
-                getLocationPermission()
             }
         } catch (e: SecurityException) {
             Log.e("Exception: %s", e.message, e)
@@ -617,16 +616,27 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 locationResult.addOnCompleteListener(this.requireActivity()) { task ->
                     if (task.isSuccessful) {
                         // Set the map's camera position to the current location of the device.
+                        Log.i(TAG, "fetched current location: ${task.result}")
                         lastKnownLocation = task.result
                         if (lastKnownLocation != null) {
                             // checks if camera position is already in session
                             if (cameraPosition != null) {
+                                Log.i(
+                                    TAG, "camera position in session:" +
+                                            " ${cameraPosition.toString()}"
+                                )
+
                                 map!!.moveCamera(
                                     CameraUpdateFactory.newCameraPosition(
                                         cameraPosition
                                     )
                                 )
                             } else {
+                                Log.i(
+                                    TAG, "camera position not in session use fetched pos: " +
+                                            "$lastKnownLocation"
+                                )
+
                                 map!!.moveCamera(
                                     CameraUpdateFactory.newLatLngZoom(
                                         LatLng(
@@ -640,7 +650,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                         }
                     } else {
                         Log.d(TAG, "Current location is null. Using defaults.")
-                        Log.e(TAG, "Exception: %s", task.exception)
                         map!!.moveCamera(
                             CameraUpdateFactory
                                 .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat())
