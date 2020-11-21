@@ -1,4 +1,4 @@
-package com.example.dropspot.fragments.spotDetail
+package com.example.dropspot.fragments
 
 import android.content.Intent
 import android.net.Uri
@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
-import com.example.dropspot.R
+import com.example.dropspot.adapters.CriterionScoresAdapter
 import com.example.dropspot.data.model.SpotDetail
 import com.example.dropspot.databinding.FragmentSpotDetailBinding
 import com.example.dropspot.viewmodels.SpotDetailViewModel
@@ -26,9 +26,9 @@ class SpotDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentSpotDetailBinding
     private val spotDetailViewModel: SpotDetailViewModel by viewModel()
-    private var currentSpotDetail: SpotDetail? = null
-    private lateinit var criterionScoreAdapter: CriterionScoreAdapter
     private val args: SpotDetailFragmentArgs by navArgs()
+    private lateinit var criterionScoresAdapter: CriterionScoresAdapter
+    private var currentSpotDetail: SpotDetail? = null
 
 
     override fun onCreateView(
@@ -39,8 +39,11 @@ class SpotDetailFragment : Fragment() {
         binding = FragmentSpotDetailBinding.inflate(inflater)
         binding.vm = spotDetailViewModel
         binding.lifecycleOwner = viewLifecycleOwner
-        criterionScoreAdapter = CriterionScoreAdapter(spotDetailViewModel)
-        binding.ratingList.adapter = criterionScoreAdapter
+        criterionScoresAdapter =
+            CriterionScoresAdapter(
+                spotDetailViewModel
+            )
+        binding.ratingList.adapter = criterionScoresAdapter
 
 
         return binding.root
@@ -75,14 +78,12 @@ class SpotDetailFragment : Fragment() {
             if (currentSpotDetail != null) {
 
                 if (!currentSpotDetail!!.liked) {
-                    Log.i(TAG, "favorite")
 
                     currentSpotDetail!!.liked = true
                     binding.spotDetail = currentSpotDetail
                     spotDetailViewModel.favoriteOrUnFavorite(currentSpotDetail!!.spotId, true)
 
                 } else {
-                    Log.i(TAG, "unfavorite")
 
                     currentSpotDetail!!.liked = false
                     binding.spotDetail = currentSpotDetail
@@ -111,34 +112,19 @@ class SpotDetailFragment : Fragment() {
 
     private fun loadSpotDetail() {
         val spotId = args.spotId
-        Log.i(TAG, "args_spot_id: $spotId")
         spotDetailViewModel.setSpotId(spotId)
         val liveData = spotDetailViewModel.getSpotDetail()
         liveData.observe(viewLifecycleOwner, Observer {
             Log.i(TAG, "spot_detail: $it")
-            binding.spotDetail = it
             if (it != null) {
-                updateUI(it)
+                binding.spotDetail = it
                 currentSpotDetail = it
                 binding.navigateIcon.alpha = 1F
-                criterionScoreAdapter.submitList(it.criteriaScore)
+                criterionScoresAdapter.submitList(it.criteriaScore)
             }
         })
     }
 
-    private fun updateUI(detail: SpotDetail) {
-        val v = binding.locationAddress
-        val isParkSpot = detail.address != null
-        if (isParkSpot) {
-            v.text = detail.address!!.getAddressString()
-        } else {
-            v.text = resources.getString(
-                R.string.spot_detail_latitude_longitude_representation,
-                detail.latitude,
-                detail.longitude
-            )
-        }
-    }
 
 
 

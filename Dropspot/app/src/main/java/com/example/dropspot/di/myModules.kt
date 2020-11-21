@@ -2,6 +2,7 @@ package com.example.dropspot.di
 
 import com.example.dropspot.BuildConfig
 import com.example.dropspot.data.AppDatabase
+import com.example.dropspot.data.repos.MeRepository
 import com.example.dropspot.data.repos.SpotDetailRepository
 import com.example.dropspot.data.repos.SpotRepository
 import com.example.dropspot.network.AuthInterceptor
@@ -68,6 +69,10 @@ val myModule: Module = module {
 
     single {
         SpotDetailRepository(get(), get(), get())
+    }
+
+    single {
+        MeRepository(get(), get())
     }
 
 

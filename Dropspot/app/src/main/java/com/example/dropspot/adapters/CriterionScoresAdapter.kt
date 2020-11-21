@@ -1,4 +1,4 @@
-package com.example.dropspot.fragments.spotDetail
+package com.example.dropspot.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,8 +10,8 @@ import com.example.dropspot.data.model.CriterionScore
 import com.example.dropspot.databinding.ListItemRatingBinding
 import com.example.dropspot.viewmodels.SpotDetailViewModel
 
-class CriterionScoreAdapter(private val spotDetailViewModel: SpotDetailViewModel) :
-    ListAdapter<CriterionScore, CriterionScoreAdapter.CriterionScoreViewHolder>(
+class CriterionScoresAdapter(private val spotDetailViewModel: SpotDetailViewModel) :
+    ListAdapter<CriterionScore, CriterionScoresAdapter.CriterionScoreViewHolder>(
         CriterionScoreDiffCallback()
     ) {
 

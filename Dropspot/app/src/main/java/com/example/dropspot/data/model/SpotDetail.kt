@@ -17,4 +17,14 @@ data class SpotDetail(
     var address: Address?,
     var criteriaScore: ArrayList<CriterionScore>,
     var liked: Boolean
-)
+) {
+
+    fun getLocationString(): String {
+        if (address == null) {
+            return "LAT: $latitude\nLONG: $longitude"
+        } else {
+            return address!!.getAddressString()
+        }
+    }
+
+}

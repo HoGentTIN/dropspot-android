@@ -1,7 +1,7 @@
 package com.example.dropspot.network
 
 import com.example.dropspot.data.model.AppUser
-import com.example.dropspot.data.model.Spot
+import com.example.dropspot.data.model.SpotDetail
 import com.example.dropspot.data.model.responses.MessageResponse
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -12,11 +12,11 @@ interface UserService {
     @GET("users/me")
     suspend fun getMe(): AppUser
 
-    @GET("user/mySpots")
-    suspend fun getMySpots(): List<Spot>
+    @GET("users/mySpots")
+    suspend fun getMySpots(): List<SpotDetail>
 
     @GET("users/favorites")
-    suspend fun getMyFavoriteSpots(): List<Spot>
+    suspend fun getMyFavoriteSpots(): List<SpotDetail>
 
     @POST("users/favorites/{spotId}")
     suspend fun addFavoriteSpot(@Path("spotId") id: Long): MessageResponse

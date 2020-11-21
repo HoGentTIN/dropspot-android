@@ -12,5 +12,6 @@
     <color name="white">#FFFFFF</color>
     <color name="grey">#888888</color>
     <color name="grey_dark">#4A4A4A</color>
-
+    <color name="helmet_light_blue">#75cef9</color>
+    <color name="helmet_dark_blue">#5ea5ec</color>
 </resources>

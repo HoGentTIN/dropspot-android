@@ -15,10 +15,10 @@ class SpotDetailRepository(
     private val spotDetailDao: SpotDetailDao,
     private val userService: UserService
 ) {
+
     companion object {
         private val TAG = "spot_detail_repo"
     }
-
 
     fun getSpotDetailBySpotId(id: Long): LiveData<SpotDetail> {
         return spotDetailDao.getSpotDetailById(id)

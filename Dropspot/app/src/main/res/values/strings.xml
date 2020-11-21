@@ -67,6 +67,7 @@
     <string name="alert_dialog_session_expired_message">Your session token is expired\nplease login again to regain access</string>
     <string name="ok">OK</string>
     <string name="ranking_icon_descr">represents the ranking from 0 to 5</string>
-    <string name="spot_detail_latitude_longitude_representation">LAT: %1$f\nLONG: %2$f</string>
+    <string name="my_spots">My Spots</string>
+    <string name="favo_spots">Favorite Spots</string>
 
 </resources>

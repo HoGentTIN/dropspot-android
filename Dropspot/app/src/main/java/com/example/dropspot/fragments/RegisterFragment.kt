@@ -1,4 +1,4 @@
-package com.example.dropspot.fragments.auth
+package com.example.dropspot.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

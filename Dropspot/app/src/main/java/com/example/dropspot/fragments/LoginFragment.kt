@@ -1,4 +1,4 @@
-package com.example.dropspot.fragments.auth
+package com.example.dropspot.fragments
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -48,7 +48,6 @@ class LoginFragment : Fragment() {
 
     @NotEmpty(message = "Password is required")
     private lateinit var input_password: EditText
-
 
     override fun onCreateView(
         inflater: LayoutInflater,

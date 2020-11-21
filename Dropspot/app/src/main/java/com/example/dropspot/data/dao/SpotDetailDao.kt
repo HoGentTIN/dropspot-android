@@ -7,11 +7,20 @@ import com.example.dropspot.data.model.SpotDetail
 @Dao
 interface SpotDetailDao {
 
-    @Query("SELECT * FROM spot_details WHERE spotId=:id")
+    @Query("SELECT * FROM spot_details WHERE spotId = :id")
     fun getSpotDetailById(id: Long): LiveData<SpotDetail>
+
+    @Query("SELECT * FROM spot_details WHERE creatorId = :id")
+    fun getSpotDetailByCreatorId(id: Long): LiveData<List<SpotDetail>>
+
+    @Query("SELECT * FROM spot_details WHERE liked = 1")
+    fun getSpotLikedSpotDetails(): LiveData<List<SpotDetail>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(spotDetail: SpotDetail)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(spots: List<SpotDetail>)
 
     @Delete()
     fun delete(spotDetail: SpotDetail)
