@@ -47,6 +47,17 @@ import java.util.*
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
 
+    companion object {
+        private const val TAG = "home_frag"
+        private const val DEFAULT_ZOOM = 15
+        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+        private const val DRAWABLE_SPOT_MARKER = R.drawable.ic_spot_marker_filled
+        private const val DRAWABLE_NEW_SPOT_MARKER = R.drawable.ic_flag_secondary
+        private const val DRAWABLE_NEW_SPOT_MARKER_ON_DRAG = R.drawable.ic_flag_thick
+        private const val KEY_NEW_SPOT_MARKER_COORDS = "NEW_SPOT_MARKER_COORDS"
+        private const val KEY_CAMERA_POS = "CAMERA_POS"
+    }
+
     private val viewModel: HomeViewModel by viewModel()
     private lateinit var binding: HomeFragmentBinding
 
@@ -59,55 +70,35 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var lastKnownLocation: Location? = null
     private val defaultLocation: LatLng = LatLng(0.0, 0.0)
     private var cameraPosition: CameraPosition? = null
-
     private val spotMarkers: MutableList<Marker> = mutableListOf()
-
-    companion object {
-        private const val TAG = "home"
-        private const val DEFAULT_ZOOM = 15
-        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
-        private const val DRAWABLE_SPOT_MARKER = R.drawable.ic_spot_marker_filled
-        private const val DRAWABLE_NEW_SPOT_MARKER = R.drawable.ic_flag_secondary
-        private const val DRAWABLE_NEW_SPOT_MARKER_ON_DRAG = R.drawable.ic_flag_thick
-        private const val KEY_NEW_SPOT_MARKER_COORDS = "NEW_SPOT_MARKER_COORDS"
-        private const val KEY_CAMERA_POS = "CAMERA_POS"
-    }
 
     // new spot
     private var newSpotMarker: Marker? = null
     private var newSpotLatitude: Double? = null
     private var newSpotLongitude: Double? = null
 
-
     // validation
     private val validator = Validator(this)
-
     // street val
     @NotEmpty(messageResId = R.string.spot_name_req)
     @Order(1)
     private lateinit var inputName: EditText
-
     // park val
     @Order(2)
     @NotEmpty(messageResId = R.string.street_req)
     private lateinit var inputStreet: EditText
-
     @Order(3)
     @NotEmpty(messageResId = R.string.house_number_req)
     private lateinit var inputNumber: EditText
-
     @Order(4)
     @NotEmpty(messageResId = R.string.city_req)
     private lateinit var inputCity: EditText
-
     @Order(5)
     @NotEmpty(messageResId = R.string.postal_code_req)
     private lateinit var inputPostal: EditText
-
     @Order(6)
     @NotEmpty(messageResId = R.string.state_req)
     private lateinit var inputState: EditText
-
     @Order(7)
     @NotEmpty(messageResId = R.string.country_req)
     private lateinit var inputCountry: EditText
@@ -119,12 +110,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         binding = DataBindingUtil.inflate(inflater, R.layout.home_fragment, container, false)
         binding.lifecycleOwner = this
         binding.vm = viewModel
-        setupUI()
-        return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         // sets coords if new spot marker was already added in session
         val coords = savedInstanceState?.getDoubleArray(KEY_NEW_SPOT_MARKER_COORDS)
@@ -138,6 +123,56 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         if (pos != null) {
             cameraPosition = pos
         }
+
+        setupUI()
+        setupViewModelObservers()
+        return binding.root
+    }
+
+    private fun setupViewModelObservers() {
+
+        //add spot response handling
+        viewModel.addParkSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let {
+                handleAddSpotResponse(it, false)
+            }
+        })
+
+        viewModel.addStreetSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let {
+                handleAddSpotResponse(it)
+            }
+        })
+
+        // spots in visible field
+        viewModel.spots.observe(viewLifecycleOwner, androidx.lifecycle.Observer { inComingSpots ->
+            Log.i(TAG, "Incoming spots: $inComingSpots")
+
+            inComingSpots?.forEach { incomingSpot ->
+                if (map != null) {
+
+                    val markerAlreadyDrawnOnMap = spotMarkers.any { drawnMarker ->
+                        Log.i(TAG, "drawnMarker: ${drawnMarker.tag}")
+                        (drawnMarker.tag as Spot).spotId == incomingSpot.spotId
+                    }
+
+                    if (!markerAlreadyDrawnOnMap) {
+                        val newMarker = drawMarker(
+                            incomingSpot.latitude, incomingSpot.longitude, incomingSpot.name,
+                            DRAWABLE_SPOT_MARKER
+                        )
+                        newMarker.tag = incomingSpot
+                        spotMarkers.add(newMarker)
+                    }
+                }
+            }
+        }
+        )
+
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         // validation setup
         validator.validationMode = Validator.Mode.IMMEDIATE
@@ -154,8 +189,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         mFusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(this.requireContext())
         initMap()
-
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -248,46 +281,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         inputCountry.addTextChangedListener(InputLayoutTextWatcher(binding.layoutCountry))
         binding.dropdownParkCategory.addTextChangedListener(InputLayoutTextWatcher(binding.layoutParkCategory))
 
-        //add spot response handling
-        viewModel.addParkSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it?.let {
-                handleAddSpotResponse(it, false)
-            }
-        })
-
-        viewModel.addStreetSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it?.let {
-                handleAddSpotResponse(it)
-            }
-        })
-
-        // spots in visible field
-        viewModel.spots.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-
-            it.forEach { spot ->
-                if (map != null) {
-                    // don't draw to map and add to markers if already added to map in session
-                    if (!spotMarkers.any { drawnMarker ->
-                            (drawnMarker.tag as Spot).spotId == spot.spotId
-                        }) {
-                        val newMarker = drawMarker(
-                            spot.latitude, spot.longitude, spot.name,
-                            DRAWABLE_SPOT_MARKER
-                        )
-
-                        // sets extra data object tag to spot
-                        newMarker.tag = spot
-
-                        spotMarkers.add(
-                            newMarker
-                        )
-                    }
-
-                }
-            }
-        }
-        )
-
     }
 
     private fun drawMarker(latitude: Double, longitude: Double, name: String, iconId: Int): Marker {
@@ -335,14 +328,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     private fun removeNewSpotMarker() {
         if (newSpotMarker != null) {
-            newSpotMarker!!.setIcon(
-                Utils.bitmapDescriptorFromVector(
-                    requireContext(),
-                    DRAWABLE_SPOT_MARKER
-                )
-            )
-            newSpotMarker!!.title = "Just added"
-            spotMarkers.add(newSpotMarker!!)
+            newSpotMarker!!.remove()
             newSpotMarker = null
             newSpotLatitude = null
             newSpotLongitude = null
@@ -444,12 +430,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         //handle marker clicking
         map!!.setOnMarkerClickListener {
-            Log.i(TAG, "marker clicked")
             if (it.tag != null) {
-                Log.i(TAG, "tag not null")
                 val tag = it.tag
                 if (tag is Spot) {
-                    Log.i(TAG, "tag is spot")
                     Navigation.findNavController(requireView())
                         .navigate(HomeFragmentDirections.actionHomeFragmentToSpotDetailFragment(tag.spotId))
                 }
@@ -490,12 +473,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 Log.i(TAG, "marker creation")
 
                 drawNewSpotMarker(it.latitude, it.longitude)
-                updateNewSpotLocation(it.latitude, it.longitude)
             }
         }
 
         // handles camera movement
         map!!.setOnCameraIdleListener {
+            cameraPosition = map!!.cameraPosition
             val visibleRegion = map!!.projection.visibleRegion
 
             val center = visibleRegion.latLngBounds.center
@@ -529,6 +512,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun drawNewSpotMarker(latitude: Double, longitude: Double) {
+        // updating fields
+        updateNewSpotLocation(latitude, longitude)
+
+        // drawing marker
         newSpotMarker = drawMarker(latitude, longitude, "New Spot", DRAWABLE_NEW_SPOT_MARKER)
         newSpotMarker!!.isDraggable = true
 
@@ -619,11 +606,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    /*
+     * Get the best and most recent location of the device, which may be null in rare
+     * cases when a location is not available.
+     */
     private fun getDeviceLocation() {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
         try {
             if (locationPermissionGranted) {
                 val locationResult = mFusedLocationProviderClient.lastLocation
