@@ -68,7 +68,7 @@ val myModule: Module = module {
     }
 
     single {
-        SpotDetailRepository(get(), get(), get())
+        SpotDetailRepository(get(), get(), get(), get())
     }
 
     single {
@@ -87,6 +87,7 @@ val myModule: Module = module {
     }
     viewModel { UserViewModel(get()) }
     viewModel { SpotDetailViewModel(get()) }
+    viewModel { EditSpotDetailViewModel() }
 
 }
 

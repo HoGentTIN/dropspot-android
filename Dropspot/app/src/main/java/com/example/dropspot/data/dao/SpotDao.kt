@@ -19,7 +19,7 @@ interface SpotDao {
     @Query("SELECT * FROM spots")
     fun getAllSpots(): LiveData<List<Spot>>
 
-    @Query("SELECT * FROM spots WHERE spotId=:id")
+    @Query("SELECT * FROM spots WHERE id=:id")
     fun getSpotById(id: Long): LiveData<Spot>
 
     @Query("SELECT * FROM spots WHERE creatorId=:id")

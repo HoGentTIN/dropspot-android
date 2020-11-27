@@ -8,10 +8,10 @@ data class ParkSpotRequest(
     val longitude: Double,
     val entranceFee: Double = 0.0,
     val parkCategory: ParkCategory,
-    private val street: String,
-    private val houseNumber: String,
-    private val postalCode: String,
-    private val city: String,
-    private val state: String,
-    private val country: String
+    val street: String,
+    val houseNumber: String,
+    val postalCode: String,
+    val city: String,
+    val state: String,
+    val country: String
 )

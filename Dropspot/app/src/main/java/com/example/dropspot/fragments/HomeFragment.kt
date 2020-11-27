@@ -119,10 +119,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
 
         // sets position of camera if already set in session
-        val pos = savedInstanceState?.getParcelable<CameraPosition>(KEY_CAMERA_POS)
-        if (pos != null) {
-            cameraPosition = pos
+        if (cameraPosition == null) {
+            val pos = savedInstanceState?.getParcelable<CameraPosition>(KEY_CAMERA_POS)
+            if (pos != null) {
+                cameraPosition = pos
+            }
         }
+
 
         setupUI()
         setupViewModelObservers()
@@ -147,24 +150,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         // spots in visible field
         viewModel.spots.observe(viewLifecycleOwner, androidx.lifecycle.Observer { inComingSpots ->
             Log.i(TAG, "Incoming spots: $inComingSpots")
-
+            spotMarkers.removeAll { true }
             inComingSpots?.forEach { incomingSpot ->
                 if (map != null) {
+                    val newMarker = drawMarker(
+                        incomingSpot.latitude, incomingSpot.longitude, incomingSpot.name,
+                        DRAWABLE_SPOT_MARKER
+                    )
+                    newMarker.tag = incomingSpot
+                    spotMarkers.add(newMarker)
 
-                    val markerAlreadyDrawnOnMap = spotMarkers.any { drawnMarker ->
-                        (drawnMarker.tag as Spot).spotId == incomingSpot.spotId
-                    }
-
-                    if (!markerAlreadyDrawnOnMap) {
-                        Log.i(TAG, "spot not already drawn: $incomingSpot")
-
-                        val newMarker = drawMarker(
-                            incomingSpot.latitude, incomingSpot.longitude, incomingSpot.name,
-                            DRAWABLE_SPOT_MARKER
-                        )
-                        newMarker.tag = incomingSpot
-                        spotMarkers.add(newMarker)
-                    }
                 }
             }
         }
@@ -192,6 +187,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         initMap()
     }
 
+    override fun onStop() {
+        super.onStop()
+        Log.i(TAG, "stopped")
+        map?.let {
+            cameraPosition = map!!.cameraPosition
+        }
+    }
+
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         Log.i(TAG, "saveinstance")
@@ -205,11 +209,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 )
             )
         }
+
         // save camera pos
         map?.let { map ->
             outState.putParcelable(KEY_CAMERA_POS, map.cameraPosition)
         }
     }
+
 
     private fun setupUI() {
 
@@ -414,28 +420,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             drawNewSpotMarker(newSpotLatitude!!, newSpotLongitude!!)
         }
 
-        val markersHelper = mutableListOf<Spot>()
-        Log.i(TAG, "SPOT MARKERS IN SESSION:")
-        spotMarkers.forEach {
-            Log.i(TAG, it.tag.toString())
-            markersHelper.add(it.tag as Spot)
-        }
-
-        markersHelper.forEach { spot ->
-            val marker = drawMarker(spot.latitude, spot.longitude, spot.name, DRAWABLE_SPOT_MARKER)
-            marker.tag = spot
-            spotMarkers.add(
-                marker
-            )
-        }
-
         //handle marker clicking
         map!!.setOnMarkerClickListener {
             if (it.tag != null) {
                 val tag = it.tag
                 if (tag is Spot) {
                     Navigation.findNavController(requireView())
-                        .navigate(HomeFragmentDirections.actionHomeFragmentToSpotDetailFragment(tag.spotId))
+                        .navigate(HomeFragmentDirections.actionHomeFragmentToSpotDetailFragment(tag.id))
                 }
             }
             true

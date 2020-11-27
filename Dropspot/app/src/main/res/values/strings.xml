@@ -39,7 +39,7 @@
     <string name="mark_new_spot_please">Mark spot on map</string>
     <string name="help_img_descr">help image</string>
     <string name="help_add_spot">Mark the map to determine the position of your new spot
-        \nand hold the marker to adjust</string>
+        \nand hold the marker to adjust its position</string>
     <string name="no_park_cat_selected">No park category selected</string>
     <string name="spot_name_req">Spot name is required</string>
     <string name="street_req">Street is required</string>
@@ -69,5 +69,15 @@
     <string name="ranking_icon_descr">represents the ranking from 0 to 5</string>
     <string name="my_spots">My Spots</string>
     <string name="favo_spots">Favorite Spots</string>
+    <string name="edit">Edit</string>
+    <string name="edit_descr">Edit spot here</string>
+    <string name="delete_descr">Delete spot</string>
+    <string name="delete">Delete</string>
+    <string name="more">More</string>
+    <string name="content_description_more">More options</string>
+    <string name="delete_spot">Are you sure you want to delete \'%1$s\'?</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 </resources>

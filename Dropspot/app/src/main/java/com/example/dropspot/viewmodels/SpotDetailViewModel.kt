@@ -20,10 +20,16 @@ class SpotDetailViewModel(private val spotDetailRepository: SpotDetailRepository
     private var spotId: Long? = null
 
     private val _voteSuccess = MutableLiveData<MessageResponse>()
-    val voteSuccess: LiveData<MessageResponse?> get() = _voteSuccess
+    val voteSuccess: LiveData<MessageResponse?>
+        get() = _voteSuccess
 
     private val _favoriteSuccess = MutableLiveData<MessageResponse>()
-    val favoriteSuccess: LiveData<MessageResponse> get() = _favoriteSuccess
+    val favoriteSuccess: LiveData<MessageResponse>
+        get() = _favoriteSuccess
+
+    private val _deleteSuccess = MutableLiveData<MessageResponse>()
+    val deleteSuccess: LiveData<MessageResponse>
+        get() = _deleteSuccess
 
     fun getSpotDetail(): LiveData<SpotDetail> {
         return spotDetailRepository.getSpotDetailBySpotId(this.spotId!!)
@@ -61,6 +67,14 @@ class SpotDetailViewModel(private val spotDetailRepository: SpotDetailRepository
             }
         }
 
+    }
+
+    fun deleteSpot(spotDetail: SpotDetail) {
+        Log.i(TAG, "delete spot: $spotDetail")
+        viewModelScope.launch {
+            _deleteSuccess.value = spotDetailRepository.deleteSpot(spotDetail)
+            _deleteSuccess.value = null
+        }
     }
 
 

@@ -7,7 +7,6 @@ import com.example.dropspot.data.model.requests.ParkSpotUpdateRequest
 import com.example.dropspot.data.model.requests.StreetSpotRequest
 import com.example.dropspot.data.model.requests.VoteRequest
 import com.example.dropspot.data.model.responses.MessageResponse
-import kotlinx.coroutines.Deferred
 import retrofit2.http.*
 
 interface SpotService {
@@ -22,19 +21,19 @@ interface SpotService {
     suspend fun getSpotDetailById(@Path("spotId") id: Long): SpotDetail
 
     @DELETE("spots/{spotId}")
-    suspend fun deleteSpot(@Path("spotId") id: Long): Deferred<MessageResponse>
+    suspend fun deleteSpot(@Path("spotId") id: Long): MessageResponse
 
     @PUT("spots/street/{spotId}")
     suspend fun udpateStreetSpot(
         @Body spot: StreetSpotRequest,
         @Path("spotId") id: Long
-    ): Deferred<Spot>
+    ): Spot
 
     @PUT("spots/park/{spotId}")
     suspend fun udpateParkSpot(
         @Body spot: ParkSpotUpdateRequest,
         @Path("spotId") id: Long
-    ): Deferred<Spot>
+    ): Spot
 
     @POST("spots/{spotId}/criteria/{criterionId}/vote")
     suspend fun voteForSpot(

@@ -9,11 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.dropspot.MainActivity
+import com.example.dropspot.R
 import com.example.dropspot.adapters.CriterionScoresAdapter
 import com.example.dropspot.data.model.SpotDetail
 import com.example.dropspot.databinding.FragmentSpotDetailBinding
 import com.example.dropspot.viewmodels.SpotDetailViewModel
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -108,9 +113,20 @@ class SpotDetailFragment : Fragment() {
                     Snackbar.make(requireView(), it.message, Snackbar.LENGTH_SHORT).show()
                 }
             })
+
+        //delete
+        spotDetailViewModel.deleteSuccess.observe(viewLifecycleOwner,
+            Observer {
+                if (it != null) {
+                    Snackbar.make(requireView(), it.message, Snackbar.LENGTH_SHORT).show()
+                    findNavController().navigateUp()
+                }
+            }
+        )
     }
 
     private fun loadSpotDetail() {
+        Log.i(TAG, "loading spotDetail")
         val spotId = args.spotId
         spotDetailViewModel.setSpotId(spotId)
         val liveData = spotDetailViewModel.getSpotDetail()
@@ -121,13 +137,62 @@ class SpotDetailFragment : Fragment() {
                 currentSpotDetail = it
                 binding.navigateIcon.alpha = 1F
                 criterionScoresAdapter.submitList(it.criteriaScore)
+                updateToolbarIfOwner(it)
             }
         })
     }
 
+    private fun updateToolbarIfOwner(spotDetail: SpotDetail) {
+        if (!spotDetail.owner) {
+            return
+        }
+        val toolbar: MaterialToolbar = (activity as MainActivity).binding.toolbar
+        toolbar.menu.clear()
+        toolbar.inflateMenu(R.menu.edit_spot_detail_menu)
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.edit -> {
+                    val direction = SpotDetailFragmentDirections
+                        .actionSpotDetailFragmentToEditSpotDetailFragment(spotDetail)
+                    findNavController().navigate(direction)
+                    true
+                }
+                R.id.delete -> {
+                    deleteSpot(spotDetail)
+                    true
+                }
+                else -> false
+            }
+        }
+    }
 
+    private fun deleteSpot(spotDetail: SpotDetail) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.delete))
+            .setMessage(resources.getString(R.string.delete_spot, spotDetail.spotName))
+            .setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
+                spotDetailViewModel.deleteSpot(spotDetail)
+            }.setNegativeButton(resources.getString(R.string.no)) { _, _ -> }
+            .show()
+    }
 
+    override fun onStop() {
+        super.onStop()
+        Log.i(TAG, "on_stop")
+        val toolbar: MaterialToolbar = (activity as MainActivity).binding.toolbar
+        toolbar.menu.clear()
+    }
 
+    override fun onStart() {
+        super.onStart()
+        if (currentSpotDetail != null) {
+            updateToolbarIfOwner(currentSpotDetail!!)
+        }
+        Log.i(TAG, "on_start")
+    }
 
-
+    override fun onResume() {
+        super.onResume()
+        Log.i(TAG, "on_resume")
+    }
 }

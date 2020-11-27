@@ -53,6 +53,24 @@
         <argument
             android:name="spotId"
             app:argType="long" />
+
+        <argument
+            android:name="owner"
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <action
+            android:id="@+id/action_spotDetailFragment_to_editSpotDetailFragment"
+            app:destination="@id/editSpotDetailFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/editSpotDetailFragment"
+        android:name="com.example.dropspot.fragments.EditSpotDetailFragment"
+        android:label=""
+        tools:layout="@layout/edit_spot_detail_fragment">
+        <argument
+            android:name="spotDetail"
+            app:argType="com.example.dropspot.data.model.SpotDetail" />
     </fragment>
 
 </navigation>

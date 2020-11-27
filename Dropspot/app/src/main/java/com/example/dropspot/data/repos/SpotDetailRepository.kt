@@ -2,7 +2,9 @@ package com.example.dropspot.data.repos
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import com.example.dropspot.data.dao.SpotDao
 import com.example.dropspot.data.dao.SpotDetailDao
+import com.example.dropspot.data.model.Spot
 import com.example.dropspot.data.model.SpotDetail
 import com.example.dropspot.data.model.requests.VoteRequest
 import com.example.dropspot.data.model.responses.MessageResponse
@@ -13,7 +15,8 @@ import com.example.dropspot.utils.Variables
 class SpotDetailRepository(
     private val spotService: SpotService,
     private val spotDetailDao: SpotDetailDao,
-    private val userService: UserService
+    private val userService: UserService,
+    private val spotDao: SpotDao
 ) {
 
     companion object {
@@ -46,7 +49,7 @@ class SpotDetailRepository(
             } catch (e: Exception) {
                 return MessageResponse(
                     false,
-                    "Failed to vote: " + e.message
+                    "Failed to vote: ${e.message}"
                 )
             }
         } else {
@@ -66,7 +69,7 @@ class SpotDetailRepository(
             } catch (e: Exception) {
                 return MessageResponse(
                     false,
-                    "Failed to favorite: " + e.message
+                    "Failed to favorite: ${e.message}"
                 )
             }
 
@@ -87,13 +90,45 @@ class SpotDetailRepository(
             } catch (e: Exception) {
                 return MessageResponse(
                     false,
-                    "Failed to unfavorite: " + e.message
+                    "Failed to unfavorite: ${e.message}"
                 )
             }
         } else {
             return MessageResponse(
                 false,
                 "Failed to unfavorite: No Connection"
+            )
+        }
+    }
+
+    suspend fun deleteSpot(spotDetail: SpotDetail): MessageResponse {
+        if (Variables.isNetworkConnected.value!!) {
+            try {
+                val response: MessageResponse =
+                    spotService.deleteSpot(spotDetail.spotId) //MessageResponse(true,"fake")
+                if (response.success) {
+                    spotDetailDao.delete(spotDetail)
+                    spotDao.delete(
+                        Spot(
+                            spotDetail.spotId
+                            , spotDetail.creatorId
+                            , spotDetail.spotName
+                            , spotDetail.latitude
+                            , spotDetail.longitude
+                        )
+                    )
+                }
+                return response
+            } catch (e: java.lang.Exception) {
+                return MessageResponse(
+                    false,
+                    "Failed to delete: ${e.message}"
+                )
+            }
+        } else {
+            return MessageResponse(
+                false,
+                "Failed to delete: No connection"
             )
         }
     }

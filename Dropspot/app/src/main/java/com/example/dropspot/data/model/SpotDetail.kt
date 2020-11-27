@@ -1,9 +1,12 @@
 package com.example.dropspot.data.model
 
+import android.os.Parcelable
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @Entity(tableName = "spot_details")
 data class SpotDetail(
     @PrimaryKey
@@ -16,8 +19,11 @@ data class SpotDetail(
     @Embedded
     var address: Address?,
     var criteriaScore: ArrayList<CriterionScore>,
-    var liked: Boolean
-) {
+    var liked: Boolean,
+    var owner: Boolean,
+    var parkCategory: ParkCategory?,
+    var entranceFee: Double?
+) : Parcelable {
 
     fun getLocationString(): String {
         if (address == null) {

@@ -15,7 +15,6 @@ class CriterionScoresAdapter(private val spotDetailViewModel: SpotDetailViewMode
         CriterionScoreDiffCallback()
     ) {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriterionScoreViewHolder {
         return CriterionScoreViewHolder(
             ListItemRatingBinding.inflate(
@@ -54,7 +53,6 @@ class CriterionScoresAdapter(private val spotDetailViewModel: SpotDetailViewMode
         }
 
     }
-
 
 }
 

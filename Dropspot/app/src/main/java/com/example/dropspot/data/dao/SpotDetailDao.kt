@@ -23,6 +23,6 @@ interface SpotDetailDao {
     suspend fun insertAll(spots: List<SpotDetail>)
 
     @Delete()
-    fun delete(spotDetail: SpotDetail)
+    suspend fun delete(spotDetail: SpotDetail)
 
 }

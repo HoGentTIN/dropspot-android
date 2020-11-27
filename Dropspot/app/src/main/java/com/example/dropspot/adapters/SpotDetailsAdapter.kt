@@ -48,6 +48,7 @@ class SpotDetailsAdapter :
         fun bind(spotDetail: SpotDetail) {
             binding.spotDetail = spotDetail
         }
+
     }
 
     class SpotDetailDiffCallback : DiffUtil.ItemCallback<SpotDetail>() {

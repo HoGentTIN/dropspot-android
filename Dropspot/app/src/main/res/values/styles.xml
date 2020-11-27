@@ -21,9 +21,12 @@
         <item name="colorOnBackground">@color/primary_color_dark</item>
 
         <item name="android:statusBarColor">@color/primary_color_dark</item>
+        <item name="android:colorControlNormal">@color/white</item>
 
         <item name="fontFamily">@font/open_sans</item>
         <item name="android:fontFamily">@font/open_sans</item>
+
+        <item name="colorControlNormal">@color/white</item>
 
         <item name="textAppearanceHeadline1">@style/TextAppearance.MaterialComponents.Headline1
         </item>
