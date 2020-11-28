@@ -117,9 +117,14 @@ class SpotDetailFragment : Fragment() {
         //delete
         spotDetailViewModel.deleteSuccess.observe(viewLifecycleOwner,
             Observer {
-                if (it != null) {
-                    Snackbar.make(requireView(), it.message, Snackbar.LENGTH_SHORT).show()
-                    findNavController().navigateUp()
+                it?.let {
+                    if (it.success) {
+                        findNavController().navigateUp()
+                    } else {
+                        Snackbar
+                            .make(requireView(), it.message, Snackbar.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
         )
@@ -143,11 +148,13 @@ class SpotDetailFragment : Fragment() {
     }
 
     private fun updateToolbarIfOwner(spotDetail: SpotDetail) {
-        if (!spotDetail.owner) {
-            return
-        }
         val toolbar: MaterialToolbar = (activity as MainActivity).binding.toolbar
         toolbar.menu.clear()
+        if (!spotDetail.owner) {
+            Log.i(TAG, "toolbar cleared")
+            return
+        }
+        Log.i(TAG, "toolbar updated")
         toolbar.inflateMenu(R.menu.edit_spot_detail_menu)
         toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {

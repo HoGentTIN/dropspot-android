@@ -24,7 +24,7 @@ class HomeViewModel(private val spotRepository: SpotRepository) : ViewModel() {
         viewModelScope.launch {
             _addStreetSpotSuccess.value =
                 spotRepository.addStreetSpot(name, latitude, longitude) != null
-            _addParkSpotSuccess.value = null
+            _addStreetSpotSuccess.value = null
         }
     }
 
