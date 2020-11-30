@@ -35,15 +35,13 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:padding="16dp">
 
                 <ImageView
                     android:id="@+id/spot_detail_list_item_img"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
                     android:contentDescription="@string/skate_park_icon_descr"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -55,6 +53,7 @@
                     style="@style/card_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:text="@{spot_detail.spotName}"
                     app:layout_constraintStart_toEndOf="@+id/spot_detail_list_item_img"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -68,6 +67,14 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/spot_detail_list_item_img"
                     app:layout_constraintTop_toBottomOf="@+id/spot_detail_list_item_name" />
+
+                <ImageView
+                    android:id="@+id/overall_score"
+                    style="@style/icon_big"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rankingImgFromScore="@{spot_detail.overallScore}"
+                    app:srcCompat="@drawable/ic_zero" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

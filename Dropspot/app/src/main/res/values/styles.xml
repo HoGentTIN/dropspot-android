@@ -103,11 +103,8 @@
     <style name="card_title">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginTop">16dp</item>
         <item name="android:textSize">@dimen/card_title</item>
         <item name="android:textColor">@color/primary_color</item>
-
     </style>
 
     <style name="icon">
@@ -115,12 +112,9 @@
         <item name="android:layout_height">18dp</item>
     </style>
 
-    <style name="card_top_icon" parent="icon">
-        <item name="android:layout_marginTop">16dp</item>
-    </style>
-
-    <style name="card_right_top_icon" parent="card_top_icon">
-        <item name="android:layout_marginEnd">16dp</item>
+    <style name="icon_big">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
     </style>
 
 

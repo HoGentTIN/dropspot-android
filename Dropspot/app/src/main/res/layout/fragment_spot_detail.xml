@@ -83,17 +83,19 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:padding="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/creator_name">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="16dp">
 
                 <ImageView
                     android:id="@+id/navigate_icon"
-                    style="@style/card_right_top_icon"
+                    style="@style/icon"
                     android:alpha="0.5"
                     android:contentDescription="@string/nav_icon"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -101,7 +103,7 @@
                     app:srcCompat="@drawable/ic_navigate" />
 
                 <TextView
-                    android:id="@+id/location_card_title"
+                    android:id="@+id/location_label"
                     style="@style/card_title"
                     android:text="@string/location"
                     app:layout_constraintStart_toStartOf="parent"
@@ -112,12 +114,68 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="16dp"
                     android:text="@{spot_detail.locationString}"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/location_card_title" />
+                    app:layout_constraintTop_toBottomOf="@+id/location_label" />
+
+                <TextView
+                    android:id="@+id/park_label"
+                    style="@style/card_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/park"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/location_Address" />
+
+                <TextView
+                    android:id="@+id/park_cat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/location_card_guidline"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/park_label"
+                    app:text="@{spot_detail.parkCatString}" />
+
+                <TextView
+                    android:id="@+id/damage_label"
+                    style="@style/card_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/damage"
+                    app:layout_constraintStart_toStartOf="@+id/location_card_guidline"
+                    app:layout_constraintTop_toBottomOf="@+id/location_Address" />
+
+                <TextView
+                    android:id="@+id/entrance_fee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@{spot_detail.damageString}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/location_card_guidline"
+                    app:layout_constraintTop_toBottomOf="@+id/damage_label" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/location_card_guidline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/park_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{spot_detail.isPark()?View.VISIBLE:View.GONE}"
+                    app:constraint_referenced_ids="park_label
+                    ,damage_label
+                    ,park_cat
+                    ,entrance_fee" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -138,7 +196,8 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/card_title"

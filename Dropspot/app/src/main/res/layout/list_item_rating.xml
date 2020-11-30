@@ -11,12 +11,12 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="16dp">
 
         <ImageView
             android:id="@+id/ranking"
             style="@style/icon"
-            android:layout_marginStart="16dp"
             android:contentDescription="@string/ranking_icon_descr"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,9 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
             android:numStars="5"
             android:stepSize="1"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -54,7 +52,7 @@
 
         <ImageView
             android:id="@+id/imageView"
-            style="@style/card_right_top_icon"
+            style="@style/icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/criterion_descr"
