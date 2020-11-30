@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
 object Utils {
+
     fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
         return ContextCompat.getDrawable(context, vectorResId)?.run {
             setBounds(0, 0, intrinsicWidth, intrinsicHeight)
@@ -17,4 +18,5 @@ object Utils {
             BitmapDescriptorFactory.fromBitmap(bitmap)
         }
     }
+
 }
