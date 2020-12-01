@@ -79,5 +79,7 @@
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="entranceFee_slider_descr">slide to set entrance fee</string>
+    <string name="update">Update</string>
 
 </resources>

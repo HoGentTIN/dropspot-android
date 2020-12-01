@@ -53,6 +53,24 @@ data class SpotDetail(
         return Currency.getInstance("EUR").symbol + String.format("%.2f", entranceFee)
     }
 
+    fun getSaveSliderValueForEntranceFee(): Float {
+        entranceFee?.let {
+            val jump = 0.05
+            var res: Double = Math.floor(entranceFee!! * 100) / 100
+
+            val mod = res % jump
+
+            if (mod == 0.00) {
+                return res.toFloat()
+            }
+
+            if (mod <= 0.02) res -= mod else res += jump - mod
+
+            return res.toFloat()
+        }
+        return 0.0.toFloat()
+    }
+
     fun getOverallScore(): Int {
         var res: Double = 0.0
         criteriaScore.forEach {
