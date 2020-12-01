@@ -195,7 +195,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         Log.i(TAG, "saveinstance")
@@ -418,6 +417,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         if (newSpotLatitude != null && newSpotLongitude != null) {
             Log.i(TAG, "redraw marker")
             drawNewSpotMarker(newSpotLatitude!!, newSpotLongitude!!)
+        }
+
+        // set markers if spotmarkers not empty
+        spotMarkers.forEach {
+            val marker = drawMarker(
+                it.position.latitude, it.position.longitude, (it.tag as Spot).name,
+                DRAWABLE_SPOT_MARKER
+            )
+            marker.tag = it.tag as Spot
         }
 
         //handle marker clicking
