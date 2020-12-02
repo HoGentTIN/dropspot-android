@@ -194,7 +194,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-
     private fun setupUI() {
 
         // fab
@@ -230,16 +229,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         binding.toggleSpotSort.check(R.id.toggle_street)
 
         // dropdown indoor/outdoor
-        val park_cat =
-            arrayOf("Indoor", "Outdoor", "Out & Indoor")
+        val parkCat = resources.getStringArray(R.array.park_categories)
 
-        val dropdown_adapter: ArrayAdapter<String> = ArrayAdapter(
+
+        val dropdownAdapter: ArrayAdapter<String> = ArrayAdapter(
             requireContext(),
             R.layout.simple_dropdown_item,
-            park_cat
+            parkCat
         )
 
-        binding.dropdownParkCategory.setAdapter(dropdown_adapter)
+        binding.dropdownParkCategory.setAdapter(dropdownAdapter)
 
         // fee slider
         binding.sliderFee.setLabelFormatter {

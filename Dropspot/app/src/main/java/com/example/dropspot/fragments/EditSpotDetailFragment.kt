@@ -96,16 +96,19 @@ class EditSpotDetailFragment : Fragment() {
         binding.dropdownParkCategory.addTextChangedListener(InputLayoutTextWatcher(binding.layoutParkCategory))
 
         // set cat dropdown
-        val park_cat =
-            arrayOf("Indoor", "Outdoor", "Out & Indoor")
+        val parkCat =
+            resources.getStringArray(R.array.park_categories)
 
-        val dropdown_adapter: ArrayAdapter<String> = ArrayAdapter(
+        val dropdownAdapter: ArrayAdapter<String> = ArrayAdapter(
             requireContext(),
             R.layout.simple_dropdown_item,
-            park_cat
+            parkCat
         )
 
-        binding.dropdownParkCategory.setAdapter(dropdown_adapter)
+        binding.dropdownParkCategory.setAdapter(dropdownAdapter)
+        
+        binding.dropdownParkCategory.setText(spotDetail.parkCategory.toString(), false)
+        binding.dropdownParkCategory.freezesText = false
 
         editSpotDetailViewModel.updateSuccess.observe(viewLifecycleOwner, Observer {
             it?.let {

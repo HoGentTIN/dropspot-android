@@ -47,3 +47,4 @@ fun bindNavViewFromUser(v: NavigationView, user: AppUser?) {
 
 
 
+

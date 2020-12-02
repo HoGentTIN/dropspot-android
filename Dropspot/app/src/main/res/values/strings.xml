@@ -24,6 +24,8 @@
 
     // Me frag
     <string name="me">Me</string>
+    <string name="my_spots">My Spots</string>
+    <string name="favo_spots">Favorite Spots</string>
 
     // add spot
     <string name="damage">Damage</string>
@@ -52,7 +54,6 @@
     <string name="failed_to_add_spot">Failed to add spot</string>
     <string name="flag_icon_descr">Icon flag, filled if not placed on map and outlined if placed</string>
 
-
     // Spot detail
     <string name="skate_park_icon_descr">a picture of a skate park</string>
     <string name="location">Location</string>
@@ -61,14 +62,6 @@
     <string name="like_icon">Like icon</string>
     <string name="criterion_descr">tooltip icon description criterion</string>
     <string name="rating">Rating</string>
-
-    // session expired alert dialog
-    <string name="alert_dialog_session_expired_title">Session Expired</string>
-    <string name="alert_dialog_session_expired_message">Your session token is expired\nplease login again to regain access</string>
-    <string name="ok">OK</string>
-    <string name="ranking_icon_descr">represents the ranking from 0 to 5</string>
-    <string name="my_spots">My Spots</string>
-    <string name="favo_spots">Favorite Spots</string>
     <string name="edit">Edit</string>
     <string name="edit_descr">Edit spot here</string>
     <string name="delete_descr">Delete spot</string>
@@ -79,7 +72,21 @@
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="ranking_icon_descr">represents the ranking from 0 to 5</string>
+
+    // session expired alert dialog
+    <string name="alert_dialog_session_expired_title">Session Expired</string>
+    <string name="alert_dialog_session_expired_message">Your session token is expired\nplease login again to regain access</string>
+    <string name="ok">OK</string>
+
+    // update spot
     <string name="entranceFee_slider_descr">slide to set entrance fee</string>
     <string name="update">Update</string>
+
+    <string-array name="park_categories">
+        <item>Outdoor</item>
+        <item>Indoor</item>
+        <item>Outdoor &amp; Indoor</item>
+    </string-array>
 
 </resources>

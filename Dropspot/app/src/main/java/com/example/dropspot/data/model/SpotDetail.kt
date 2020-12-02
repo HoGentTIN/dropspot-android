@@ -39,16 +39,6 @@ data class SpotDetail(
         return address != null
     }
 
-    fun getParkCatString(): String {
-        var res: String = ""
-        when (parkCategory) {
-            ParkCategory.INDOOR -> res = "Indoor"
-            ParkCategory.OUTDOOR -> res = "Outdoor"
-            ParkCategory.OUTDOOR_INDOOR -> res = "Outdoor / Indoor"
-        }
-        return res
-    }
-
     fun getDamageString(): String {
         return Currency.getInstance("EUR").symbol + String.format("%.2f", entranceFee)
     }
@@ -72,7 +62,7 @@ data class SpotDetail(
     }
 
     fun getOverallScore(): Int {
-        var res: Double = 0.0
+        var res = 0.0
         criteriaScore.forEach {
             res += it.score
         }
