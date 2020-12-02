@@ -24,16 +24,16 @@ interface SpotService {
     suspend fun deleteSpot(@Path("spotId") id: Long): MessageResponse
 
     @PUT("spots/street/{spotId}")
-    suspend fun udpateStreetSpot(
+    suspend fun updateStreetSpot(
         @Body spot: StreetSpotRequest,
         @Path("spotId") id: Long
-    ): Spot
+    ): SpotDetail
 
     @PUT("spots/park/{spotId}")
     suspend fun udpateParkSpot(
         @Body spot: ParkSpotUpdateRequest,
         @Path("spotId") id: Long
-    ): Spot
+    ): SpotDetail
 
     @POST("spots/{spotId}/criteria/{criterionId}/vote")
     suspend fun voteForSpot(

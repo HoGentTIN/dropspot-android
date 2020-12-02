@@ -1,4 +1,4 @@
-package com.example.dropspot.utils.ui
+package com.example.dropspot.views
 
 import android.annotation.SuppressLint
 import android.content.Context

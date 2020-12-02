@@ -24,7 +24,7 @@
             app:rankingImgFromScore="@{criterionScore.ratingBarScore}"
             app:srcCompat="@drawable/ic_zero" />
 
-        <com.example.dropspot.utils.ui.RatingBarSvg
+        <com.example.dropspot.views.RatingBarSvg
             android:id="@+id/ratingBar"
             style="@style/myCustomRatingBar"
             android:layout_width="wrap_content"

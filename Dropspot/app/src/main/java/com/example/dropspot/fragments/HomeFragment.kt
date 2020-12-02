@@ -126,7 +126,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
-
         setupUI()
         setupViewModelObservers()
         return binding.root
