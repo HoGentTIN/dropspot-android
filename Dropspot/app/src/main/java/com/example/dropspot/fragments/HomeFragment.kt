@@ -70,7 +70,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var lastKnownLocation: Location? = null
     private val defaultLocation: LatLng = LatLng(0.0, 0.0)
     private var cameraPosition: CameraPosition? = null
-    private val spotMarkers: MutableList<Marker> = mutableListOf()
+    private var markerCache: MutableList<Marker> = mutableListOf()
 
     // new spot
     private var newSpotMarker: Marker? = null
@@ -146,24 +146,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             }
         })
 
-        // spots in visible field
-        viewModel.spots.observe(viewLifecycleOwner, androidx.lifecycle.Observer { inComingSpots ->
-            Log.i(TAG, "Incoming spots: $inComingSpots")
-            spotMarkers.removeAll { true }
-            inComingSpots?.forEach { incomingSpot ->
-                if (map != null) {
-                    val newMarker = drawMarker(
-                        incomingSpot.latitude, incomingSpot.longitude, incomingSpot.name,
-                        DRAWABLE_SPOT_MARKER
-                    )
-                    newMarker.tag = incomingSpot
-                    spotMarkers.add(newMarker)
-
-                }
-            }
-        }
-        )
-        
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -188,7 +170,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     override fun onStop() {
         super.onStop()
-        Log.i(TAG, "stopped")
         map?.let {
             cameraPosition = map!!.cameraPosition
         }
@@ -196,7 +177,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        Log.i(TAG, "saveinstance")
         // saves coords of new spot marker is present
         if (newSpotMarker != null) {
             outState.putDoubleArray(
@@ -418,14 +398,29 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             drawNewSpotMarker(newSpotLatitude!!, newSpotLongitude!!)
         }
 
-        // set markers if spotmarkers not empty
-        spotMarkers.forEach {
-            val marker = drawMarker(
-                it.position.latitude, it.position.longitude, (it.tag as Spot).name,
-                DRAWABLE_SPOT_MARKER
-            )
-            marker.tag = it.tag as Spot
+        // draw spots
+
+        viewModel.spots.observe(viewLifecycleOwner, androidx.lifecycle.Observer { inComingSpots ->
+            Log.i(TAG, "Incoming spots: $inComingSpots")
+            // if markerCache contains a spot that is not in incoming spot -> delete marker from map
+            markerCache.forEach { marker ->
+                val inComingSpotsDoesNotContainMarker: Boolean =
+                    !inComingSpots.any { inComingSpot ->
+                        inComingSpot.id == (marker.tag as Spot).id
+                    }
+                if (inComingSpotsDoesNotContainMarker) marker.remove()
+            }
+            markerCache.removeAll { true }
+            inComingSpots?.forEach { incomingSpot ->
+                val newMarker = drawMarker(
+                    incomingSpot.latitude, incomingSpot.longitude, incomingSpot.name,
+                    DRAWABLE_SPOT_MARKER
+                )
+                newMarker.tag = incomingSpot
+                markerCache.add(newMarker)
+            }
         }
+        )
 
         //handle marker clicking
         map!!.setOnMarkerClickListener {
