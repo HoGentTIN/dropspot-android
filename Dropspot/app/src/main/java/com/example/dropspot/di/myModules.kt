@@ -80,7 +80,13 @@ val myModule: Module = module {
     viewModel { HomeViewModel(get()) }
     viewModel { MeViewModel(get()) }
     viewModel {
-        AuthViewModel(
+        LoginViewModel(
+            get(),
+            get()
+        )
+    }
+    viewModel {
+        RegisterViewModel(
             get(),
             get()
         )

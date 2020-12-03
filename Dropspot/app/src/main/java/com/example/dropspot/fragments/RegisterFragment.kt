@@ -15,7 +15,7 @@ import com.example.dropspot.AuthActivity
 import com.example.dropspot.databinding.FragmentRegisterBinding
 import com.example.dropspot.utils.InputLayoutTextWatcher
 import com.example.dropspot.utils.MyValidationListener
-import com.example.dropspot.viewmodels.AuthViewModel
+import com.example.dropspot.viewmodels.RegisterViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.*
@@ -24,7 +24,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RegisterFragment : Fragment() {
 
-    private val authViewModel: AuthViewModel by viewModel()
+    private val registerViewModel: RegisterViewModel by viewModel()
     private lateinit var binding: FragmentRegisterBinding
     private lateinit var button_register: Button
     private lateinit var progressBar_loading: ProgressBar
@@ -62,7 +62,7 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
-        binding.vm = authViewModel
+        binding.vm = registerViewModel
         binding.lifecycleOwner = this
         input_firstName = binding.inputFirstname
         input_firstName.addTextChangedListener(InputLayoutTextWatcher(binding.fieldFirstname))
@@ -77,7 +77,6 @@ class RegisterFragment : Fragment() {
         input_passwordConfirm = binding.inputPasswordConfirm
         input_passwordConfirm.addTextChangedListener(InputLayoutTextWatcher(binding.fieldPasswordConfirm))
         button_register = binding.buttonRegister
-        progressBar_loading = binding.progressBarLoading
 
         return binding.root
     }
@@ -109,19 +108,11 @@ class RegisterFragment : Fragment() {
             false
         }
 
-        authViewModel.registerResponse.observe(viewLifecycleOwner, Observer {
+        registerViewModel.registerResponse.observe(viewLifecycleOwner, Observer {
             if (it.success) {
                 navigateToLogin()
             } else {
                 Snackbar.make(this.requireView(), it.message, Snackbar.LENGTH_SHORT).show()
-            }
-        })
-
-        authViewModel.spinner.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                progressBar_loading.visibility = View.VISIBLE
-            } else {
-                progressBar_loading.visibility = View.INVISIBLE
             }
         })
 
@@ -136,7 +127,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun register() {
-        authViewModel.register(
+        registerViewModel.register(
             input_firstname.text.toString().trim()
             , input_lastname.text.toString().trim()
             , input_username.text.toString().trim()
