@@ -87,7 +87,7 @@ val myModule: Module = module {
     }
     viewModel { UserViewModel(get()) }
     viewModel { SpotDetailViewModel(get()) }
-    viewModel { EditSpotDetailViewModel(get(), get(), get()) }
+    viewModel { EditSpotDetailViewModel(get()) }
 
 }
 

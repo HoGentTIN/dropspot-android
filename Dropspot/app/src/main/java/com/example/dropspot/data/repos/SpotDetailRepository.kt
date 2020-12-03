@@ -6,6 +6,8 @@ import com.example.dropspot.data.dao.SpotDao
 import com.example.dropspot.data.dao.SpotDetailDao
 import com.example.dropspot.data.model.Spot
 import com.example.dropspot.data.model.SpotDetail
+import com.example.dropspot.data.model.requests.ParkSpotUpdateRequest
+import com.example.dropspot.data.model.requests.StreetSpotRequest
 import com.example.dropspot.data.model.requests.VoteRequest
 import com.example.dropspot.data.model.responses.MessageResponse
 import com.example.dropspot.network.SpotService
@@ -81,7 +83,7 @@ class SpotDetailRepository(
         }
     }
 
-    suspend fun unfavoriteSpot(spotId: Long): MessageResponse {
+    suspend fun unFavoriteSpot(spotId: Long): MessageResponse {
         if (Variables.isNetworkConnected.value!!) {
             try {
                 val response: MessageResponse =
@@ -106,18 +108,7 @@ class SpotDetailRepository(
             try {
                 val response: MessageResponse =
                     spotService.deleteSpot(spotDetail.spotId) //MessageResponse(true,"fake")
-                if (response.success) {
-                    spotDetailDao.delete(spotDetail)
-                    spotDao.delete(
-                        Spot(
-                            spotDetail.spotId
-                            , spotDetail.creatorId
-                            , spotDetail.spotName
-                            , spotDetail.latitude
-                            , spotDetail.longitude
-                        )
-                    )
-                }
+                if (response.success) removeInCache(spotDetail)
                 return response
             } catch (e: java.lang.Exception) {
                 return MessageResponse(
@@ -132,5 +123,88 @@ class SpotDetailRepository(
             )
         }
     }
+
+    suspend fun updateParkSpot(
+        request: ParkSpotUpdateRequest,
+        spotDetail: SpotDetail
+    ): MessageResponse {
+
+        if (!Variables.isNetworkConnected.value!!) {
+            return MessageResponse(
+                false,
+                "Park spot update failed: No connection"
+            )
+        }
+
+        try {
+
+            val response: SpotDetail = spotService.updateParkSpot(
+                request,
+                spotDetail.spotId
+            )
+
+            saveInCache(response)
+
+            return MessageResponse(true, "Park spot updated")
+        } catch (ex: Exception) {
+            return MessageResponse(false, ex.message ?: "Park spot update failed")
+        }
+    }
+
+    suspend fun updateStreetSpot(
+        request: StreetSpotRequest,
+        spotDetail: SpotDetail
+    ): MessageResponse {
+
+        if (!Variables.isNetworkConnected.value!!) {
+            return MessageResponse(
+                false,
+                "Street spot update failed: No connection"
+            )
+        }
+
+        try {
+            val response: SpotDetail = spotService.updateStreetSpot(
+                request,
+                spotDetail.spotId
+            )
+
+            saveInCache(response)
+
+            return MessageResponse(true, "Park spot updated")
+        } catch (ex: Exception) {
+            return MessageResponse(false, ex.message ?: "Park spot update failed")
+        }
+
+    }
+
+    private suspend fun saveInCache(response: SpotDetail) {
+        spotDao.insert(
+            Spot(
+                response.spotId,
+                response.creatorId,
+                response.spotName,
+                response.latitude,
+                response.longitude
+            )
+        )
+
+        spotDetailDao.insert(response)
+    }
+
+    private suspend fun removeInCache(response: SpotDetail) {
+        spotDao.delete(
+            Spot(
+                response.spotId,
+                response.creatorId,
+                response.spotName,
+                response.latitude,
+                response.longitude
+            )
+        )
+
+        spotDetailDao.delete(response)
+    }
+
 
 }

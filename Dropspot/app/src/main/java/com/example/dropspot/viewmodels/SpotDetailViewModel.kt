@@ -62,7 +62,7 @@ class SpotDetailViewModel(private val spotDetailRepository: SpotDetailRepository
             }
         } else {
             viewModelScope.launch {
-                _favoriteSuccess.value = spotDetailRepository.unfavoriteSpot(spotId)
+                _favoriteSuccess.value = spotDetailRepository.unFavoriteSpot(spotId)
                 _favoriteSuccess.value = null
             }
         }

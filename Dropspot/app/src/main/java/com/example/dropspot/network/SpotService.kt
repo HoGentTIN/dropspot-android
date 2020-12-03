@@ -30,7 +30,7 @@ interface SpotService {
     ): SpotDetail
 
     @PUT("spots/park/{spotId}")
-    suspend fun udpateParkSpot(
+    suspend fun updateParkSpot(
         @Body spot: ParkSpotUpdateRequest,
         @Path("spotId") id: Long
     ): SpotDetail
