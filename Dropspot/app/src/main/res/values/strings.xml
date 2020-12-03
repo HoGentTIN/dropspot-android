@@ -83,10 +83,4 @@
     <string name="entranceFee_slider_descr">slide to set entrance fee</string>
     <string name="update">Update</string>
 
-    <string-array name="park_categories">
-        <item>Outdoor</item>
-        <item>Indoor</item>
-        <item>Outdoor &amp; Indoor</item>
-    </string-array>
-
 </resources>

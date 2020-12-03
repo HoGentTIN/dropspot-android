@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import androidx.core.content.ContextCompat
+import com.example.dropspot.data.model.ParkCategory
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
@@ -16,6 +17,15 @@ object Utils {
                 Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
             draw(Canvas(bitmap))
             BitmapDescriptorFactory.fromBitmap(bitmap)
+        }
+    }
+
+    fun parkCategoryFromString(parkCatString: String): ParkCategory {
+        when (parkCatString) {
+            ParkCategory.INDOOR.toString() -> return ParkCategory.INDOOR
+            ParkCategory.OUTDOOR.toString() -> return ParkCategory.OUTDOOR
+            ParkCategory.OUTDOOR_INDOOR.toString() -> return ParkCategory.OUTDOOR_INDOOR
+            else -> return ParkCategory.OUTDOOR_INDOOR
         }
     }
 

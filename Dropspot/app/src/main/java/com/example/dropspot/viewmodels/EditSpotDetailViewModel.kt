@@ -11,6 +11,7 @@ import com.example.dropspot.data.model.requests.ParkSpotUpdateRequest
 import com.example.dropspot.data.model.requests.StreetSpotRequest
 import com.example.dropspot.data.model.responses.MessageResponse
 import com.example.dropspot.data.repos.SpotDetailRepository
+import com.example.dropspot.utils.Utils
 import kotlinx.coroutines.launch
 
 class EditSpotDetailViewModel(
@@ -35,14 +36,7 @@ class EditSpotDetailViewModel(
         fee: Double
     ) {
 
-        val parkCategory: ParkCategory
-
-        when (cat) {
-            "Indoor" -> parkCategory = ParkCategory.INDOOR
-            "Outdoor" -> parkCategory = ParkCategory.OUTDOOR
-            "Out & Indoor" -> parkCategory = ParkCategory.OUTDOOR_INDOOR
-            else -> parkCategory = ParkCategory.OUTDOOR_INDOOR
-        }
+        val parkCategory: ParkCategory = Utils.parkCategoryFromString(cat)
 
         val request = ParkSpotUpdateRequest(
             name,

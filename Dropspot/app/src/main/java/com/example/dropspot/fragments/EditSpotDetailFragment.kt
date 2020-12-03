@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.dropspot.R
+import com.example.dropspot.data.model.ParkCategory
 import com.example.dropspot.databinding.EditSpotDetailFragmentBinding
 import com.example.dropspot.utils.InputLayoutTextWatcher
 import com.example.dropspot.utils.MyValidationListener
@@ -96,19 +97,18 @@ class EditSpotDetailFragment : Fragment() {
         binding.dropdownParkCategory.addTextChangedListener(InputLayoutTextWatcher(binding.layoutParkCategory))
 
         // set cat dropdown
-        val parkCat =
-            resources.getStringArray(R.array.park_categories)
+        val parkCats = mutableListOf<String>()
+        ParkCategory.values().forEach { parkCats.add(it.toString()) }
 
         val dropdownAdapter: ArrayAdapter<String> = ArrayAdapter(
             requireContext(),
             R.layout.simple_dropdown_item,
-            parkCat
+            parkCats
         )
 
         binding.dropdownParkCategory.setAdapter(dropdownAdapter)
-        
+
         binding.dropdownParkCategory.setText(spotDetail.parkCategory.toString(), false)
-        binding.dropdownParkCategory.freezesText = false
 
         editSpotDetailViewModel.updateSuccess.observe(viewLifecycleOwner, Observer {
             it?.let {

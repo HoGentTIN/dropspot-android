@@ -18,6 +18,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.example.dropspot.R
+import com.example.dropspot.data.model.ParkCategory
 import com.example.dropspot.data.model.Spot
 import com.example.dropspot.databinding.HomeFragmentBinding
 import com.example.dropspot.utils.InputLayoutTextWatcher
@@ -229,13 +230,14 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         binding.toggleSpotSort.check(R.id.toggle_street)
 
         // dropdown indoor/outdoor
-        val parkCat = resources.getStringArray(R.array.park_categories)
 
+        val parkCats = mutableListOf<String>()
+        ParkCategory.values().forEach { parkCats.add(it.toString()) }
 
         val dropdownAdapter: ArrayAdapter<String> = ArrayAdapter(
             requireContext(),
             R.layout.simple_dropdown_item,
-            parkCat
+            parkCats
         )
 
         binding.dropdownParkCategory.setAdapter(dropdownAdapter)

@@ -16,5 +16,4 @@ enum class ParkCategory {
             return "Outdoor & Indoor"
         }
     }
-
 }
