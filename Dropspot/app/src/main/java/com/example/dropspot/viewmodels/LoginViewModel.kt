@@ -43,7 +43,7 @@ class LoginViewModel(
                             )
                     }
                 }
-
+                _spinner.value = false
             } catch (e: SocketTimeoutException) {
                 login(emailOrUsername, password)
                 Log.i("login_req", "socket timeout")
@@ -53,6 +53,7 @@ class LoginViewModel(
                         ""
                         , -1L, "", "", listOf(), false, "Something went wrong"
                     )
+                _spinner.value = false
             }
 
         }
