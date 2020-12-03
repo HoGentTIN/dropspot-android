@@ -152,7 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="32dp"
             android:hint="@string/password_confirmation"
             app:layout_constraintBottom_toTopOf="@+id/button_register"
             app:layout_constraintEnd_toEndOf="parent"
@@ -172,22 +172,23 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:text="@string/register"
-            app:layout_constraintBottom_toTopOf="@+id/progressBar_loading"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ProgressBar
             android:id="@+id/progressBar_loading"
             style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="8dp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_register"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
