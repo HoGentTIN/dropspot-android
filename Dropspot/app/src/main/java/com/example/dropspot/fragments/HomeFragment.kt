@@ -266,6 +266,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         inputCountry.addTextChangedListener(InputLayoutTextWatcher(binding.layoutCountry))
         binding.dropdownParkCategory.addTextChangedListener(InputLayoutTextWatcher(binding.layoutParkCategory))
 
+        // flag indicator
+        binding.flag.setOnClickListener {
+            newSpotMarker?.let {
+                removeNewSpotMarker()
+            }
+        }
+
     }
 
     private fun drawMarker(latitude: Double, longitude: Double, name: String, iconId: Int): Marker {
@@ -284,19 +291,18 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun handleAddSpotResponse(success: Boolean, isStreet: Boolean = true) {
-        Log.i(TAG, "handling add spot response... success:$success isStreet:$isStreet")
         val message: String
         if (success) {
             if (isStreet) message = resources.getString(R.string.street_spot_added) else
-                message = resources.getString(R.string.street_spot_added)
+                message = resources.getString(R.string.park_spot_added)
             removeNewSpotMarker()
             clearFields()
+            binding.fab.isExpanded = false
 
         } else {
             message = resources.getString(R.string.failed_to_add_spot)
         }
         Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT)
-            .setAnchorView(binding.addSpotContainer)
             .show()
     }
 
@@ -363,6 +369,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         } else {
             Snackbar.make(this.requireView(), R.string.mark_new_spot_please, Snackbar.LENGTH_SHORT)
+                .setAnchorView(binding.addSpotContainer)
                 .show()
         }
     }

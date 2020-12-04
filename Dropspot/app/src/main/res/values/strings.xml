@@ -51,6 +51,7 @@
     <string name="state_req">State is required</string>
     <string name="country_req">Country is required</string>
     <string name="street_spot_added">Street spot added</string>
+    <string name="park_spot_added">Park spot added</string>
     <string name="failed_to_add_spot">Failed to add spot</string>
     <string name="flag_icon_descr">Icon flag, filled if not placed on map and outlined if placed</string>
 
