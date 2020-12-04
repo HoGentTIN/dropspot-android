@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,17 +20,25 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.example.dropspot.AuthActivity
 import com.example.dropspot.MainActivity
+import com.example.dropspot.data.model.AppUser
 import com.example.dropspot.databinding.FragmentLoginBinding
 import com.example.dropspot.utils.Constants.AUTH_ENC_SHARED_PREF_KEY
+import com.example.dropspot.utils.Constants.TOKEN_KEY
+import com.example.dropspot.utils.Constants.USER_KEY
 import com.example.dropspot.utils.InputLayoutTextWatcher
 import com.example.dropspot.utils.MyValidationListener
 import com.example.dropspot.viewmodels.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
+
+    companion object {
+        private const val TAG = "login_fragment"
+    }
 
     private val loginViewModel: LoginViewModel by viewModel()
     private lateinit var binding: FragmentLoginBinding
@@ -38,14 +47,14 @@ class LoginFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
 
     // UI components
-    private lateinit var button_register: Button
-    private lateinit var button_login: Button
+    private lateinit var buttonRegister: Button
+    private lateinit var buttonLogin: Button
 
     @NotEmpty(message = "Email or username is required")
-    private lateinit var input_email: EditText
+    private lateinit var inputEmail: EditText
 
     @NotEmpty(message = "Password is required")
-    private lateinit var input_password: EditText
+    private lateinit var inputPassword: EditText
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,12 +64,12 @@ class LoginFragment : Fragment() {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
         binding.vm = loginViewModel
         binding.lifecycleOwner = this
-        input_email = binding.inputEmail
-        input_email.addTextChangedListener(InputLayoutTextWatcher(binding.fieldEmail))
-        input_password = binding.inputPassword
-        input_password.addTextChangedListener(InputLayoutTextWatcher(binding.fieldPassword))
-        button_login = binding.buttonLogin
-        button_register = binding.buttonRegister
+        inputEmail = binding.inputEmail
+        inputEmail.addTextChangedListener(InputLayoutTextWatcher(binding.fieldEmail))
+        inputPassword = binding.inputPassword
+        inputPassword.addTextChangedListener(InputLayoutTextWatcher(binding.fieldPassword))
+        buttonLogin = binding.buttonLogin
+        buttonRegister = binding.buttonRegister
 
         return binding.root
     }
@@ -106,16 +115,16 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupListenersObservers() {
-        button_login.setOnClickListener {
+        buttonLogin.setOnClickListener {
             validator.validate()
         }
 
-        button_register.setOnClickListener {
+        buttonRegister.setOnClickListener {
             //nav to register
             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment())
         }
 
-        input_password.setOnEditorActionListener { _, actionId, _ ->
+        inputPassword.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
                     validator.validate()
@@ -128,8 +137,9 @@ class LoginFragment : Fragment() {
         loginViewModel.loginResponse.observe(viewLifecycleOwner, Observer {
             if (it.success) {
                 val token = it.token
-                saveSharedPref(token)
-                startMainActivity(token)
+                val user = it.user
+                saveSharedPref(token, user!!)
+                startMainActivity(token, user)
             } else {
                 Snackbar.make(this.requireView(), it.message, Snackbar.LENGTH_SHORT).show()
             }
@@ -137,10 +147,13 @@ class LoginFragment : Fragment() {
 
     }
 
-    private fun saveSharedPref(token: String) {
+    private fun saveSharedPref(token: String, appUser: AppUser) {
+        Log.i(TAG, "user into SP:$appUser")
+
         sharedPreferences
             .edit()
-            .putString("TOKEN", token)
+            .putString(TOKEN_KEY, token)
+            .putString(USER_KEY, Gson().toJson(appUser))
             .apply()
     }
 
@@ -153,28 +166,36 @@ class LoginFragment : Fragment() {
     }
 
     private fun checkIfLoggedIn() {
-        val token = sharedPreferences.getString("TOKEN", null)
+        val token = sharedPreferences.getString(TOKEN_KEY, null)
+        val userString = sharedPreferences.getString(USER_KEY, null)
+        Log.i(TAG, "get user from SP: $userString")
 
-        if (token != null) {
-            startMainActivity(
-                token
-            )
+        if (userString != null) {
+            val user: AppUser = Gson().fromJson(userString, AppUser::class.java)
+
+            if (token != null) {
+                startMainActivity(
+                    token,
+                    user
+                )
+            }
         }
-
     }
 
 
-    private fun startMainActivity(token: String) {
+    private fun startMainActivity(token: String, user: AppUser) {
         val intent = Intent(this.context, MainActivity::class.java)
-        intent.putExtra("TOKEN", token)
+        intent.putExtra(TOKEN_KEY, token)
+        intent.putExtra(USER_KEY, user)
+
         startActivity(intent)
         this.activity!!.finish()
     }
 
     private fun login() {
         loginViewModel.login(
-            input_email.text.toString().trim()
-            , input_password.text.toString().trim()
+            inputEmail.text.toString().trim()
+            , inputPassword.text.toString().trim()
         )
     }
 

@@ -29,11 +29,23 @@ class SpotDetailRepository(
         return spotDetailDao.getSpotDetailById(id)
     }
 
+    suspend fun fetchAllSpotDetails() {
+        if (Variables.isNetworkConnected.value!!) {
+            try {
+                val response = spotService.getSpotDetails()
+                Log.i(TAG, "response getAll: $response")
+                spotDetailDao.insertAll(response)
+            } catch (e: Exception) {
+                Log.d(TAG, e.message ?: "Something went wrong with getSpotDetail")
+            }
+        }
+    }
+
     suspend fun fetchSpotDetailBySpotId(id: Long) {
         if (Variables.isNetworkConnected.value!!) {
             try {
                 val response: SpotDetail = spotService.getSpotDetailById(id)
-                Log.i(TAG, "response: $response")
+                Log.i(TAG, "response getId: $response")
                 spotDetailDao.insert(response)
             } catch (e: Exception) {
                 Log.d(TAG, e.message ?: "Something went wrong with getSpotDetail")
@@ -46,7 +58,7 @@ class SpotDetailRepository(
             try {
                 val response: MessageResponse =
                     spotService.voteForSpot(voteRequest, spotId, criterionId)
-                Log.i(TAG, "response: $response")
+                Log.i(TAG, "response vote: $response")
                 return response
             } catch (e: Exception) {
                 return MessageResponse(
@@ -67,6 +79,7 @@ class SpotDetailRepository(
             try {
                 val response: MessageResponse =
                     userService.addFavoriteSpot(spotId)
+                Log.i(TAG, "response favorite: $response")
                 return response
             } catch (e: Exception) {
                 return MessageResponse(
@@ -88,6 +101,7 @@ class SpotDetailRepository(
             try {
                 val response: MessageResponse =
                     userService.removeFavoriteSpot(spotId)
+                Log.i(TAG, "response unfavorite: $response")
                 return response
             } catch (e: Exception) {
                 return MessageResponse(

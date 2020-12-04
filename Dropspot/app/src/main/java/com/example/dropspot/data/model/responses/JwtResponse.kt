@@ -1,13 +1,12 @@
 package com.example.dropspot.data.model.responses
 
+import com.example.dropspot.data.model.AppUser
+
 data class JwtResponse(
-    val token: String,
-    val id: Long,
-    val username: String,
-    val email: String,
-    val roles: List<String>,
-    val success: Boolean,
-    val message: String
+    val message: String,
+    val success: Boolean = false,
+    val token: String = "",
+    val user: AppUser? = null
 ) {
     private val type = "Bearer"
 

@@ -25,7 +25,10 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.example.dropspot.databinding.ActivityMainBinding
 import com.example.dropspot.fragments.HomeFragmentDirections
+import com.example.dropspot.network.AuthInterceptor
 import com.example.dropspot.utils.Constants.AUTH_ENC_SHARED_PREF_KEY
+import com.example.dropspot.utils.Constants.TOKEN_KEY
+import com.example.dropspot.utils.Constants.USER_KEY
 import com.example.dropspot.utils.Variables
 import com.example.dropspot.viewmodels.UserViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -58,14 +61,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun setupLoggedInUser() {
-        userViewModel.setSessionToken(this.intent.getStringExtra("TOKEN")!!)
-        userViewModel.isSessionExpired.observe(
-            this,
-            Observer {
-                if (it) showSessionExpiredAndLogout()
-            }
-        )
-        userViewModel.fetchUser()
+        userViewModel.setSessionToken(this.intent.getStringExtra(TOKEN_KEY)!!)
+        userViewModel.setUser(this.intent.getParcelableExtra(USER_KEY)!!)
     }
 
     private fun setupObservers() {
@@ -80,6 +77,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         )
 
+        userViewModel.isSessionExpired.observe(
+            this,
+            Observer {
+                if (it) showSessionExpiredAndLogout()
+            }
+        )
+
         // handles connection response
         Variables.isNetworkConnected.observe(
             this,
@@ -89,7 +93,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         userViewModel.fetchUser()
                     }
                     binding.animNoConnection.visibility = View.INVISIBLE
+                    binding.animNoConnection.pauseAnimation()
                 } else {
+                    binding.animNoConnection.playAnimation()
                     binding.animNoConnection.visibility = View.VISIBLE
                     binding.animNoConnection.bringToFront()
                 }
@@ -193,8 +199,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         ).edit()
 
-        sharedPreferences.remove("TOKEN")
+        sharedPreferences.remove(TOKEN_KEY)
+        sharedPreferences.remove(USER_KEY)
         sharedPreferences.apply()
+
+        AuthInterceptor.clearSessionToken()
 
         val intent = Intent(this, AuthActivity::class.java)
         startActivity(intent)
@@ -208,7 +217,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onDestroy() {
         super.onDestroy()
-        if (sessionExpiredDialog != null) {
+        sessionExpiredDialog?.let {
             sessionExpiredDialog!!.dismiss()
         }
     }

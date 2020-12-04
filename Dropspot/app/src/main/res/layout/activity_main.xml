@@ -43,7 +43,7 @@
                 android:layout_marginTop="?attr/actionBarSize"
                 android:background="@drawable/bg_shadow"
                 android:visibility="invisible"
-                app:lottie_autoPlay="true"
+                app:lottie_autoPlay="false"
                 app:lottie_loop="true"
                 app:lottie_rawRes="@raw/no_connection" />
 

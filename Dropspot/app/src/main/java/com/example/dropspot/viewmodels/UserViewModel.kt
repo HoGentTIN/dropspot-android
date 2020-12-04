@@ -6,12 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dropspot.data.model.AppUser
+import com.example.dropspot.data.repos.MeRepository
+import com.example.dropspot.data.repos.SpotDetailRepository
 import com.example.dropspot.network.AuthInterceptor
-import com.example.dropspot.network.UserService
 import kotlinx.coroutines.launch
-import java.net.SocketTimeoutException
 
-class UserViewModel(private val userService: UserService) : ViewModel() {
+class UserViewModel(
+    private val meRepository: MeRepository,
+    private val spotDetailRepository: SpotDetailRepository
+) : ViewModel() {
 
     companion object {
         private const val TAG = "user_vm"
@@ -25,24 +28,28 @@ class UserViewModel(private val userService: UserService) : ViewModel() {
     fun fetchUser() {
         Log.i(TAG, "fetching user...")
         viewModelScope.launch {
-            try {
-                val response = userService.getMe()
-                Log.i(TAG, "fetched: $response")
-
-                _currentUser.value = response
-
-            } catch (e: SocketTimeoutException) {
-                fetchUser()
-                Log.i("current_user_req", "socket timeout")
-
-            } catch (e: Throwable) {
-                Log.i("current_user_req", e.message ?: "fail")
+            val response = meRepository.fetchMe()
+            response?.let {
+                _currentUser.value = meRepository.fetchMe()
             }
+        }
+    }
+
+    private fun fetchSpotDetails() {
+        Log.i(TAG, "fetching spotDetails...")
+        viewModelScope.launch {
+            spotDetailRepository.fetchAllSpotDetails()
         }
     }
 
     fun setSessionToken(token: String) {
         AuthInterceptor.setSessionToken(token)
+    }
+
+    fun setUser(loggedInUser: AppUser) {
+        _currentUser.value = loggedInUser
+        fetchUser()
+        fetchSpotDetails()
     }
 
 

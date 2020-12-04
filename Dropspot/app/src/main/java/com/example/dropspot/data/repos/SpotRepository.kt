@@ -33,7 +33,6 @@ class SpotRepository(
         }
     }
 
-
     suspend fun getSpotsInRadius(latitude: Double, longitude: Double, radius: Double) {
         if (Variables.isNetworkConnected.value!!) {
             try {

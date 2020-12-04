@@ -230,7 +230,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         binding.toggleSpotSort.check(R.id.toggle_street)
 
         // dropdown indoor/outdoor
-
         val parkCats = mutableListOf<String>()
         ParkCategory.values().forEach { parkCats.add(it.toString()) }
 

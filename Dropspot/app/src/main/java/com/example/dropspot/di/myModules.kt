@@ -75,7 +75,6 @@ val myModule: Module = module {
         MeRepository(get(), get())
     }
 
-
     //viewmodels
     viewModel { HomeViewModel(get()) }
     viewModel { MeViewModel(get()) }
@@ -91,7 +90,7 @@ val myModule: Module = module {
             get()
         )
     }
-    viewModel { UserViewModel(get()) }
+    viewModel { UserViewModel(get(), get()) }
     viewModel { SpotDetailViewModel(get()) }
     viewModel { EditSpotDetailViewModel(get()) }
 

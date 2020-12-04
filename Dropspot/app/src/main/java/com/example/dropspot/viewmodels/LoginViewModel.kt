@@ -49,10 +49,7 @@ class LoginViewModel(
                 Log.i("login_req", "socket timeout")
             } catch (e: Throwable) {
                 _loginResponse.value =
-                    JwtResponse(
-                        ""
-                        , -1L, "", "", listOf(), false, "Something went wrong"
-                    )
+                    JwtResponse("something went wrong")
                 _spinner.value = false
             }
 

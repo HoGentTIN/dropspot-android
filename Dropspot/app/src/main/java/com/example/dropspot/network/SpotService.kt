@@ -54,4 +54,7 @@ interface SpotService {
         @Path("long") longitude: Double,
         @Path("radius") radius: Double
     ): List<Spot>
+
+    @GET("spots/detail")
+    suspend fun getSpotDetails(): List<SpotDetail>
 }
