@@ -74,12 +74,13 @@ class SpotDetailRepository(
         }
     }
 
-    suspend fun favoriteSpot(spotId: Long): MessageResponse {
+    suspend fun favoriteSpot(spotDetail: SpotDetail): MessageResponse {
         if (Variables.isNetworkConnected.value!!) {
             try {
                 val response: MessageResponse =
-                    userService.addFavoriteSpot(spotId)
-                Log.i(TAG, "response favorite: $response")
+                    userService.addFavoriteSpot(spotDetail.spotId)
+                spotDetail.liked = true
+                spotDetailDao.insert(spotDetail)
                 return response
             } catch (e: Exception) {
                 return MessageResponse(
@@ -96,12 +97,13 @@ class SpotDetailRepository(
         }
     }
 
-    suspend fun unFavoriteSpot(spotId: Long): MessageResponse {
+    suspend fun unFavoriteSpot(spotDetail: SpotDetail): MessageResponse {
         if (Variables.isNetworkConnected.value!!) {
             try {
                 val response: MessageResponse =
-                    userService.removeFavoriteSpot(spotId)
-                Log.i(TAG, "response unfavorite: $response")
+                    userService.removeFavoriteSpot(spotDetail.spotId)
+                spotDetail.liked = false
+                spotDetailDao.insert(spotDetail)
                 return response
             } catch (e: Exception) {
                 return MessageResponse(

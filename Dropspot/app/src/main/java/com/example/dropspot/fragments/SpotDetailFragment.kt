@@ -35,7 +35,6 @@ class SpotDetailFragment : Fragment() {
     private lateinit var criterionScoresAdapter: CriterionScoresAdapter
     private var currentSpotDetail: SpotDetail? = null
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -61,7 +60,7 @@ class SpotDetailFragment : Fragment() {
 
         // maps navigate intent
         binding.navigateIcon.setOnClickListener {
-            if (currentSpotDetail != null) {
+            currentSpotDetail?.let {
                 val gmmIntentUri = Uri.parse(
                     "google.navigation:q=${this.currentSpotDetail!!.latitude}" +
                             ",${this.currentSpotDetail!!.longitude}"
@@ -79,20 +78,11 @@ class SpotDetailFragment : Fragment() {
 
         // de/favorite spot
         binding.likeIcon.setOnClickListener {
-
-            if (currentSpotDetail != null) {
-
-                if (!currentSpotDetail!!.liked) {
-
-                    currentSpotDetail!!.liked = true
-                    binding.spotDetail = currentSpotDetail
-                    spotDetailViewModel.favoriteOrUnFavorite(currentSpotDetail!!.spotId, true)
-
+            currentSpotDetail?.let {
+                if (!it.liked) {
+                    spotDetailViewModel.favoriteSpot(it)
                 } else {
-
-                    currentSpotDetail!!.liked = false
-                    binding.spotDetail = currentSpotDetail
-                    spotDetailViewModel.favoriteOrUnFavorite(currentSpotDetail!!.spotId, false)
+                    spotDetailViewModel.unFavoriteSpot(it)
                 }
             }
         }

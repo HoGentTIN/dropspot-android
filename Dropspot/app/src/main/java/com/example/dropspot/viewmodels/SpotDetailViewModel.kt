@@ -54,19 +54,18 @@ class SpotDetailViewModel(private val spotDetailRepository: SpotDetailRepository
         }
     }
 
-    fun favoriteOrUnFavorite(spotId: Long, isFavorite: Boolean) {
-        if (isFavorite) {
-            viewModelScope.launch {
-                _favoriteSuccess.value = spotDetailRepository.favoriteSpot(spotId)
-                _favoriteSuccess.value = null
-            }
-        } else {
-            viewModelScope.launch {
-                _favoriteSuccess.value = spotDetailRepository.unFavoriteSpot(spotId)
-                _favoriteSuccess.value = null
-            }
+    fun favoriteSpot(spotDetail: SpotDetail) {
+        viewModelScope.launch {
+            _favoriteSuccess.value = spotDetailRepository.favoriteSpot(spotDetail)
+            _favoriteSuccess.value = null
         }
+    }
 
+    fun unFavoriteSpot(spotDetail: SpotDetail) {
+        viewModelScope.launch {
+            _favoriteSuccess.value = spotDetailRepository.unFavoriteSpot(spotDetail)
+            _favoriteSuccess.value = null
+        }
     }
 
     fun deleteSpot(spotDetail: SpotDetail) {
@@ -76,6 +75,5 @@ class SpotDetailViewModel(private val spotDetailRepository: SpotDetailRepository
             _deleteSuccess.value = null
         }
     }
-
 
 }
