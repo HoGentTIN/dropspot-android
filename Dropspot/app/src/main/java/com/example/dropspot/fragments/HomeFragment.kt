@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import com.example.dropspot.MainActivity
 import com.example.dropspot.R
 import com.example.dropspot.data.model.ParkCategory
 import com.example.dropspot.data.model.Spot
@@ -24,6 +25,7 @@ import com.example.dropspot.databinding.HomeFragmentBinding
 import com.example.dropspot.utils.InputLayoutTextWatcher
 import com.example.dropspot.utils.MyValidationListener
 import com.example.dropspot.utils.Utils
+import com.example.dropspot.utils.Variables
 import com.example.dropspot.viewmodels.HomeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -132,69 +134,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         return binding.root
     }
 
-    private fun setupViewModelObservers() {
-
-        //add spot response handling
-        viewModel.addParkSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it?.let {
-                handleAddSpotResponse(it, false)
-            }
-        })
-
-        viewModel.addStreetSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it?.let {
-                handleAddSpotResponse(it)
-            }
-        })
-
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        // validation setup
-        validator.validationMode = Validator.Mode.IMMEDIATE
-        validator.setValidationListener(object :
-            MyValidationListener(this.requireContext(), this.requireView()) {
-            override fun onValidationSucceeded() {
-                addSpot()
-            }
-
-        })
-
-        // maps init
-        gcd = Geocoder(context, Locale.getDefault())
-        mFusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(this.requireContext())
-        initMap()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        map?.let {
-            cameraPosition = map!!.cameraPosition
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        // saves coords of new spot marker is present
-        if (newSpotMarker != null) {
-            outState.putDoubleArray(
-                KEY_NEW_SPOT_MARKER_COORDS,
-                doubleArrayOf(
-                    newSpotMarker!!.position.latitude,
-                    newSpotMarker!!.position.longitude
-                )
-            )
-        }
-
-        // save camera pos
-        map?.let { map ->
-            outState.putParcelable(KEY_CAMERA_POS, map.cameraPosition)
-        }
-    }
-
     private fun setupUI() {
 
         // fab
@@ -275,6 +214,84 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     }
 
+    private fun setupViewModelObservers() {
+
+        //add spot response handling
+        viewModel.addParkSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let {
+                handleAddSpotResponse(it, false)
+            }
+        })
+
+        viewModel.addStreetSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let {
+                handleAddSpotResponse(it)
+            }
+        })
+
+    }
+
+    private fun handleAddSpotResponse(success: Boolean, isStreet: Boolean = true) {
+        if (success) {
+            val mes = if (isStreet) resources.getString(R.string.street_spot_added) else resources.getString(R.string.park_spot_added)
+            removeNewSpotMarker()
+            clearFields()
+            binding.fab.isExpanded = false
+            Snackbar.make(requireView(), mes, Snackbar.LENGTH_SHORT)
+                .setAnchorView(binding.fab)
+                .show()
+        } else {
+            Snackbar.make(requireView(), resources.getString(R.string.failed_to_add_spot),
+                Snackbar.LENGTH_SHORT)
+                .setAnchorView(binding.addSpotContainer)
+                .show()
+        }
+    }
+
+    private fun clearFields() {
+        inputName.setText("")
+        inputStreet.setText("")
+        inputNumber.setText("")
+        inputCity.setText("")
+        inputPostal.setText("")
+        inputState.setText("")
+        inputCountry.setText("")
+        binding.dropdownParkCategory.setText("")
+    }
+
+    private fun removeNewSpotMarker() {
+        newSpotMarker?.let {
+            newSpotMarker!!.remove()
+            newSpotMarker = null
+            newSpotLatitude = null
+            newSpotLongitude = null
+
+            // flag indicator filled
+            binding.flag.setImageResource(R.drawable.ic_flag_24px)
+        }
+
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        // validation setup
+        validator.validationMode = Validator.Mode.IMMEDIATE
+        validator.setValidationListener(object :
+            MyValidationListener(this.requireContext(), this.requireView()) {
+            override fun onValidationSucceeded() {
+                addSpot()
+            }
+
+        })
+
+        // maps init
+        gcd = Geocoder(context, Locale.getDefault())
+        mFusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(this.requireContext())
+        initMap()
+    }
+
     private fun drawMarker(latitude: Double, longitude: Double, name: String, iconId: Int): Marker {
         return map!!.addMarker(
             MarkerOptions()
@@ -290,47 +307,19 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         )
     }
 
-    private fun handleAddSpotResponse(success: Boolean, isStreet: Boolean = true) {
-        val message: String
-        if (success) {
-            if (isStreet) message = resources.getString(R.string.street_spot_added) else
-                message = resources.getString(R.string.park_spot_added)
-            removeNewSpotMarker()
-            clearFields()
-            binding.fab.isExpanded = false
-
-        } else {
-            message = resources.getString(R.string.failed_to_add_spot)
-        }
-        Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT)
-            .show()
-    }
-
-    private fun clearFields() {
-        inputName.setText("")
-        inputStreet.setText("")
-        inputNumber.setText("")
-        inputCity.setText("")
-        inputPostal.setText("")
-        inputState.setText("")
-        inputCountry.setText("")
-        binding.dropdownParkCategory.setText("")
-    }
-
-    private fun removeNewSpotMarker() {
-        if (newSpotMarker != null) {
-            newSpotMarker!!.remove()
-            newSpotMarker = null
-            newSpotLatitude = null
-            newSpotLongitude = null
-
-            // flag indicator filled
-            binding.flag.setImageResource(R.drawable.ic_flag_24px)
-        }
-
-    }
-
     private fun addSpot() {
+        (activity as MainActivity).hideKeyboard(requireView())
+
+        if (!Variables.isNetworkConnected.value!!){
+            Snackbar.make(requireView(),
+            resources.getString(R.string.failed_to_add_spot) + ":"
+                    + resources.getString(R.string.no_connection),
+            Snackbar.LENGTH_SHORT)
+                .setAnchorView(binding.addSpotContainer)
+                .show()
+            return
+        }
+
         val markerIsSet: Boolean = this.newSpotLatitude != null && this.newSpotLongitude != null
         val categoryIsNotEmpty: Boolean = binding.dropdownParkCategory.text.isNotEmpty()
         val streetToggleIsSet: Boolean =
@@ -384,7 +373,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             ft.replace(R.id.map, mapFragment as SupportMapFragment).commit()
         }
 
-        mFusedLocationProviderClient = FusedLocationProviderClient(activity!!)
         mapFragment!!.getMapAsync(this)
     }
 
@@ -544,7 +532,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         newSpotLongitude = longitude
     }
 
-
     /*
      * Request location permission, so that we can get the location of the
      * device. The result of the permission request is handled by a callback,
@@ -662,4 +649,32 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             Log.e("Exception: %s", e.message, e)
         }
     }
+
+    // state save
+    override fun onStop() {
+        super.onStop()
+        map?.let {
+            cameraPosition = map!!.cameraPosition
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // saves coords of new spot marker is present
+        newSpotMarker?.let {
+            outState.putDoubleArray(
+                KEY_NEW_SPOT_MARKER_COORDS,
+                doubleArrayOf(
+                    it.position.latitude,
+                    it.position.longitude
+                )
+            )
+        }
+
+        // save camera pos
+        map?.let { map ->
+            outState.putParcelable(KEY_CAMERA_POS, map.cameraPosition)
+        }
+    }
+
 }

@@ -12,7 +12,6 @@ import com.example.dropspot.data.model.requests.VoteRequest
 import com.example.dropspot.data.model.responses.MessageResponse
 import com.example.dropspot.network.SpotService
 import com.example.dropspot.network.UserService
-import com.example.dropspot.utils.Variables
 
 class SpotDetailRepository(
     private val spotService: SpotService,
@@ -30,113 +29,65 @@ class SpotDetailRepository(
     }
 
     suspend fun fetchAllSpotDetails() {
-        if (Variables.isNetworkConnected.value!!) {
-            try {
-                val response = spotService.getSpotDetails()
-                Log.i(TAG, "response getAll: $response")
-                spotDetailDao.insertAll(response)
-            } catch (e: Exception) {
-                Log.d(TAG, e.message ?: "Something went wrong with getSpotDetail")
-            }
+        try {
+            val response = spotService.getSpotDetails()
+            Log.i(TAG, "response getAll: $response")
+            spotDetailDao.insertAll(response)
+        } catch (e: Exception) {
+            Log.d(TAG, e.message ?: "Something went wrong with getSpotDetail")
         }
     }
 
     suspend fun fetchSpotDetailBySpotId(id: Long) {
-        if (Variables.isNetworkConnected.value!!) {
-            try {
-                val response: SpotDetail = spotService.getSpotDetailById(id)
-                Log.i(TAG, "response getId: $response")
-                spotDetailDao.insert(response)
-            } catch (e: Exception) {
-                Log.d(TAG, e.message ?: "Something went wrong with getSpotDetail")
-            }
+        try {
+            val response: SpotDetail = spotService.getSpotDetailById(id)
+            Log.i(TAG, "response getId: $response")
+            spotDetailDao.insert(response)
+        } catch (e: Exception) {
+            Log.d(TAG, e.message ?: "Something went wrong with getSpotDetail")
         }
     }
 
     suspend fun vote(spotId: Long, criterionId: Long, voteRequest: VoteRequest): MessageResponse {
-        if (Variables.isNetworkConnected.value!!) {
-            try {
-                val response: MessageResponse =
-                    spotService.voteForSpot(voteRequest, spotId, criterionId)
-                Log.i(TAG, "response vote: $response")
-                return response
-            } catch (e: Exception) {
-                return MessageResponse(
-                    false,
-                    "Failed to vote: ${e.message}"
-                )
-            }
-        } else {
-            return MessageResponse(
-                false,
-                "Failed to vote: No Connection"
-            )
+        try {
+            return spotService.voteForSpot(voteRequest, spotId, criterionId)
+        } catch (e: Exception) {
+            return handleException(e)
         }
     }
 
     suspend fun favoriteSpot(spotDetail: SpotDetail): MessageResponse {
-        if (Variables.isNetworkConnected.value!!) {
-            try {
-                val response: MessageResponse =
-                    userService.addFavoriteSpot(spotDetail.spotId)
-                spotDetail.liked = true
-                spotDetailDao.insert(spotDetail)
-                return response
-            } catch (e: Exception) {
-                return MessageResponse(
-                    false,
-                    "Failed to favorite: ${e.message}"
-                )
-            }
-
-        } else {
-            return MessageResponse(
-                false,
-                "Failed to favorite: No Connection"
-            )
+        try {
+            val response: MessageResponse =
+                userService.addFavoriteSpot(spotDetail.spotId)
+            spotDetail.liked = true
+            spotDetailDao.insert(spotDetail)
+            return response
+        } catch (e: Exception) {
+            return handleException(e)
         }
     }
 
     suspend fun unFavoriteSpot(spotDetail: SpotDetail): MessageResponse {
-        if (Variables.isNetworkConnected.value!!) {
-            try {
-                val response: MessageResponse =
-                    userService.removeFavoriteSpot(spotDetail.spotId)
-                spotDetail.liked = false
-                spotDetailDao.insert(spotDetail)
-                return response
-            } catch (e: Exception) {
-                return MessageResponse(
-                    false,
-                    "Failed to unfavorite: ${e.message}"
-                )
-            }
-        } else {
-            return MessageResponse(
-                false,
-                "Failed to unfavorite: No Connection"
-            )
+        try {
+            val response: MessageResponse =
+                userService.removeFavoriteSpot(spotDetail.spotId)
+            spotDetail.liked = false
+            spotDetailDao.insert(spotDetail)
+            return response
+        } catch (e: Exception) {
+            return handleException(e)
         }
     }
 
     suspend fun deleteSpot(spotDetail: SpotDetail): MessageResponse {
-        if (Variables.isNetworkConnected.value!!) {
-            try {
-                val response: MessageResponse =
-                    spotService.deleteSpot(spotDetail.spotId) //MessageResponse(true,"fake")
-                if (response.success) removeInCache(spotDetail)
-                return response
-            } catch (e: java.lang.Exception) {
-                return MessageResponse(
-                    false,
-                    "Failed to delete: ${e.message}"
-                )
-            }
-        } else {
-            return MessageResponse(
-                false,
-                "Failed to delete: No connection"
-            )
+        try {
+            val response: MessageResponse =
+                spotService.deleteSpot(spotDetail.spotId)
+            if (response.success) removeInCache(spotDetail)
+            return response
+        } catch (e: Exception) {
+            return handleException(e)
         }
     }
 
@@ -144,14 +95,6 @@ class SpotDetailRepository(
         request: ParkSpotUpdateRequest,
         spotDetail: SpotDetail
     ): MessageResponse {
-
-        if (!Variables.isNetworkConnected.value!!) {
-            return MessageResponse(
-                false,
-                "Park spot update failed: No connection"
-            )
-        }
-
         try {
 
             val response: SpotDetail = spotService.updateParkSpot(
@@ -161,9 +104,9 @@ class SpotDetailRepository(
 
             saveInCache(response)
 
-            return MessageResponse(true, "Park spot updated")
-        } catch (ex: Exception) {
-            return MessageResponse(false, ex.message ?: "Park spot update failed")
+            return MessageResponse(true)
+        } catch (e: Exception) {
+            return handleException(e)
         }
     }
 
@@ -171,14 +114,6 @@ class SpotDetailRepository(
         request: StreetSpotRequest,
         spotDetail: SpotDetail
     ): MessageResponse {
-
-        if (!Variables.isNetworkConnected.value!!) {
-            return MessageResponse(
-                false,
-                "Street spot update failed: No connection"
-            )
-        }
-
         try {
             val response: SpotDetail = spotService.updateStreetSpot(
                 request,
@@ -187,11 +122,18 @@ class SpotDetailRepository(
 
             saveInCache(response)
 
-            return MessageResponse(true, "Park spot updated")
-        } catch (ex: Exception) {
-            return MessageResponse(false, ex.message ?: "Park spot update failed")
+            return MessageResponse(true)
+        } catch (e: Exception) {
+            return handleException(e)
         }
 
+    }
+
+    private fun handleException(e: Exception): MessageResponse {
+        e.message?.let {
+            return MessageResponse(false, it)
+        }
+        return MessageResponse()
     }
 
     private suspend fun saveInCache(response: SpotDetail) {
@@ -221,6 +163,5 @@ class SpotDetailRepository(
 
         spotDetailDao.delete(response)
     }
-
 
 }

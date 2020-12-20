@@ -16,6 +16,7 @@ import com.example.dropspot.R
 import com.example.dropspot.adapters.CriterionScoresAdapter
 import com.example.dropspot.data.model.SpotDetail
 import com.example.dropspot.databinding.FragmentSpotDetailBinding
+import com.example.dropspot.utils.Variables
 import com.example.dropspot.viewmodels.SpotDetailViewModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -43,12 +44,8 @@ class SpotDetailFragment : Fragment() {
         binding = FragmentSpotDetailBinding.inflate(inflater)
         binding.vm = spotDetailViewModel
         binding.lifecycleOwner = viewLifecycleOwner
-        criterionScoresAdapter =
-            CriterionScoresAdapter(
-                spotDetailViewModel
-            )
-        binding.ratingList.adapter = criterionScoresAdapter
 
+        loadSpotDetail()
 
         return binding.root
     }
@@ -56,7 +53,12 @@ class SpotDetailFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        loadSpotDetail()
+        criterionScoresAdapter =
+            CriterionScoresAdapter(
+                spotDetailViewModel,
+                requireContext()
+            )
+        binding.ratingList.adapter = criterionScoresAdapter
 
         // maps navigate intent
         binding.navigateIcon.setOnClickListener {
@@ -79,32 +81,41 @@ class SpotDetailFragment : Fragment() {
         // de/favorite spot
         binding.likeIcon.setOnClickListener {
             currentSpotDetail?.let {
-                if (!it.liked) {
-                    spotDetailViewModel.favoriteSpot(it)
-                } else {
-                    spotDetailViewModel.unFavoriteSpot(it)
-                }
+                if (!it.liked) favoriteSpot(it) else unFavoriteSpot(it)
             }
         }
 
-        //vote
+        // vote response
         spotDetailViewModel.voteSuccess.observe(viewLifecycleOwner,
             Observer {
-                if (it != null) {
-                    Snackbar.make(requireView(), it.message, Snackbar.LENGTH_SHORT).show()
+                it?.let {
+                    if (it.success) Snackbar.make(requireView(), it.message, Snackbar.LENGTH_SHORT).show()
+                    else Snackbar.make(requireView(), resources.getString(R.string.vote_failed)
+                            + it.message, Snackbar.LENGTH_SHORT).show()
                 }
             }
         )
 
-        //favor
+        // favor responses
         spotDetailViewModel.favoriteSuccess.observe(viewLifecycleOwner,
             Observer {
-                if (it != null) {
-                    Snackbar.make(requireView(), it.message, Snackbar.LENGTH_SHORT).show()
+                it?.let {
+                    if (!it.success) Snackbar.make(requireView(), resources.getString(R.string.favor_failed)
+                            + it.message, Snackbar.LENGTH_SHORT).show()
                 }
-            })
+            }
+        )
 
-        //delete
+        spotDetailViewModel.unFavoriteSuccess.observe(viewLifecycleOwner,
+            Observer {
+                it?.let {
+                    if (!it.success) Snackbar.make(requireView(), resources.getString(R.string.un_favor_failed)
+                            + it.message, Snackbar.LENGTH_SHORT).show()
+                }
+            }
+        )
+
+        // delete response
         spotDetailViewModel.deleteSuccess.observe(viewLifecycleOwner,
             Observer {
                 it?.let {
@@ -112,12 +123,34 @@ class SpotDetailFragment : Fragment() {
                         findNavController().navigateUp()
                     } else {
                         Snackbar
-                            .make(requireView(), it.message, Snackbar.LENGTH_SHORT)
+                            .make(requireView(), resources.getString(R.string.delete_failed)
+                                    + it.message, Snackbar.LENGTH_SHORT)
                             .show()
                     }
                 }
             }
         )
+
+    }
+
+    private fun unFavoriteSpot(spotDetail : SpotDetail) {
+        if (Variables.isNetworkConnected.value!!){
+            spotDetailViewModel.unFavoriteSpot(spotDetail)
+        }else{
+            Snackbar.make(requireView(), resources.getString(R.string.un_favor_failed)
+                    + requireContext().resources.getString(R.string.no_connection),
+                Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun favoriteSpot(spotDetail : SpotDetail) {
+        if (Variables.isNetworkConnected.value!!){
+            spotDetailViewModel.favoriteSpot(spotDetail)
+        }else{
+            Snackbar.make(requireView(), resources.getString(R.string.favor_failed)
+                    + requireContext().resources.getString(R.string.no_connection),
+                Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     private fun loadSpotDetail() {
@@ -125,16 +158,18 @@ class SpotDetailFragment : Fragment() {
         val spotId = args.spotId
         spotDetailViewModel.setSpotId(spotId)
         val liveData = spotDetailViewModel.getSpotDetail()
-        liveData.observe(viewLifecycleOwner, Observer {
-            Log.i(TAG, "spot_detail: $it")
-            if (it != null) {
-                binding.spotDetail = it
-                currentSpotDetail = it
-                binding.navigateIcon.alpha = 1F
-                criterionScoresAdapter.submitList(it.criteriaScore)
-                updateToolbarIfOwner(it)
+        liveData.observe(viewLifecycleOwner,
+            Observer {
+                Log.i(TAG, "spot_detail: $it")
+                it?.let {
+                    binding.spotDetail = it
+                    currentSpotDetail = it
+                    binding.navigateIcon.alpha = 1F
+                    criterionScoresAdapter.submitList(it.criteriaScore)
+                    updateToolbarIfOwner(it)
+                }
             }
-        })
+        )
     }
 
     private fun updateToolbarIfOwner(spotDetail: SpotDetail) {
@@ -164,32 +199,31 @@ class SpotDetailFragment : Fragment() {
     }
 
     private fun deleteSpot(spotDetail: SpotDetail) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(resources.getString(R.string.delete))
-            .setMessage(resources.getString(R.string.delete_spot, spotDetail.spotName))
-            .setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
-                spotDetailViewModel.deleteSpot(spotDetail)
-            }.setNegativeButton(resources.getString(R.string.no)) { _, _ -> }
-            .show()
+        if (Variables.isNetworkConnected.value!!){
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(resources.getString(R.string.delete))
+                .setMessage(resources.getString(R.string.delete_spot, spotDetail.spotName))
+                .setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
+                    spotDetailViewModel.deleteSpot(spotDetail)
+                }.setNegativeButton(resources.getString(R.string.no)) { _, _ -> }
+                .show()
+        }else{
+            Snackbar.make(requireView(),resources.getString(R.string.delete_failed)
+                    + resources.getString(R.string.no_connection),Snackbar.LENGTH_SHORT ).show()
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        Log.i(TAG, "on_stop")
         val toolbar: MaterialToolbar = (activity as MainActivity).binding.toolbar
         toolbar.menu.clear()
     }
 
     override fun onStart() {
         super.onStart()
-        if (currentSpotDetail != null) {
-            updateToolbarIfOwner(currentSpotDetail!!)
+        currentSpotDetail?.let {
+            updateToolbarIfOwner(it)
         }
-        Log.i(TAG, "on_start")
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.i(TAG, "on_resume")
-    }
 }

@@ -20,6 +20,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.example.dropspot.AuthActivity
 import com.example.dropspot.MainActivity
+import com.example.dropspot.R
 import com.example.dropspot.data.model.AppUser
 import com.example.dropspot.databinding.FragmentLoginBinding
 import com.example.dropspot.utils.Constants.AUTH_ENC_SHARED_PREF_KEY
@@ -27,6 +28,7 @@ import com.example.dropspot.utils.Constants.TOKEN_KEY
 import com.example.dropspot.utils.Constants.USER_KEY
 import com.example.dropspot.utils.InputLayoutTextWatcher
 import com.example.dropspot.utils.MyValidationListener
+import com.example.dropspot.utils.Variables
 import com.example.dropspot.viewmodels.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -135,20 +137,28 @@ class LoginFragment : Fragment() {
         }
 
         loginViewModel.loginResponse.observe(viewLifecycleOwner, Observer {
-            if (it.success) {
-                val token = it.token
-                val user = it.user
-                saveSharedPref(token, user!!)
-                startMainActivity(token, user)
-            } else {
-                Snackbar.make(this.requireView(), it.message, Snackbar.LENGTH_SHORT).show()
+            it?.let {
+                loginViewModel.resetResponses()
+                if (it.success) {
+                    Log.i(TAG,"-------------- $it")
+                    val token = it.token
+                    val user = it.user
+                    saveSharedPref(token, user!!)
+                    startMainActivity(token, user)
+                } else {
+                    showErrorMessage(it.message)
+                }
             }
         })
 
     }
 
+    private fun showErrorMessage(extraMessage: String) {
+        Snackbar.make(this.requireView(), resources.getString(R.string.login_failed) + extraMessage, Snackbar.LENGTH_SHORT).show()
+    }
+
     private fun saveSharedPref(token: String, appUser: AppUser) {
-        Log.i(TAG, "user into SP:$appUser")
+        Log.i(TAG, "user saved to SP:$appUser")
 
         sharedPreferences
             .edit()
@@ -170,18 +180,19 @@ class LoginFragment : Fragment() {
         val userString = sharedPreferences.getString(USER_KEY, null)
         Log.i(TAG, "get user from SP: $userString")
 
-        if (userString != null) {
-            val user: AppUser = Gson().fromJson(userString, AppUser::class.java)
+        userString?.let { uString ->
+            val user: AppUser = Gson().fromJson(uString, AppUser::class.java)
 
-            if (token != null) {
+            token?.let { token ->
                 startMainActivity(
                     token,
                     user
                 )
             }
-        }
-    }
 
+        }
+
+    }
 
     private fun startMainActivity(token: String, user: AppUser) {
         val intent = Intent(this.context, MainActivity::class.java)
@@ -193,10 +204,14 @@ class LoginFragment : Fragment() {
     }
 
     private fun login() {
-        loginViewModel.login(
-            inputEmail.text.toString().trim()
-            , inputPassword.text.toString().trim()
-        )
+        if (Variables.isNetworkConnected.value!!){
+            loginViewModel.login(
+                inputEmail.text.toString().trim()
+                , inputPassword.text.toString().trim()
+            )
+        }else{
+            showErrorMessage(resources.getString(R.string.no_connection))
+        }
     }
 
 }

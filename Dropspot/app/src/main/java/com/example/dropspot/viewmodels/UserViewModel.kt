@@ -25,23 +25,6 @@ class UserViewModel(
 
     val isSessionExpired: LiveData<Boolean> = AuthInterceptor.isSessionExpired
 
-    fun fetchUser() {
-        Log.i(TAG, "fetching user...")
-        viewModelScope.launch {
-            val response = meRepository.fetchMe()
-            response?.let {
-                _currentUser.value = meRepository.fetchMe()
-            }
-        }
-    }
-
-    private fun fetchSpotDetails() {
-        Log.i(TAG, "fetching spotDetails...")
-        viewModelScope.launch {
-            spotDetailRepository.fetchAllSpotDetails()
-        }
-    }
-
     fun setSessionToken(token: String) {
         AuthInterceptor.setSessionToken(token)
     }
@@ -52,5 +35,21 @@ class UserViewModel(
         fetchSpotDetails()
     }
 
+    fun fetchUser() {
+        Log.i(TAG, "fetching user...")
+        viewModelScope.launch {
+            val response = meRepository.fetchMe()
+            response?.let {
+                _currentUser.value = it
+            }
+        }
+    }
+
+    private fun fetchSpotDetails() {
+        Log.i(TAG, "fetching spotDetails...")
+        viewModelScope.launch {
+            spotDetailRepository.fetchAllSpotDetails()
+        }
+    }
 
 }

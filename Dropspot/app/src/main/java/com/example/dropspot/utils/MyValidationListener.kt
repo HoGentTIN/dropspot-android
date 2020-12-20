@@ -11,6 +11,7 @@ import com.mobsandgeeks.saripaar.Validator
 
 abstract class MyValidationListener(private val context: Context, private val view: View) :
     Validator.ValidationListener {
+
     override fun onValidationFailed(errors: MutableList<ValidationError>?) {
         for (error: ValidationError in errors!!.iterator()) {
             val v: View = error.view.parent.parent as TextInputLayout
@@ -32,6 +33,5 @@ abstract class MyValidationListener(private val context: Context, private val vi
 
         }
     }
-
 
 }

@@ -9,14 +9,9 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface AuthService {
+
     @POST("auth/signup/user")
     suspend fun register(@Body signUpRequest: RegisterRequest): Response<MessageResponse>
-
-    @POST("auth/signup/mod")
-    suspend fun registerMod(@Body signUpRequest: RegisterRequest): Response<MessageResponse>
-
-    @POST("auth/signup/admin")
-    suspend fun registerAdmin(@Body signUpRequest: RegisterRequest): Response<MessageResponse>
 
     @POST("auth/signin")
     suspend fun login(@Body loginRequest: LoginRequest): Response<JwtResponse>

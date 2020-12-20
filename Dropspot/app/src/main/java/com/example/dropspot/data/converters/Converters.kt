@@ -38,8 +38,7 @@ object Converters {
     @JvmStatic
     @TypeConverter
     fun fromArrayList(list: ArrayList<CriterionScore?>?): String {
-        val gson = Gson()
-        return gson.toJson(list)
+        return Gson().toJson(list)
     }
 
 }

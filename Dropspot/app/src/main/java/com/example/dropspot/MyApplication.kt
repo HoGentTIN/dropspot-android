@@ -13,14 +13,14 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        // start network callback
+        NetworkMonitor(this).startNetworkCallback()
+
         startKoin {
             androidLogger(Level.INFO)
             androidContext(this@MyApplication)
             modules(myModule)
         }
-
-        // start network callback
-        NetworkMonitor(this).startNetworkCallback()
     }
 
     override fun onTerminate() {

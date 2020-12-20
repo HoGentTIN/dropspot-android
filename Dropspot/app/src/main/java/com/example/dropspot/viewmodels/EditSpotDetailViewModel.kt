@@ -54,7 +54,7 @@ class EditSpotDetailViewModel(
 
     fun updateStreetSpot(name: String) {
 
-        val request: StreetSpotRequest = StreetSpotRequest(
+        val request = StreetSpotRequest(
             name,
             spotDetail!!.latitude,
             spotDetail!!.longitude
@@ -67,6 +67,5 @@ class EditSpotDetailViewModel(
             )
         }
     }
-
 
 }

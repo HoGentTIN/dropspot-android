@@ -1,5 +1,6 @@
 package com.example.dropspot
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.security.keystore.KeyGenParameterSpec
@@ -8,6 +9,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -166,7 +168,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    fun showSessionExpiredAndLogout() {
+    private fun showSessionExpiredAndLogout() {
         sessionExpiredDialog = MaterialAlertDialogBuilder(this)
             .setTitle(resources.getString(R.string.alert_dialog_session_expired_title))
             .setMessage(resources.getString(R.string.alert_dialog_session_expired_message))
@@ -221,4 +223,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             sessionExpiredDialog!!.dismiss()
         }
     }
+
+    fun hideKeyboard(view: View) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
 }

@@ -17,6 +17,7 @@ constructor(private val application: Application) {
             application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val builder: NetworkRequest.Builder = NetworkRequest.Builder()
 
+        Variables.isNetworkConnected.postValue(false)
         cm.registerNetworkCallback(
             builder.build(),
             object : ConnectivityManager.NetworkCallback() {

@@ -5,6 +5,7 @@ import android.text.TextWatcher
 import com.google.android.material.textfield.TextInputLayout
 
 class InputLayoutTextWatcher(val textInputLayout: TextInputLayout) : TextWatcher {
+
     override fun afterTextChanged(s: Editable?) {
     }
 
@@ -14,4 +15,5 @@ class InputLayoutTextWatcher(val textInputLayout: TextInputLayout) : TextWatcher
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         textInputLayout.error = null
     }
+
 }

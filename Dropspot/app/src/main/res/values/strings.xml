@@ -1,5 +1,8 @@
 <resources>
+
+    // shared
     <string name="app_name">Dropspot</string>
+    <string name="no_connection">no connection</string>
 
     // auth
     <string name="register">Register</string>
@@ -12,6 +15,8 @@
     <string name="username">Username</string>
     <string name="password_confirmation">Password Confirmation</string>
     <string name="logo_descr">Dropspot logo</string>
+    <string name="login_failed">"Login failed:  "</string>
+    <string name="register_failed">"Register failed: "</string>
 
     // home frag
     <string name="name">Name</string>
@@ -74,6 +79,9 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="ranking_icon_descr">represents the ranking from 0 to 5</string>
+    <string name="vote_failed">"Voting failed: "</string>
+    <string name="favor_failed">"Favoriting failed:  "</string>
+    <string name="un_favor_failed">"Unfavoriting failed: "</string>
 
     // session expired alert dialog
     <string name="alert_dialog_session_expired_title">Session Expired</string>
@@ -83,5 +91,7 @@
     // update spot
     <string name="entranceFee_slider_descr">slide to set entrance fee</string>
     <string name="update">Update</string>
+    <string name="delete_failed">"Delete failed: "</string>
+    <string name="update_failed">"Update failed: "</string>
 
 </resources>

@@ -9,6 +9,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface UserService {
+
     @GET("users/me")
     suspend fun getMe(): AppUser
 

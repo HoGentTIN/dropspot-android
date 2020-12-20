@@ -61,5 +61,4 @@ class MeRepository(private val userService: UserService, private val spotDetailD
         return null
     }
 
-
 }

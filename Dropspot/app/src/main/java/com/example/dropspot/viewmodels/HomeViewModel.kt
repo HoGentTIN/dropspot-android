@@ -70,5 +70,4 @@ class HomeViewModel(private val spotRepository: SpotRepository) : ViewModel() {
         }
     }
 
-
 }

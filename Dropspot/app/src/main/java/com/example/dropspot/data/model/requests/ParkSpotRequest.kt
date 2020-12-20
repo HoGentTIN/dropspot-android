@@ -6,7 +6,7 @@ data class ParkSpotRequest(
     val name: String,
     val latitude: Double,
     val longitude: Double,
-    val entranceFee: Double = 0.0,
+    val entranceFee: Double,
     val parkCategory: ParkCategory,
     val street: String,
     val houseNumber: String,

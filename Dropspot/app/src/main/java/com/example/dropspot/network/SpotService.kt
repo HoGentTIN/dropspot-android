@@ -10,12 +10,6 @@ import com.example.dropspot.data.model.responses.MessageResponse
 import retrofit2.http.*
 
 interface SpotService {
-    //spots
-    @GET("spots")
-    suspend fun getSpots(): List<Spot>
-
-    @GET("spots/{spotId}")
-    suspend fun getSpotById(@Path("spotId") id: Long): Spot
 
     @GET("spots/{spotId}/detail")
     suspend fun getSpotDetailById(@Path("spotId") id: Long): SpotDetail
@@ -57,4 +51,5 @@ interface SpotService {
 
     @GET("spots/detail")
     suspend fun getSpotDetails(): List<SpotDetail>
+
 }

@@ -118,4 +118,5 @@ class RatingBarSvg @JvmOverloads constructor(
             )
         }
     }
+
 }

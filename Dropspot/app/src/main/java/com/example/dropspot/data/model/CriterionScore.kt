@@ -11,9 +11,9 @@ data class CriterionScore(
     val description: String,
     val score: Double
 ) : Parcelable {
+
     fun getRatingBarScore(): Int {
         return score.roundToInt()
     }
-
 
 }

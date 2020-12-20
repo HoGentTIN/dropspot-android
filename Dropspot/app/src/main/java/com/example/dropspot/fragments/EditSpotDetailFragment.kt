@@ -15,6 +15,7 @@ import com.example.dropspot.data.model.ParkCategory
 import com.example.dropspot.databinding.EditSpotDetailFragmentBinding
 import com.example.dropspot.utils.InputLayoutTextWatcher
 import com.example.dropspot.utils.MyValidationListener
+import com.example.dropspot.utils.Variables
 import com.example.dropspot.viewmodels.EditSpotDetailViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.mobsandgeeks.saripaar.Validator
@@ -113,7 +114,8 @@ class EditSpotDetailFragment : Fragment() {
         editSpotDetailViewModel.updateSuccess.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it.success) findNavController().navigateUp()
-                Snackbar.make(requireView(), it.message, Snackbar.LENGTH_SHORT).show()
+                else Snackbar.make(requireView(), resources.getString(R.string.update_failed)
+                        + it.message, Snackbar.LENGTH_SHORT).show()
             }
         })
 
@@ -145,20 +147,27 @@ class EditSpotDetailFragment : Fragment() {
     }
 
     private fun updateSpot() {
-        if (editSpotDetailViewModel.spotDetail!!.isPark()) {
-            editSpotDetailViewModel.updateParkSpot(
-                inputName.text.toString().trim()
-                , inputStreet.text.toString().trim()
-                , inputNumber.text.toString().trim()
-                , inputCity.text.toString().trim()
-                , inputPostal.text.toString().trim()
-                , inputState.text.toString().trim()
-                , inputCountry.text.toString().trim()
-                , binding.dropdownParkCategory.text.toString().trim()
-                , binding.sliderFee.value.toDouble()
-            )
+        if (Variables.isNetworkConnected.value!!){
+            if (editSpotDetailViewModel.spotDetail!!.isPark()) {
+                editSpotDetailViewModel.updateParkSpot(
+                    inputName.text.toString().trim()
+                    , inputStreet.text.toString().trim()
+                    , inputNumber.text.toString().trim()
+                    , inputCity.text.toString().trim()
+                    , inputPostal.text.toString().trim()
+                    , inputState.text.toString().trim()
+                    , inputCountry.text.toString().trim()
+                    , binding.dropdownParkCategory.text.toString().trim()
+                    , binding.sliderFee.value.toDouble()
+                )
+            } else {
+                editSpotDetailViewModel.updateStreetSpot(inputName.text.toString().trim())
+            }
         } else {
-            editSpotDetailViewModel.updateStreetSpot(inputName.text.toString().trim())
+            Snackbar.make(requireView(),resources.getString(R.string.update_failed)
+                    + resources.getString(R.string.no_connection),
+                Snackbar.LENGTH_SHORT).show()
         }
+
     }
 }

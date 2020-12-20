@@ -9,6 +9,7 @@ import com.example.dropspot.data.model.requests.LoginRequest
 import com.example.dropspot.data.model.responses.JwtResponse
 import com.example.dropspot.network.AuthService
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 
@@ -20,43 +21,50 @@ class LoginViewModel(
     private val _loginResponse = MutableLiveData<JwtResponse>()
     val loginResponse: LiveData<JwtResponse> get() = _loginResponse
 
-    private val _spinner = MutableLiveData<Boolean>()
-    val spinner: LiveData<Boolean> get() = _spinner
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
     fun login(emailOrUsername: String, password: String) {
         // start wheel
-        _spinner.value = true
+        _isLoading.value = true
 
         val request = LoginRequest(emailOrUsername, password)
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = authService.login(request)
                 if (response.code() == 200) {
-                    _loginResponse.value = response.body()
+                    _loginResponse.postValue( response.body())
                 } else {
                     if (response.code() == 400) {
-                        _loginResponse.value =
+                        _loginResponse.postValue(
                             gson.fromJson(
-                                response.errorBody()!!.string()
-                                , JwtResponse::class.java
+                            response.errorBody()!!.string()
+                            , JwtResponse::class.java
                             )
+                        )
                     }
                 }
-                _spinner.value = false
+
+                _isLoading.postValue(false)
             } catch (e: SocketTimeoutException) {
                 login(emailOrUsername, password)
                 Log.i("login_req", "socket timeout")
-            } catch (e: Throwable) {
-                _loginResponse.value =
-                    JwtResponse("something went wrong")
-                _spinner.value = false
+            } catch (e: Exception) {
+                e.message?.let {
+                    _loginResponse.postValue(JwtResponse(it))
+                } ?: run {
+                    _loginResponse.postValue(JwtResponse())
+                }
+
+                _isLoading.postValue(false)
             }
 
         }
     }
 
-
-
+    fun resetResponses(){
+        _loginResponse.value = null
+    }
 
 }

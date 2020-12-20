@@ -27,6 +27,10 @@ class SpotDetailViewModel(private val spotDetailRepository: SpotDetailRepository
     val favoriteSuccess: LiveData<MessageResponse>
         get() = _favoriteSuccess
 
+    private val _unFavoriteSuccess = MutableLiveData<MessageResponse>()
+    val unFavoriteSuccess: LiveData<MessageResponse>
+        get() = _favoriteSuccess
+
     private val _deleteSuccess = MutableLiveData<MessageResponse>()
     val deleteSuccess: LiveData<MessageResponse>
         get() = _deleteSuccess
@@ -63,8 +67,8 @@ class SpotDetailViewModel(private val spotDetailRepository: SpotDetailRepository
 
     fun unFavoriteSpot(spotDetail: SpotDetail) {
         viewModelScope.launch {
-            _favoriteSuccess.value = spotDetailRepository.unFavoriteSpot(spotDetail)
-            _favoriteSuccess.value = null
+            _unFavoriteSuccess.value = spotDetailRepository.unFavoriteSpot(spotDetail)
+            _unFavoriteSuccess.value = null
         }
     }
 

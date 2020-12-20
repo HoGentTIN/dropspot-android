@@ -9,6 +9,7 @@ import com.example.dropspot.data.model.requests.RegisterRequest
 import com.example.dropspot.data.model.responses.MessageResponse
 import com.example.dropspot.network.AuthService
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 
@@ -17,8 +18,8 @@ class RegisterViewModel(
     , private val gson: Gson
 ) : ViewModel() {
 
-    private val _spinner = MutableLiveData<Boolean>()
-    val spinner: LiveData<Boolean> get() = _spinner
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
     private val _registerResponse = MutableLiveData<MessageResponse>()
     val registerResponse: LiveData<MessageResponse> get() = _registerResponse
@@ -31,39 +32,46 @@ class RegisterViewModel(
         password: String
     ) {
         // start wheel
-        _spinner.value = true
+        _isLoading.value = true
         val request =
             RegisterRequest(firstName, lastName, username, email, password)
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = authService.register(request)
 
                 // handle bad request
                 if (response.code() == 200) {
-                    _registerResponse.value = response.body()
+                    _registerResponse.postValue(response.body())
                 } else {
                     if (response.code() == 400) {
-                        _registerResponse.value =
+                        _registerResponse.postValue(
                             gson.fromJson(
                                 response.errorBody()!!.string()
                                 , MessageResponse::class.java
                             )
+                        )
                     }
                 }
-                _spinner.value = false
+
+                _isLoading.postValue(false)
             } catch (e: SocketTimeoutException) {
                 register(firstName, lastName, username, email, password)
                 Log.i("register_req", "socket timeout")
 
-            } catch (e: Throwable) {
-                _registerResponse.value =
-                    MessageResponse(
-                        false,
-                        "Something went wrong"
-                    )
-                _spinner.value = false
+            } catch (e: Exception) {
+                e.message?.let {
+                    _registerResponse.postValue(MessageResponse(false,it))
+                }?: run {
+                    _registerResponse.postValue(MessageResponse())
+                }
+                _isLoading.postValue(false)
             }
 
         }
     }
+
+    fun resetResponses(){
+        _registerResponse.value = null
+    }
+
 }

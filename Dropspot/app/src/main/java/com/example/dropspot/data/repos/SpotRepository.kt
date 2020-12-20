@@ -21,18 +21,6 @@ class SpotRepository(
     private val _spots = spotDao.getAllSpots()
     val spots: LiveData<List<Spot>> get() = _spots
 
-    suspend fun getAllSpots() {
-        if (Variables.isNetworkConnected.value!!) {
-            try {
-                val onlineSpots: List<Spot> = spotService.getSpots()
-                spotDao.insertAll(onlineSpots)
-            } catch (e: Exception) {
-                Log.d(TAG, e.message ?: "Something went wrong with getAllSpots")
-            }
-
-        }
-    }
-
     suspend fun getSpotsInRadius(latitude: Double, longitude: Double, radius: Double) {
         if (Variables.isNetworkConnected.value!!) {
             try {
@@ -51,16 +39,12 @@ class SpotRepository(
         val request = StreetSpotRequest(name, latitude, longitude)
         Log.i(TAG, request.toString())
 
-        if (Variables.isNetworkConnected.value!!) {
-            try {
-                val spotResponse = spotService.addStreetSpot(request)
-                spotDao.insert(spotResponse)
-                return spotResponse
-            } catch (e: Exception) {
-                Log.d(TAG, e.message ?: "something went wrong with addStreetSpot")
-                return null
-            }
-        } else {
+        try {
+            val spotResponse = spotService.addStreetSpot(request)
+            spotDao.insert(spotResponse)
+            return spotResponse
+        } catch (e: Exception) {
+            Log.d(TAG, e.message ?: "something went wrong with addStreetSpot")
             return null
         }
 
@@ -95,19 +79,16 @@ class SpotRepository(
         )
         Log.i(TAG, request.toString())
 
-        if (Variables.isNetworkConnected.value!!) {
-            try {
-                val spotResponse = spotService.addParkSpot(request)
-                spotDao.insert(spotResponse)
-                return spotResponse
+        try {
+            val spotResponse = spotService.addParkSpot(request)
+            spotDao.insert(spotResponse)
+            return spotResponse
 
-            } catch (e: Exception) {
-                Log.d("spot_response", e.message ?: "something went wrong with addParkSpot")
-                return null
-            }
-        } else {
+        } catch (e: Exception) {
+            Log.d("spot_response", e.message ?: "something went wrong with addParkSpot")
             return null
         }
+
     }
 
 }
