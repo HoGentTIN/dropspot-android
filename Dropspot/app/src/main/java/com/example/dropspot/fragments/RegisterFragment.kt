@@ -8,7 +8,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.dropspot.AuthActivity
 import com.example.dropspot.R
@@ -30,28 +29,28 @@ class RegisterFragment : Fragment() {
     private lateinit var buttonRegister: Button
     private val validator = Validator(this)
 
-    @NotEmpty(message = "First name is required")
-    @Length(max = 50, message = "First name max length 50")
+    @NotEmpty(messageResId = R.string.first_name_req)
+    @Length(max = 50, messageResId = R.string.first_name_max_length)
     private lateinit var inputFirstName: EditText
 
-    @NotEmpty(message = "Last name is required")
-    @Length(max = 50, message = "Last name max length 50")
+    @NotEmpty(messageResId = R.string.last_name_req)
+    @Length(max = 50, messageResId = R.string.last_name_max_length)
     private lateinit var inputLastName: EditText
 
-    @NotEmpty(message = "Username is required")
-    @Length(min = 5, max = 35, message = "Username must have between 5 and 35 characters.")
+    @NotEmpty(messageResId = R.string.user_name_req)
+    @Length(min = 5, max = 35, messageResId = R.string.user_name_length)
     private lateinit var inputUsername: EditText
 
-    @Email(message = "Must be an email address")
-    @NotEmpty(message = "Email is required")
-    @Length(max = 100, message = "Email max length 100.")
+    @Email(messageResId = R.string.email_wrong_format)
+    @NotEmpty(messageResId = R.string.email_req)
+    @Length(max = 100, messageResId = R.string.email_max_length)
     private lateinit var inputEmail: EditText
 
-    @NotEmpty(message = "Password is required")
-    @Password(min = 6, message = "password min length 6")
+    @NotEmpty(messageResId = R.string.password_req)
+    @Password(min = 6, messageResId = R.string.password_min_length)
     private lateinit var inputPassword: EditText
 
-    @NotEmpty(message = "Password confirmation is required")
+    @NotEmpty(messageResId = R.string.password_confirmation_req)
     @ConfirmPassword
     private lateinit var inputPasswordConfirm: EditText
 
@@ -59,7 +58,7 @@ class RegisterFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
         binding.vm = registerViewModel
@@ -110,7 +109,7 @@ class RegisterFragment : Fragment() {
             false
         }
 
-        registerViewModel.registerResponse.observe(viewLifecycleOwner, Observer {
+        registerViewModel.registerResponse.observe(viewLifecycleOwner, {
             it?.let {
                 registerViewModel.resetResponses()
                 if (it.success) navigateToLogin() else showErrorMessage(it.message)
@@ -121,8 +120,10 @@ class RegisterFragment : Fragment() {
 
     private fun showErrorMessage(extraMessage: String) {
 
-        Snackbar.make(this.requireView(), resources.getString(R.string.register_failed)
-                + extraMessage, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(
+            this.requireView(), resources.getString(R.string.register_failed)
+                    + extraMessage, Snackbar.LENGTH_SHORT
+        ).show()
 
     }
 
@@ -138,7 +139,7 @@ class RegisterFragment : Fragment() {
 
     private fun register() {
 
-        if (Variables.isNetworkConnected.value!!){
+        if (Variables.isNetworkConnected.value!!) {
             registerViewModel.register(
                 input_firstname.text.toString().trim()
                 , input_lastname.text.toString().trim()

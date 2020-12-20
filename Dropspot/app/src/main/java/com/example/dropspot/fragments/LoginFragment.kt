@@ -13,7 +13,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.security.crypto.EncryptedSharedPreferences
@@ -52,17 +51,17 @@ class LoginFragment : Fragment() {
     private lateinit var buttonRegister: Button
     private lateinit var buttonLogin: Button
 
-    @NotEmpty(message = "Email or username is required")
+    @NotEmpty(messageResId = R.string.email_or_username_req)
     private lateinit var inputEmail: EditText
 
-    @NotEmpty(message = "Password is required")
+    @NotEmpty(messageResId = R.string.password_req)
     private lateinit var inputPassword: EditText
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
         binding.vm = loginViewModel
         binding.lifecycleOwner = this
@@ -136,11 +135,11 @@ class LoginFragment : Fragment() {
             false
         }
 
-        loginViewModel.loginResponse.observe(viewLifecycleOwner, Observer {
+        loginViewModel.loginResponse.observe(viewLifecycleOwner, {
             it?.let {
                 loginViewModel.resetResponses()
                 if (it.success) {
-                    Log.i(TAG,"-------------- $it")
+                    Log.i(TAG, "-------------- $it")
                     val token = it.token
                     val user = it.user
                     saveSharedPref(token, user!!)
@@ -154,7 +153,11 @@ class LoginFragment : Fragment() {
     }
 
     private fun showErrorMessage(extraMessage: String) {
-        Snackbar.make(this.requireView(), resources.getString(R.string.login_failed) + extraMessage, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(
+            this.requireView(),
+            resources.getString(R.string.login_failed) + extraMessage,
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
     private fun saveSharedPref(token: String, appUser: AppUser) {
@@ -204,12 +207,12 @@ class LoginFragment : Fragment() {
     }
 
     private fun login() {
-        if (Variables.isNetworkConnected.value!!){
+        if (Variables.isNetworkConnected.value!!) {
             loginViewModel.login(
                 inputEmail.text.toString().trim()
                 , inputPassword.text.toString().trim()
             )
-        }else{
+        } else {
             showErrorMessage(resources.getString(R.string.no_connection))
         }
     }

@@ -26,7 +26,7 @@ class LoginViewModel(
 
     fun login(emailOrUsername: String, password: String) {
         // start wheel
-        _isLoading.value = true
+        _isLoading.postValue(true)
 
         val request = LoginRequest(emailOrUsername, password)
 
@@ -34,13 +34,13 @@ class LoginViewModel(
             try {
                 val response = authService.login(request)
                 if (response.code() == 200) {
-                    _loginResponse.postValue( response.body())
+                    _loginResponse.postValue(response.body())
                 } else {
                     if (response.code() == 400) {
                         _loginResponse.postValue(
                             gson.fromJson(
-                            response.errorBody()!!.string()
-                            , JwtResponse::class.java
+                                response.errorBody()!!.string()
+                                , JwtResponse::class.java
                             )
                         )
                     }
@@ -63,7 +63,7 @@ class LoginViewModel(
         }
     }
 
-    fun resetResponses(){
+    fun resetResponses() {
         _loginResponse.value = null
     }
 

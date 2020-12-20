@@ -29,12 +29,12 @@ abstract class AppDatabase : RoomDatabase() {
 
                 if (instance == null) {
                     instance = Room.databaseBuilder(
-                            context.applicationContext,
-                            AppDatabase::class.java,
-                            "spot_database"
+                        context.applicationContext,
+                        AppDatabase::class.java,
+                        "spot_database"
                     )
-                            .fallbackToDestructiveMigration()
-                            .build()
+                        .fallbackToDestructiveMigration()
+                        .build()
                     INSTANCE = instance
                 }
                 return instance

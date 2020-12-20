@@ -32,7 +32,7 @@ class RegisterViewModel(
         password: String
     ) {
         // start wheel
-        _isLoading.value = true
+        _isLoading.postValue(true)
         val request =
             RegisterRequest(firstName, lastName, username, email, password)
         viewModelScope.launch(Dispatchers.IO) {
@@ -60,8 +60,8 @@ class RegisterViewModel(
 
             } catch (e: Exception) {
                 e.message?.let {
-                    _registerResponse.postValue(MessageResponse(false,it))
-                }?: run {
+                    _registerResponse.postValue(MessageResponse(false, it))
+                } ?: run {
                     _registerResponse.postValue(MessageResponse())
                 }
                 _isLoading.postValue(false)
@@ -70,7 +70,7 @@ class RegisterViewModel(
         }
     }
 
-    fun resetResponses(){
+    fun resetResponses() {
         _registerResponse.value = null
     }
 

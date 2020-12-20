@@ -17,6 +17,19 @@
     <string name="logo_descr">Dropspot logo</string>
     <string name="login_failed">"Login failed:  "</string>
     <string name="register_failed">"Register failed: "</string>
+    <string name="email_or_username_req">Email or username is required</string>
+    <string name="password_req">Password is required</string>
+    <string name="first_name_req">First name is required</string>
+    <string name="first_name_max_length">First name max length 50</string>
+    <string name="last_name_req">Last name is required</string>
+    <string name="last_name_max_length">Last name max length 50</string>
+    <string name="user_name_req">Username is required</string>
+    <string name="user_name_length">Username must have between 5 and 35 characters</string>
+    <string name="email_req">Email is required</string>
+    <string name="email_wrong_format">Must be an email address</string>
+    <string name="email_max_length">Email max length 100</string>
+    <string name="password_min_length">password min length 6</string>
+    <string name="password_confirmation_req">Password confirmation is required</string>
 
     // home frag
     <string name="name">Name</string>

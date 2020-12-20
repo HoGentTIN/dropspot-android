@@ -82,26 +82,33 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     // validation
     private val validator = Validator(this)
+
     // street val
     @NotEmpty(messageResId = R.string.spot_name_req)
     @Order(1)
     private lateinit var inputName: EditText
+
     // park val
     @Order(2)
     @NotEmpty(messageResId = R.string.street_req)
     private lateinit var inputStreet: EditText
+
     @Order(3)
     @NotEmpty(messageResId = R.string.house_number_req)
     private lateinit var inputNumber: EditText
+
     @Order(4)
     @NotEmpty(messageResId = R.string.city_req)
     private lateinit var inputCity: EditText
+
     @Order(5)
     @NotEmpty(messageResId = R.string.postal_code_req)
     private lateinit var inputPostal: EditText
+
     @Order(6)
     @NotEmpty(messageResId = R.string.state_req)
     private lateinit var inputState: EditText
+
     @Order(7)
     @NotEmpty(messageResId = R.string.country_req)
     private lateinit var inputCountry: EditText
@@ -109,7 +116,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.home_fragment, container, false)
         binding.lifecycleOwner = this
         binding.vm = viewModel
@@ -217,13 +224,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private fun setupViewModelObservers() {
 
         //add spot response handling
-        viewModel.addParkSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.addParkSpotSuccess.observe(viewLifecycleOwner, {
             it?.let {
                 handleAddSpotResponse(it, false)
             }
         })
 
-        viewModel.addStreetSpotSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.addStreetSpotSuccess.observe(viewLifecycleOwner, {
             it?.let {
                 handleAddSpotResponse(it)
             }
@@ -233,7 +240,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     private fun handleAddSpotResponse(success: Boolean, isStreet: Boolean = true) {
         if (success) {
-            val mes = if (isStreet) resources.getString(R.string.street_spot_added) else resources.getString(R.string.park_spot_added)
+            val mes =
+                if (isStreet) resources.getString(R.string.street_spot_added) else resources.getString(
+                    R.string.park_spot_added
+                )
             removeNewSpotMarker()
             clearFields()
             binding.fab.isExpanded = false
@@ -241,8 +251,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 .setAnchorView(binding.fab)
                 .show()
         } else {
-            Snackbar.make(requireView(), resources.getString(R.string.failed_to_add_spot),
-                Snackbar.LENGTH_SHORT)
+            Snackbar.make(
+                requireView(), resources.getString(R.string.failed_to_add_spot),
+                Snackbar.LENGTH_SHORT
+            )
                 .setAnchorView(binding.addSpotContainer)
                 .show()
         }
@@ -310,11 +322,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private fun addSpot() {
         (activity as MainActivity).hideKeyboard(requireView())
 
-        if (!Variables.isNetworkConnected.value!!){
-            Snackbar.make(requireView(),
-            resources.getString(R.string.failed_to_add_spot) + ":"
-                    + resources.getString(R.string.no_connection),
-            Snackbar.LENGTH_SHORT)
+        if (!Variables.isNetworkConnected.value!!) {
+            Snackbar.make(
+                requireView(),
+                resources.getString(R.string.failed_to_add_spot) + ":"
+                        + resources.getString(R.string.no_connection),
+                Snackbar.LENGTH_SHORT
+            )
                 .setAnchorView(binding.addSpotContainer)
                 .show()
             return
@@ -395,7 +409,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         // draw spots
 
-        viewModel.spots.observe(viewLifecycleOwner, androidx.lifecycle.Observer { inComingSpots ->
+        viewModel.spots.observe(viewLifecycleOwner, { inComingSpots ->
             Log.i(TAG, "Incoming spots: $inComingSpots")
             // if markerCache contains a spot that is not in incoming spot -> delete marker from map
             markerCache.forEach { marker ->

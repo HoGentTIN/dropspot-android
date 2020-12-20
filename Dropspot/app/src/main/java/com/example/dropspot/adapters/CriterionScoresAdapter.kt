@@ -14,7 +14,10 @@ import com.example.dropspot.utils.Variables
 import com.example.dropspot.viewmodels.SpotDetailViewModel
 import com.google.android.material.snackbar.Snackbar
 
-class CriterionScoresAdapter(private val spotDetailViewModel: SpotDetailViewModel,private val context: Context) :
+class CriterionScoresAdapter(
+    private val spotDetailViewModel: SpotDetailViewModel,
+    private val context: Context
+) :
     ListAdapter<CriterionScore, CriterionScoresAdapter.CriterionScoreViewHolder>(
         CriterionScoreDiffCallback()
     ) {
@@ -31,23 +34,29 @@ class CriterionScoresAdapter(private val spotDetailViewModel: SpotDetailViewMode
 
     override fun onBindViewHolder(holder: CriterionScoreViewHolder, position: Int) {
         val criterionScore = getItem(position)
-        holder.bind(criterionScore, spotDetailViewModel,context)
+        holder.bind(criterionScore, spotDetailViewModel, context)
     }
 
     class CriterionScoreViewHolder(
         private val binding: ListItemRatingBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(criterionScore: CriterionScore, spotDetailViewModel: SpotDetailViewModel,context: Context) {
+        fun bind(
+            criterionScore: CriterionScore,
+            spotDetailViewModel: SpotDetailViewModel,
+            context: Context
+        ) {
             binding.criterionScore = criterionScore
             binding.ratingBar.onRatingBarChangeListener =
                 RatingBar.OnRatingBarChangeListener { _, rating, fromUser ->
-                    if (Variables.isNetworkConnected.value!! && fromUser){
+                    if (Variables.isNetworkConnected.value!! && fromUser) {
                         spotDetailViewModel.vote(criterionScore.criterionId, rating.toDouble())
                     } else {
-                        Snackbar.make(binding.root,
+                        Snackbar.make(
+                            binding.root,
                             context.resources.getString(R.string.vote_failed)
-                                + context.resources.getString(R.string.no_connection),
-                            Snackbar.LENGTH_SHORT).show()
+                                    + context.resources.getString(R.string.no_connection),
+                            Snackbar.LENGTH_SHORT
+                        ).show()
                         binding.ratingBar.rating = 0f
                     }
                 }

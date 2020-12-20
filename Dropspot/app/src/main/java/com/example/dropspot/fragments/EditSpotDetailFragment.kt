@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.dropspot.R
@@ -70,7 +69,7 @@ class EditSpotDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = EditSpotDetailFragmentBinding.inflate(layoutInflater, container, false)
         binding.lifecycleOwner = this
         binding.vm = editSpotDetailViewModel
@@ -111,11 +110,13 @@ class EditSpotDetailFragment : Fragment() {
 
         binding.dropdownParkCategory.setText(spotDetail.parkCategory.toString(), false)
 
-        editSpotDetailViewModel.updateSuccess.observe(viewLifecycleOwner, Observer {
+        editSpotDetailViewModel.updateSuccess.observe(viewLifecycleOwner, {
             it?.let {
                 if (it.success) findNavController().navigateUp()
-                else Snackbar.make(requireView(), resources.getString(R.string.update_failed)
-                        + it.message, Snackbar.LENGTH_SHORT).show()
+                else Snackbar.make(
+                    requireView(), resources.getString(R.string.update_failed)
+                            + it.message, Snackbar.LENGTH_SHORT
+                ).show()
             }
         })
 
@@ -147,7 +148,7 @@ class EditSpotDetailFragment : Fragment() {
     }
 
     private fun updateSpot() {
-        if (Variables.isNetworkConnected.value!!){
+        if (Variables.isNetworkConnected.value!!) {
             if (editSpotDetailViewModel.spotDetail!!.isPark()) {
                 editSpotDetailViewModel.updateParkSpot(
                     inputName.text.toString().trim()
@@ -164,9 +165,11 @@ class EditSpotDetailFragment : Fragment() {
                 editSpotDetailViewModel.updateStreetSpot(inputName.text.toString().trim())
             }
         } else {
-            Snackbar.make(requireView(),resources.getString(R.string.update_failed)
-                    + resources.getString(R.string.no_connection),
-                Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(
+                requireView(), resources.getString(R.string.update_failed)
+                        + resources.getString(R.string.no_connection),
+                Snackbar.LENGTH_SHORT
+            ).show()
         }
 
     }
