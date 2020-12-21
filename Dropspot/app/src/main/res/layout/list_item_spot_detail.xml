@@ -69,6 +69,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/spot_detail_list_item_name" />
 
                 <ImageView
+                    android:contentDescription="@string/overall_score_image_descr"
                     android:id="@+id/overall_score"
                     style="@style/icon_big"
                     app:layout_constraintEnd_toEndOf="parent"

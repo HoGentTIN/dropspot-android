@@ -408,7 +408,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
 
         // draw spots
-
         viewModel.spots.observe(viewLifecycleOwner, { inComingSpots ->
             Log.i(TAG, "Incoming spots: $inComingSpots")
             // if markerCache contains a spot that is not in incoming spot -> delete marker from map

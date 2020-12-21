@@ -33,8 +33,8 @@ class EditSpotDetailFragment : Fragment() {
     private val validator = Validator(this)
 
     // street val
-    @NotEmpty(messageResId = R.string.spot_name_req)
     @Order(1)
+    @NotEmpty(messageResId = R.string.spot_name_req)
     private lateinit var inputName: EditText
 
     // park val

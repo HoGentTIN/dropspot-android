@@ -85,10 +85,7 @@
     <string name="edit_descr">Edit spot here</string>
     <string name="delete_descr">Delete spot</string>
     <string name="delete">Delete</string>
-    <string name="more">More</string>
-    <string name="content_description_more">More options</string>
     <string name="delete_spot">Are you sure you want to delete \'%1$s\'?</string>
-    <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="ranking_icon_descr">represents the ranking from 0 to 5</string>
@@ -102,9 +99,9 @@
     <string name="ok">OK</string>
 
     // update spot
-    <string name="entranceFee_slider_descr">slide to set entrance fee</string>
     <string name="update">Update</string>
     <string name="delete_failed">"Delete failed: "</string>
     <string name="update_failed">"Update failed: "</string>
+    <string name="overall_score_image_descr">An icon that represents the overall score of the spot</string>
 
 </resources>
