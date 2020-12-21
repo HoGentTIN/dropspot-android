@@ -226,7 +226,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         //add spot response handling
         viewModel.addParkSpotSuccess.observe(viewLifecycleOwner, {
             it?.let {
-                handleAddSpotResponse(it, false)
+                handleAddSpotResponse(it)
             }
         })
 
@@ -238,18 +238,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     }
 
-    private fun handleAddSpotResponse(success: Boolean, isStreet: Boolean = true) {
+    private fun handleAddSpotResponse(success: Boolean) {
         if (success) {
-            val mes =
-                if (isStreet) resources.getString(R.string.street_spot_added) else resources.getString(
-                    R.string.park_spot_added
-                )
             removeNewSpotMarker()
             clearFields()
             binding.fab.isExpanded = false
-            Snackbar.make(requireView(), mes, Snackbar.LENGTH_SHORT)
-                .setAnchorView(binding.fab)
-                .show()
         } else {
             Snackbar.make(
                 requireView(), resources.getString(R.string.failed_to_add_spot),
