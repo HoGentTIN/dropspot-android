@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.dropspot.data.model.ParkCategory
 import com.example.dropspot.data.model.Spot
 import com.example.dropspot.data.repos.SpotRepository
-import com.example.dropspot.utils.Utils
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 
@@ -42,7 +41,7 @@ class HomeViewModel(private val spotRepository: SpotRepository) : ViewModel() {
         category: String,
         fee: Double
     ) {
-        val parkCategory: ParkCategory = Utils.parkCategoryFromString(category)
+        val parkCategory: ParkCategory = ParkCategory.parkCategoryFromString(category)
 
         viewModelScope.launch {
             _addParkSpotSuccess.value = spotRepository.addParkSpot(

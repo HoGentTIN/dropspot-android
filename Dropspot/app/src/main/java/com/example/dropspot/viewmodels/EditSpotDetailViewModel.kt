@@ -11,7 +11,6 @@ import com.example.dropspot.data.model.requests.ParkSpotUpdateRequest
 import com.example.dropspot.data.model.requests.StreetSpotRequest
 import com.example.dropspot.data.model.responses.MessageResponse
 import com.example.dropspot.data.repos.SpotDetailRepository
-import com.example.dropspot.utils.Utils
 import kotlinx.coroutines.launch
 
 class EditSpotDetailViewModel(
@@ -36,7 +35,7 @@ class EditSpotDetailViewModel(
         fee: Double
     ) {
 
-        val parkCategory: ParkCategory = Utils.parkCategoryFromString(cat)
+        val parkCategory: ParkCategory = ParkCategory.parkCategoryFromString(cat)
 
         val request = ParkSpotUpdateRequest(
             name,

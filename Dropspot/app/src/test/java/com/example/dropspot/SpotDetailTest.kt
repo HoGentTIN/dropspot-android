@@ -10,7 +10,7 @@ class SpotDetailTest {
 
     @Test
     fun safeSliderValueForEntranceFee_alreadySafeValue_TheSameValue() {
-        val inputEntranceFee: Double = 0.10000
+        val inputEntranceFee = 0.10000
         val expectedValue: Float = inputEntranceFee.toFloat()
 
         val spotDetail = SpotDetail(
@@ -33,7 +33,7 @@ class SpotDetailTest {
 
     @Test
     fun safeSliderValueForEntranceFee_NotSafeValueA_SafeValue() {
-        val inputEntranceFee: Double = 0.10234
+        val inputEntranceFee = 0.10234
         val expectedValue: Float = 0.10.toFloat()
 
         val spotDetail = SpotDetail(
@@ -56,7 +56,7 @@ class SpotDetailTest {
 
     @Test
     fun safeSliderValueForEntranceFee_NotSafeValueB_SafeValue() {
-        val inputEntranceFee: Double = 0.12345
+        val inputEntranceFee = 0.12345
         val expectedValue: Float = 0.10.toFloat()
 
         val spotDetail = SpotDetail(
@@ -79,7 +79,7 @@ class SpotDetailTest {
 
     @Test
     fun safeSliderValueForEntranceFee_NotSafeValueC_SafeValue() {
-        val inputEntranceFee: Double = 0.13456
+        val inputEntranceFee = 0.13456
         val expectedValue: Float = 0.15.toFloat()
 
         val spotDetail = SpotDetail(
@@ -99,4 +99,5 @@ class SpotDetailTest {
 
         assertThat(spotDetail.getSaveSliderValueForEntranceFee()).isEqualTo(expectedValue)
     }
+
 }
