@@ -49,7 +49,3 @@ USER
 - [Gson - JSON serialization/deserialization](https://github.com/google/gson)
 - [Retrofit - HTTP client](https://github.com/square/retrofit)
 - [Koin - Dependency injection](https://github.com/InsertKoinIO/koin)
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
