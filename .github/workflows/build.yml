@@ -42,11 +42,6 @@ jobs:
         working-directory: ./Dropspot
         run: ./gradlew tasks
         
-      #format
-      - name: format 
-        working-directory: ./Dropspot
-        run: ./gradlew ktlintFormat
-        
       # Ktlinting
       - name: Execute the ktlinting
         working-directory: ./Dropspot
