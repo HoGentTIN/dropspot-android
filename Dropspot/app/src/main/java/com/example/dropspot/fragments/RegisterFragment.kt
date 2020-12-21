@@ -38,7 +38,8 @@ class RegisterFragment : Fragment() {
     private lateinit var inputLastName: EditText
 
     @NotEmpty(messageResId = R.string.user_name_req)
-    @Length(min = 5, max = 35, messageResId = R.string.user_name_length)
+    @Length(min = 5, max = 25, messageResId = R.string.user_name_length)
+    @Pattern(regex = "^[A-Za-z]\\w{4,24}$",messageResId = R.string.user_name_wrong_format)
     private lateinit var inputUsername: EditText
 
     @Email(messageResId = R.string.email_wrong_format)

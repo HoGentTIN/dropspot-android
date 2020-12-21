@@ -24,12 +24,13 @@
     <string name="last_name_req">Last name is required</string>
     <string name="last_name_max_length">Last name max length 50</string>
     <string name="user_name_req">Username is required</string>
-    <string name="user_name_length">Username must have between 5 and 35 characters</string>
+    <string name="user_name_length">Username must have between 5 and 25 characters</string>
     <string name="email_req">Email is required</string>
     <string name="email_wrong_format">Must be an email address</string>
     <string name="email_max_length">Email max length 100</string>
     <string name="password_min_length">password min length 6</string>
     <string name="password_confirmation_req">Password confirmation is required</string>
+    <string name="user_name_wrong_format">May only contain alphanumeric characters and underscores, the first character must be alphabetic</string>
 
     // home frag
     <string name="name">Name</string>
@@ -72,6 +73,7 @@
     <string name="park_spot_added">Park spot added</string>
     <string name="failed_to_add_spot">Failed to add spot</string>
     <string name="flag_icon_descr">Icon flag, filled if not placed on map and outlined if placed</string>
+    <string name="spot_name_max_length">Max spot length is 25</string>
 
     // Spot detail
     <string name="skate_park_icon_descr">a picture of a skate park</string>

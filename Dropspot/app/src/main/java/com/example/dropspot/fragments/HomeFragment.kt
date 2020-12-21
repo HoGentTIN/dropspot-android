@@ -40,6 +40,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.mobsandgeeks.saripaar.Validator
+import com.mobsandgeeks.saripaar.annotation.Length
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Order
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -84,8 +85,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private val validator = Validator(this)
 
     // street val
-    @NotEmpty(messageResId = R.string.spot_name_req)
     @Order(1)
+    @NotEmpty(messageResId = R.string.spot_name_req)
+    @Length(max = 25, messageResId = R.string.spot_name_max_length)
     private lateinit var inputName: EditText
 
     // park val
