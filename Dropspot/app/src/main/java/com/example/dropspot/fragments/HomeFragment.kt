@@ -48,7 +48,6 @@ import java.io.IOException
 import java.text.NumberFormat
 import java.util.*
 
-
 class HomeFragment : Fragment(), OnMapReadyCallback {
 
     companion object {
@@ -116,7 +115,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private lateinit var inputCountry: EditText
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.home_fragment, container, false)
@@ -220,24 +220,28 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 removeNewSpotMarker()
             }
         }
-
     }
 
     private fun setupViewModelObservers() {
 
-        //add spot response handling
-        viewModel.addParkSpotSuccess.observe(viewLifecycleOwner, {
-            it?.let {
-                handleAddSpotResponse(it)
+        // add spot response handling
+        viewModel.addParkSpotSuccess.observe(
+            viewLifecycleOwner,
+            {
+                it?.let {
+                    handleAddSpotResponse(it)
+                }
             }
-        })
+        )
 
-        viewModel.addStreetSpotSuccess.observe(viewLifecycleOwner, {
-            it?.let {
-                handleAddSpotResponse(it)
+        viewModel.addStreetSpotSuccess.observe(
+            viewLifecycleOwner,
+            {
+                it?.let {
+                    handleAddSpotResponse(it)
+                }
             }
-        })
-
+        )
     }
 
     private fun handleAddSpotResponse(success: Boolean) {
@@ -247,7 +251,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             binding.fab.isExpanded = false
         } else {
             Snackbar.make(
-                requireView(), resources.getString(R.string.failed_to_add_spot),
+                requireView(),
+                resources.getString(R.string.failed_to_add_spot),
                 Snackbar.LENGTH_SHORT
             )
                 .setAnchorView(binding.addSpotContainer)
@@ -276,7 +281,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             // flag indicator filled
             binding.flag.setImageResource(R.drawable.ic_flag_24px)
         }
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -284,13 +288,14 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         // validation setup
         validator.validationMode = Validator.Mode.IMMEDIATE
-        validator.setValidationListener(object :
-            MyValidationListener(this.requireContext(), this.requireView()) {
-            override fun onValidationSucceeded() {
-                addSpot()
+        validator.setValidationListener(
+            object :
+                MyValidationListener(this.requireContext(), this.requireView()) {
+                override fun onValidationSucceeded() {
+                    addSpot()
+                }
             }
-
-        })
+        )
 
         // maps init
         gcd = Geocoder(context, Locale.getDefault())
@@ -320,8 +325,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         if (!Variables.isNetworkConnected.value!!) {
             Snackbar.make(
                 requireView(),
-                resources.getString(R.string.failed_to_add_spot) + ":"
-                        + resources.getString(R.string.no_connection),
+                resources.getString(R.string.failed_to_add_spot) + ":" +
+                    resources.getString(R.string.no_connection),
                 Snackbar.LENGTH_SHORT
             )
                 .setAnchorView(binding.addSpotContainer)
@@ -338,33 +343,21 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             if (streetToggleIsSet) {
 
                 viewModel.addStreetSpot(
-                    inputName.text.toString().trim()
-                    , this.newSpotLatitude!!
-                    , this.newSpotLongitude!!
+                    inputName.text.toString().trim(),
+                    this.newSpotLatitude!!,
+                    this.newSpotLongitude!!
                 )
-
             } else {
 
                 if (categoryIsNotEmpty) {
                     viewModel.addParkSpot(
-                        inputName.text.toString().trim()
-                        , this.newSpotLatitude!!
-                        , this.newSpotLongitude!!
-                        , inputStreet.text.toString().trim()
-                        , inputNumber.text.toString().trim()
-                        , inputCity.text.toString().trim()
-                        , inputPostal.text.toString().trim()
-                        , inputState.text.toString().trim()
-                        , inputCountry.text.toString().trim()
-                        , binding.dropdownParkCategory.text.toString().trim()
-                        , binding.sliderFee.value.toDouble()
+                        inputName.text.toString().trim(), this.newSpotLatitude!!, this.newSpotLongitude!!, inputStreet.text.toString().trim(), inputNumber.text.toString().trim(), inputCity.text.toString().trim(), inputPostal.text.toString().trim(), inputState.text.toString().trim(), inputCountry.text.toString().trim(), binding.dropdownParkCategory.text.toString().trim(), binding.sliderFee.value.toDouble()
                     )
                 } else {
                     binding.layoutParkCategory.error =
                         resources.getString(R.string.no_park_cat_selected)
                 }
             }
-
         } else {
             Snackbar.make(this.requireView(), R.string.mark_new_spot_please, Snackbar.LENGTH_SHORT)
                 .setAnchorView(binding.addSpotContainer)
@@ -385,7 +378,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         mapFragment!!.getMapAsync(this)
     }
 
-
     override fun onMapReady(googleMap: GoogleMap) {
         Log.i(TAG, "map ready")
         map = googleMap
@@ -403,29 +395,33 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
 
         // draw spots
-        viewModel.spots.observe(viewLifecycleOwner, { inComingSpots ->
-            Log.i(TAG, "Incoming spots: $inComingSpots")
-            // if markerCache contains a spot that is not in incoming spot -> delete marker from map
-            markerCache.forEach { marker ->
-                val inComingSpotsDoesNotContainMarker: Boolean =
-                    !inComingSpots.any { inComingSpot ->
-                        inComingSpot.id == (marker.tag as Spot).id
-                    }
-                if (inComingSpotsDoesNotContainMarker) marker.remove()
+        viewModel.spots.observe(
+            viewLifecycleOwner,
+            { inComingSpots ->
+                Log.i(TAG, "Incoming spots: $inComingSpots")
+                // if markerCache contains a spot that is not in incoming spot -> delete marker from map
+                markerCache.forEach { marker ->
+                    val inComingSpotsDoesNotContainMarker: Boolean =
+                        !inComingSpots.any { inComingSpot ->
+                            inComingSpot.id == (marker.tag as Spot).id
+                        }
+                    if (inComingSpotsDoesNotContainMarker) marker.remove()
+                }
+                markerCache.removeAll { true }
+                inComingSpots?.forEach { incomingSpot ->
+                    val newMarker = drawMarker(
+                        incomingSpot.latitude,
+                        incomingSpot.longitude,
+                        incomingSpot.name,
+                        DRAWABLE_SPOT_MARKER
+                    )
+                    newMarker.tag = incomingSpot
+                    markerCache.add(newMarker)
+                }
             }
-            markerCache.removeAll { true }
-            inComingSpots?.forEach { incomingSpot ->
-                val newMarker = drawMarker(
-                    incomingSpot.latitude, incomingSpot.longitude, incomingSpot.name,
-                    DRAWABLE_SPOT_MARKER
-                )
-                newMarker.tag = incomingSpot
-                markerCache.add(newMarker)
-            }
-        }
         )
 
-        //handle marker clicking
+        // handle marker clicking
         map!!.setOnMarkerClickListener {
             if (it.tag != null) {
                 val tag = it.tag
@@ -504,7 +500,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation()
-
     }
 
     private fun drawNewSpotMarker(latitude: Double, longitude: Double) {
@@ -556,7 +551,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             locationPermissionGranted = true
         } else {
             ActivityCompat.requestPermissions(
-                this.requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                this.requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
             )
         }
@@ -617,8 +613,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                             // checks if camera position is already in session
                             if (cameraPosition != null) {
                                 Log.i(
-                                    TAG, "camera position in session:" +
-                                            " ${cameraPosition.toString()}"
+                                    TAG,
+                                    "camera position in session:" +
+                                        " $cameraPosition"
                                 )
 
                                 map!!.moveCamera(
@@ -628,8 +625,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                                 )
                             } else {
                                 Log.i(
-                                    TAG, "camera position not in session use fetched pos: " +
-                                            "$lastKnownLocation"
+                                    TAG,
+                                    "camera position not in session use fetched pos: " +
+                                        "$lastKnownLocation"
                                 )
 
                                 map!!.moveCamera(
@@ -637,11 +635,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                                         LatLng(
                                             lastKnownLocation!!.latitude,
                                             lastKnownLocation!!.longitude
-                                        ), DEFAULT_ZOOM.toFloat()
+                                        ),
+                                        DEFAULT_ZOOM.toFloat()
                                     )
                                 )
                             }
-
                         }
                     } else {
                         Log.d(TAG, "Current location is null. Using defaults.")
@@ -684,5 +682,4 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             outState.putParcelable(KEY_CAMERA_POS, map.cameraPosition)
         }
     }
-
 }

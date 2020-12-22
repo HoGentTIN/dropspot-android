@@ -81,13 +81,14 @@ class LoginFragment : Fragment() {
         checkIfLoggedIn()
         setupListenersObservers()
         setupUI()
-        validator.setValidationListener(object :
-            MyValidationListener(this.requireContext(), this.requireView()) {
-            override fun onValidationSucceeded() {
-                login()
+        validator.setValidationListener(
+            object :
+                MyValidationListener(this.requireContext(), this.requireView()) {
+                override fun onValidationSucceeded() {
+                    login()
+                }
             }
-
-        })
+        )
     }
 
     private fun setupSharedPref() {
@@ -112,7 +113,6 @@ class LoginFragment : Fragment() {
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
-
     }
 
     private fun setupListenersObservers() {
@@ -121,7 +121,7 @@ class LoginFragment : Fragment() {
         }
 
         buttonRegister.setOnClickListener {
-            //nav to register
+            // nav to register
             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment())
         }
 
@@ -135,21 +135,23 @@ class LoginFragment : Fragment() {
             false
         }
 
-        loginViewModel.loginResponse.observe(viewLifecycleOwner, {
-            it?.let {
-                loginViewModel.resetResponses()
-                if (it.success) {
-                    Log.i(TAG, "-------------- $it")
-                    val token = it.token
-                    val user = it.user
-                    saveSharedPref(token, user!!)
-                    startMainActivity(token, user)
-                } else {
-                    showErrorMessage(it.message)
+        loginViewModel.loginResponse.observe(
+            viewLifecycleOwner,
+            {
+                it?.let {
+                    loginViewModel.resetResponses()
+                    if (it.success) {
+                        Log.i(TAG, "-------------- $it")
+                        val token = it.token
+                        val user = it.user
+                        saveSharedPref(token, user!!)
+                        startMainActivity(token, user)
+                    } else {
+                        showErrorMessage(it.message)
+                    }
                 }
             }
-        })
-
+        )
     }
 
     private fun showErrorMessage(extraMessage: String) {
@@ -192,9 +194,7 @@ class LoginFragment : Fragment() {
                     user
                 )
             }
-
         }
-
     }
 
     private fun startMainActivity(token: String, user: AppUser) {
@@ -209,12 +209,11 @@ class LoginFragment : Fragment() {
     private fun login() {
         if (Variables.isNetworkConnected.value!!) {
             loginViewModel.login(
-                inputEmail.text.toString().trim()
-                , inputPassword.text.toString().trim()
+                inputEmail.text.toString().trim(),
+                inputPassword.text.toString().trim()
             )
         } else {
             showErrorMessage(resources.getString(R.string.no_connection))
         }
     }
-
 }

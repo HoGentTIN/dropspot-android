@@ -21,18 +21,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val myModule: Module = module {
 
-    //gson
+    // gson
     single {
         GsonBuilder()
             .create()
     }
 
-    //custom client with auth interceptor and logging
+    // custom client with auth interceptor and logging
     single {
         provideOkHttpClient()
     }
 
-    //retrofit
+    // retrofit
     single {
         Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
@@ -41,7 +41,7 @@ val myModule: Module = module {
             .build()
     }
 
-    //services
+    // services
     single {
         provideSpotService(get())
     }
@@ -54,7 +54,7 @@ val myModule: Module = module {
         provideUserService(get())
     }
 
-    //daos
+    // daos
     single {
         AppDatabase.getInstance(get()).spotDao()
     }
@@ -62,7 +62,7 @@ val myModule: Module = module {
         AppDatabase.getInstance(get()).spotDetailDao()
     }
 
-    //repos
+    // repos
     single {
         SpotRepository(get(), get())
     }
@@ -75,7 +75,7 @@ val myModule: Module = module {
         MeRepository(get(), get())
     }
 
-    //viewmodels
+    // viewmodels
     viewModel { HomeViewModel(get()) }
     viewModel { MeViewModel(get()) }
     viewModel {
@@ -93,7 +93,6 @@ val myModule: Module = module {
     viewModel { UserViewModel(get(), get()) }
     viewModel { SpotDetailViewModel(get()) }
     viewModel { EditSpotDetailViewModel(get()) }
-
 }
 
 private fun provideOkHttpClient() = if (BuildConfig.DEBUG) {

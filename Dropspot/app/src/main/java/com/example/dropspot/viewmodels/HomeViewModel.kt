@@ -45,21 +45,10 @@ class HomeViewModel(private val spotRepository: SpotRepository) : ViewModel() {
 
         viewModelScope.launch {
             _addParkSpotSuccess.value = spotRepository.addParkSpot(
-                name
-                , latitude
-                , longitude
-                , street
-                , houseNumber
-                , city
-                , postalCode
-                , state
-                , country
-                , parkCategory
-                , fee
+                name, latitude, longitude, street, houseNumber, city, postalCode, state, country, parkCategory, fee
             ) != null
             _addParkSpotSuccess.value = null
         }
-
     }
 
     // gets called after map is created
@@ -68,5 +57,4 @@ class HomeViewModel(private val spotRepository: SpotRepository) : ViewModel() {
             spotRepository.getSpotsInRadius(center.latitude, center.longitude, radiusInMeter)
         }
     }
-
 }

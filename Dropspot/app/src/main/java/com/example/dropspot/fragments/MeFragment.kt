@@ -16,7 +16,6 @@ import com.example.dropspot.databinding.MeFragmentBinding
 import com.example.dropspot.viewmodels.MeViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
 class MeFragment : Fragment() {
 
     companion object {
@@ -28,7 +27,8 @@ class MeFragment : Fragment() {
     private val args: MeFragmentArgs by navArgs()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.me_fragment, container, false)
@@ -63,5 +63,4 @@ class MeFragment : Fragment() {
 
         return binding.root
     }
-
 }

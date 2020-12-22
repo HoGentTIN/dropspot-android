@@ -25,9 +25,9 @@ class CriterionScoresAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriterionScoreViewHolder {
         return CriterionScoreViewHolder(
             ListItemRatingBinding.inflate(
-                LayoutInflater.from(parent.context)
-                , parent
-                , false
+                LayoutInflater.from(parent.context),
+                parent,
+                false
             )
         )
     }
@@ -54,8 +54,8 @@ class CriterionScoresAdapter(
                         } else {
                             Snackbar.make(
                                 binding.root,
-                                context.resources.getString(R.string.vote_failed)
-                                        + context.resources.getString(R.string.no_connection),
+                                context.resources.getString(R.string.vote_failed) +
+                                    context.resources.getString(R.string.no_connection),
                                 Snackbar.LENGTH_SHORT
                             ).show()
                             binding.ratingBar.rating = 0f
@@ -63,7 +63,6 @@ class CriterionScoresAdapter(
                     }
                 }
         }
-
     }
 
     class CriterionScoreDiffCallback : DiffUtil.ItemCallback<CriterionScore>() {
@@ -74,10 +73,5 @@ class CriterionScoresAdapter(
         override fun areContentsTheSame(oldItem: CriterionScore, newItem: CriterionScore): Boolean {
             return oldItem == newItem
         }
-
     }
-
 }
-
-
-

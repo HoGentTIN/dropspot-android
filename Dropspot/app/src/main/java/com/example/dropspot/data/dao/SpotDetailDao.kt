@@ -24,5 +24,4 @@ interface SpotDetailDao {
 
     @Query("SELECT * FROM spot_details WHERE liked = 1")
     fun getSpotLikedSpotDetails(): LiveData<List<SpotDetail>>
-
 }

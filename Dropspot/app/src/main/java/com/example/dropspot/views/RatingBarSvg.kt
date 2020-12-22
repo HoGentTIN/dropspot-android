@@ -31,8 +31,8 @@ class RatingBarSvg @JvmOverloads constructor(
 
     init {
         val drawable = tileify(progressDrawable, false) as LayerDrawable
-        //drawable.findDrawableByLayerId(android.R.id.background).setColorFilter(backgroundTintColor, PorterDuff.Mode.SRC_ATOP);
-        //drawable.findDrawableByLayerId(android.R.id.progress).setColorFilter(progressTintColor, PorterDuff.Mode.SRC_ATOP);
+        // drawable.findDrawableByLayerId(android.R.id.background).setColorFilter(backgroundTintColor, PorterDuff.Mode.SRC_ATOP);
+        // drawable.findDrawableByLayerId(android.R.id.progress).setColorFilter(progressTintColor, PorterDuff.Mode.SRC_ATOP);
         progressDrawable = drawable
     }
 
@@ -67,7 +67,6 @@ class RatingBarSvg @JvmOverloads constructor(
             }
 
             return newBg
-
         } else if (drawable is BitmapDrawable) {
             val tileBitmap = drawable.bitmap
             if (mSampleTile == null) {
@@ -77,13 +76,15 @@ class RatingBarSvg @JvmOverloads constructor(
             val shapeDrawable = ShapeDrawable(drawableShape)
             val bitmapShader = BitmapShader(
                 tileBitmap,
-                Shader.TileMode.REPEAT, Shader.TileMode.CLAMP
+                Shader.TileMode.REPEAT,
+                Shader.TileMode.CLAMP
             )
             shapeDrawable.paint.shader = bitmapShader
             shapeDrawable.paint.colorFilter = drawable.paint.colorFilter
             return if (clip)
                 ClipDrawable(
-                    shapeDrawable, Gravity.START,
+                    shapeDrawable,
+                    Gravity.START,
                     ClipDrawable.HORIZONTAL
                 )
             else
@@ -97,7 +98,7 @@ class RatingBarSvg @JvmOverloads constructor(
 
     private fun getBitmapDrawableFromVectorDrawable(drawable: Drawable): BitmapDrawable {
         val bitmap = Bitmap.createBitmap(
-            drawable.intrinsicWidth + (2).toInt(), //dp between svg images  //* resources.displayMetrics.density
+            drawable.intrinsicWidth + (2).toInt(), // dp between svg images  //* resources.displayMetrics.density
             drawable.intrinsicHeight,
             Bitmap.Config.ARGB_8888
         )
@@ -118,5 +119,4 @@ class RatingBarSvg @JvmOverloads constructor(
             )
         }
     }
-
 }

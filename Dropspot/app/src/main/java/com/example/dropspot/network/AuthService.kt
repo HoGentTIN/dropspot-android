@@ -15,5 +15,4 @@ interface AuthService {
 
     @POST("auth/signin")
     suspend fun login(@Body loginRequest: LoginRequest): Response<JwtResponse>
-
 }

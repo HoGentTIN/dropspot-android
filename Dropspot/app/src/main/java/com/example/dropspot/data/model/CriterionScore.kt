@@ -15,5 +15,4 @@ data class CriterionScore(
     fun getRatingBarScore(): Int {
         return score.roundToInt()
     }
-
 }

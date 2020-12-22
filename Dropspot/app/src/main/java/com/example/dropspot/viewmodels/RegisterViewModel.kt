@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 
 class RegisterViewModel(
-    private val authService: AuthService
-    , private val gson: Gson
+    private val authService: AuthService,
+    private val gson: Gson
 ) : ViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
@@ -46,8 +46,8 @@ class RegisterViewModel(
                     if (response.code() == 400) {
                         _registerResponse.postValue(
                             gson.fromJson(
-                                response.errorBody()!!.string()
-                                , MessageResponse::class.java
+                                response.errorBody()!!.string(),
+                                MessageResponse::class.java
                             )
                         )
                     }
@@ -57,7 +57,6 @@ class RegisterViewModel(
             } catch (e: SocketTimeoutException) {
                 register(firstName, lastName, username, email, password)
                 Log.i("register_req", "socket timeout")
-
             } catch (e: Exception) {
                 e.message?.let {
                     _registerResponse.postValue(MessageResponse(false, it))
@@ -66,12 +65,10 @@ class RegisterViewModel(
                 }
                 _isLoading.postValue(false)
             }
-
         }
     }
 
     fun resetResponses() {
         _registerResponse.value = null
     }
-
 }

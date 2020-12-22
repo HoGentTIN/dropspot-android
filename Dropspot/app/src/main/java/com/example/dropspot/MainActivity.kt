@@ -126,7 +126,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // set this activity as the NavigationView.OnNavigationItemSelectedListener for navView
         navView.setNavigationItemSelectedListener(this)
-
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -152,13 +151,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         )
                         .show()
                 }
-
             }
             else -> {
 
                 // sets toolbar elevation to default
                 val default_dp = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 4.toFloat(),
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    4.toFloat(),
                     this.resources.displayMetrics
                 )
                 binding.toolbarLayout.elevation = default_dp
@@ -228,5 +227,4 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
-
 }

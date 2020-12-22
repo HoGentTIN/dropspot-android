@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 
 class LoginViewModel(
-    private val authService: AuthService
-    , private val gson: Gson
+    private val authService: AuthService,
+    private val gson: Gson
 ) : ViewModel() {
 
     private val _loginResponse = MutableLiveData<JwtResponse>()
@@ -39,8 +39,8 @@ class LoginViewModel(
                     if (response.code() == 400) {
                         _loginResponse.postValue(
                             gson.fromJson(
-                                response.errorBody()!!.string()
-                                , JwtResponse::class.java
+                                response.errorBody()!!.string(),
+                                JwtResponse::class.java
                             )
                         )
                     }
@@ -59,12 +59,10 @@ class LoginViewModel(
 
                 _isLoading.postValue(false)
             }
-
         }
     }
 
     fun resetResponses() {
         _loginResponse.value = null
     }
-
 }

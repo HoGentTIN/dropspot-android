@@ -23,7 +23,6 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Order
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
 class EditSpotDetailFragment : Fragment() {
 
     private val editSpotDetailViewModel: EditSpotDetailViewModel by viewModel()
@@ -69,7 +68,8 @@ class EditSpotDetailFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = EditSpotDetailFragmentBinding.inflate(layoutInflater, container, false)
@@ -112,15 +112,20 @@ class EditSpotDetailFragment : Fragment() {
 
         binding.dropdownParkCategory.setText(spotDetail.parkCategory.toString(), false)
 
-        editSpotDetailViewModel.updateSuccess.observe(viewLifecycleOwner, {
-            it?.let {
-                if (it.success) findNavController().navigateUp()
-                else Snackbar.make(
-                    requireView(), resources.getString(R.string.update_failed)
-                            + it.message, Snackbar.LENGTH_SHORT
-                ).show()
+        editSpotDetailViewModel.updateSuccess.observe(
+            viewLifecycleOwner,
+            {
+                it?.let {
+                    if (it.success) findNavController().navigateUp()
+                    else Snackbar.make(
+                        requireView(),
+                        resources.getString(R.string.update_failed) +
+                            it.message,
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
             }
-        })
+        )
 
         return binding.root
     }
@@ -130,13 +135,14 @@ class EditSpotDetailFragment : Fragment() {
 
         // validation setup
         validator.validationMode = Validator.Mode.IMMEDIATE
-        validator.setValidationListener(object :
-            MyValidationListener(this.requireContext(), this.requireView()) {
-            override fun onValidationSucceeded() {
-                updateSpot()
+        validator.setValidationListener(
+            object :
+                MyValidationListener(this.requireContext(), this.requireView()) {
+                override fun onValidationSucceeded() {
+                    updateSpot()
+                }
             }
-
-        })
+        )
 
         binding.btnUpdate.setOnClickListener {
             editSpotDetailViewModel.spotDetail?.let {
@@ -153,26 +159,18 @@ class EditSpotDetailFragment : Fragment() {
         if (Variables.isNetworkConnected.value!!) {
             if (editSpotDetailViewModel.spotDetail!!.isPark()) {
                 editSpotDetailViewModel.updateParkSpot(
-                    inputName.text.toString().trim()
-                    , inputStreet.text.toString().trim()
-                    , inputNumber.text.toString().trim()
-                    , inputCity.text.toString().trim()
-                    , inputPostal.text.toString().trim()
-                    , inputState.text.toString().trim()
-                    , inputCountry.text.toString().trim()
-                    , binding.dropdownParkCategory.text.toString().trim()
-                    , binding.sliderFee.value.toDouble()
+                    inputName.text.toString().trim(), inputStreet.text.toString().trim(), inputNumber.text.toString().trim(), inputCity.text.toString().trim(), inputPostal.text.toString().trim(), inputState.text.toString().trim(), inputCountry.text.toString().trim(), binding.dropdownParkCategory.text.toString().trim(), binding.sliderFee.value.toDouble()
                 )
             } else {
                 editSpotDetailViewModel.updateStreetSpot(inputName.text.toString().trim())
             }
         } else {
             Snackbar.make(
-                requireView(), resources.getString(R.string.update_failed)
-                        + resources.getString(R.string.no_connection),
+                requireView(),
+                resources.getString(R.string.update_failed) +
+                    resources.getString(R.string.no_connection),
                 Snackbar.LENGTH_SHORT
             ).show()
         }
-
     }
 }

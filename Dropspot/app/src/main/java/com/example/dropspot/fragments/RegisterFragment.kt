@@ -39,7 +39,7 @@ class RegisterFragment : Fragment() {
 
     @NotEmpty(messageResId = R.string.user_name_req)
     @Length(min = 5, max = 25, messageResId = R.string.user_name_length)
-    @Pattern(regex = "^[A-Za-z]\\w{4,24}$",messageResId = R.string.user_name_wrong_format)
+    @Pattern(regex = "^[A-Za-z]\\w{4,24}$", messageResId = R.string.user_name_wrong_format)
     private lateinit var inputUsername: EditText
 
     @Email(messageResId = R.string.email_wrong_format)
@@ -85,14 +85,14 @@ class RegisterFragment : Fragment() {
 
         super.onActivityCreated(savedInstanceState)
         setupListenersObservers()
-        validator.setValidationListener(object :
-            MyValidationListener(this.requireContext(), this.requireView()) {
-            override fun onValidationSucceeded() {
-                register()
+        validator.setValidationListener(
+            object :
+                MyValidationListener(this.requireContext(), this.requireView()) {
+                override fun onValidationSucceeded() {
+                    register()
+                }
             }
-
-        })
-
+        )
     }
 
     private fun setupListenersObservers() {
@@ -110,48 +110,49 @@ class RegisterFragment : Fragment() {
             false
         }
 
-        registerViewModel.registerResponse.observe(viewLifecycleOwner, {
-            it?.let {
-                registerViewModel.resetResponses()
-                if (it.success) navigateToLogin() else showErrorMessage(it.message)
+        registerViewModel.registerResponse.observe(
+            viewLifecycleOwner,
+            {
+                it?.let {
+                    registerViewModel.resetResponses()
+                    if (it.success) navigateToLogin() else showErrorMessage(it.message)
+                }
             }
-        })
-
+        )
     }
 
     private fun showErrorMessage(extraMessage: String) {
 
         Snackbar.make(
-            this.requireView(), resources.getString(R.string.register_failed)
-                    + extraMessage, Snackbar.LENGTH_SHORT
+            this.requireView(),
+            resources.getString(R.string.register_failed) +
+                extraMessage,
+            Snackbar.LENGTH_SHORT
         ).show()
-
     }
 
     private fun navigateToLogin() {
 
         findNavController().navigate(
             RegisterFragmentDirections.actionRegisterFragmentToLoginFragment(
-                inputUsername.text.toString().trim(), inputPassword.text.toString().trim()
+                inputUsername.text.toString().trim(),
+                inputPassword.text.toString().trim()
             )
         )
-
     }
 
     private fun register() {
 
         if (Variables.isNetworkConnected.value!!) {
             registerViewModel.register(
-                input_firstname.text.toString().trim()
-                , input_lastname.text.toString().trim()
-                , inputUsername.text.toString().trim()
-                , inputEmail.text.toString().trim()
-                , inputPassword.text.toString().trim()
+                input_firstname.text.toString().trim(),
+                input_lastname.text.toString().trim(),
+                inputUsername.text.toString().trim(),
+                inputEmail.text.toString().trim(),
+                inputPassword.text.toString().trim()
             )
         } else {
             showErrorMessage(resources.getString(R.string.no_connection))
         }
-
     }
-
 }

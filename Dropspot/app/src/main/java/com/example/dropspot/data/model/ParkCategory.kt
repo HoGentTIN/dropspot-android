@@ -29,6 +29,5 @@ enum class ParkCategory {
                 else -> return OUTDOOR_INDOOR
             }
         }
-
     }
 }

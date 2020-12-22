@@ -6,7 +6,7 @@ import com.example.dropspot.data.model.Spot
 
 @Dao
 interface SpotDao {
-    //onconflict replace handles duplicate inserts
+    // onconflict replace handles duplicate inserts
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(spot: Spot)
 
@@ -24,5 +24,4 @@ interface SpotDao {
 
     @Query("SELECT * FROM spots WHERE creatorId=:id")
     fun getSpotByCreatorId(id: Long): LiveData<List<Spot>>
-
 }

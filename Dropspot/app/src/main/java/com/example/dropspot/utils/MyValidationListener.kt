@@ -8,7 +8,6 @@ import com.mobsandgeeks.saripaar.Rule
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 
-
 abstract class MyValidationListener(private val context: Context, private val view: View) :
     Validator.ValidationListener {
 
@@ -29,9 +28,6 @@ abstract class MyValidationListener(private val context: Context, private val vi
                     Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
                 }
             }
-
-
         }
     }
-
 }

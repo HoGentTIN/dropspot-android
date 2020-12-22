@@ -12,12 +12,12 @@ import com.example.dropspot.utils.Variables
 class NetworkMonitor
 @RequiresPermission(android.Manifest.permission.ACCESS_NETWORK_STATE)
 constructor(private val application: Application) {
-    companion object{
+    companion object {
         private const val TAG = "network_monitor"
     }
 
     fun startNetworkCallback() {
-        Log.i(TAG,"starting callback")
+        Log.i(TAG, "starting callback")
         val cm: ConnectivityManager =
             application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val builder: NetworkRequest.Builder = NetworkRequest.Builder()
@@ -27,22 +27,22 @@ constructor(private val application: Application) {
             object : ConnectivityManager.NetworkCallback() {
 
                 override fun onAvailable(network: Network) {
-                    Log.i(TAG,"network available")
+                    Log.i(TAG, "network available")
                     Variables.isNetworkConnected.postValue(true)
                 }
 
                 override fun onLost(network: Network) {
-                    Log.i(TAG,"network conn lost")
+                    Log.i(TAG, "network conn lost")
                     Variables.isNetworkConnected.postValue(false)
                 }
-            })
+            }
+        )
     }
 
     fun stopNetworkCallback() {
-        Log.i(TAG,"stopping callback")
+        Log.i(TAG, "stopping callback")
         val cm: ConnectivityManager =
             application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         cm.unregisterNetworkCallback(ConnectivityManager.NetworkCallback())
     }
-
 }

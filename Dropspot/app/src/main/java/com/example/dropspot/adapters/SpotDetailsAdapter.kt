@@ -17,9 +17,9 @@ class SpotDetailsAdapter :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpotDetailViewHolder {
         return SpotDetailViewHolder(
             ListItemSpotDetailBinding.inflate(
-                LayoutInflater.from(parent.context)
-                , parent
-                , false
+                LayoutInflater.from(parent.context),
+                parent,
+                false
             )
         )
     }
@@ -48,7 +48,6 @@ class SpotDetailsAdapter :
         fun bind(spotDetail: SpotDetail) {
             binding.spotDetail = spotDetail
         }
-
     }
 
     class SpotDetailDiffCallback : DiffUtil.ItemCallback<SpotDetail>() {
@@ -59,7 +58,5 @@ class SpotDetailsAdapter :
         override fun areContentsTheSame(oldItem: SpotDetail, newItem: SpotDetail): Boolean {
             return oldItem == newItem
         }
-
     }
-
 }

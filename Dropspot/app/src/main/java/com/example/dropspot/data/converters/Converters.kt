@@ -40,5 +40,4 @@ object Converters {
     fun fromArrayList(list: ArrayList<CriterionScore?>?): String {
         return Gson().toJson(list)
     }
-
 }

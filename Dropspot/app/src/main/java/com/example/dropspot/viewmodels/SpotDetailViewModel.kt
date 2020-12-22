@@ -51,7 +51,8 @@ class SpotDetailViewModel(private val spotDetailRepository: SpotDetailRepository
         val spotId = this.spotId
         viewModelScope.launch {
             _voteSuccess.value = spotDetailRepository.vote(
-                spotId!!, criterionId,
+                spotId!!,
+                criterionId,
                 VoteRequest(value)
             )
             _voteSuccess.value = null
@@ -79,5 +80,4 @@ class SpotDetailViewModel(private val spotDetailRepository: SpotDetailRepository
             _deleteSuccess.value = null
         }
     }
-
 }

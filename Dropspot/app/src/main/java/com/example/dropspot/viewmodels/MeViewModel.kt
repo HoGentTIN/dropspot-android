@@ -35,5 +35,4 @@ class MeViewModel(private val meRepository: MeRepository) : ViewModel() {
             meRepository.fetchMyFavoriteSpots()
         }
     }
-
 }

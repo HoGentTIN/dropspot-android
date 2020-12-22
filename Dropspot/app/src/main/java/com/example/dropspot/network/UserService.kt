@@ -24,5 +24,4 @@ interface UserService {
 
     @DELETE("users/favorites/{spotId}")
     suspend fun removeFavoriteSpot(@Path("spotId") id: Long): MessageResponse
-
 }

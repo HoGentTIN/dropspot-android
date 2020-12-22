@@ -22,7 +22,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
 class SpotDetailFragment : Fragment() {
 
     companion object {
@@ -64,7 +63,7 @@ class SpotDetailFragment : Fragment() {
             currentSpotDetail?.let {
                 val gmmIntentUri = Uri.parse(
                     "google.navigation:q=${this.currentSpotDetail!!.latitude}" +
-                            ",${this.currentSpotDetail!!.longitude}"
+                        ",${this.currentSpotDetail!!.longitude}"
                 )
 
                 val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
@@ -85,44 +84,54 @@ class SpotDetailFragment : Fragment() {
         }
 
         // vote response
-        spotDetailViewModel.voteSuccess.observe(viewLifecycleOwner,
+        spotDetailViewModel.voteSuccess.observe(
+            viewLifecycleOwner,
             {
                 it?.let {
                     if (it.success) Snackbar.make(requireView(), it.message, Snackbar.LENGTH_SHORT)
                         .show()
                     else Snackbar.make(
-                        requireView(), resources.getString(R.string.vote_failed)
-                                + it.message, Snackbar.LENGTH_SHORT
+                        requireView(),
+                        resources.getString(R.string.vote_failed) +
+                            it.message,
+                        Snackbar.LENGTH_SHORT
                     ).show()
                 }
             }
         )
 
         // favor responses
-        spotDetailViewModel.favoriteSuccess.observe(viewLifecycleOwner,
+        spotDetailViewModel.favoriteSuccess.observe(
+            viewLifecycleOwner,
             {
                 it?.let {
                     if (!it.success) Snackbar.make(
-                        requireView(), resources.getString(R.string.favor_failed)
-                                + it.message, Snackbar.LENGTH_SHORT
+                        requireView(),
+                        resources.getString(R.string.favor_failed) +
+                            it.message,
+                        Snackbar.LENGTH_SHORT
                     ).show()
                 }
             }
         )
 
-        spotDetailViewModel.unFavoriteSuccess.observe(viewLifecycleOwner,
+        spotDetailViewModel.unFavoriteSuccess.observe(
+            viewLifecycleOwner,
             {
                 it?.let {
                     if (!it.success) Snackbar.make(
-                        requireView(), resources.getString(R.string.un_favor_failed)
-                                + it.message, Snackbar.LENGTH_SHORT
+                        requireView(),
+                        resources.getString(R.string.un_favor_failed) +
+                            it.message,
+                        Snackbar.LENGTH_SHORT
                     ).show()
                 }
             }
         )
 
         // delete response
-        spotDetailViewModel.deleteSuccess.observe(viewLifecycleOwner,
+        spotDetailViewModel.deleteSuccess.observe(
+            viewLifecycleOwner,
             {
                 it?.let {
                     if (it.success) {
@@ -130,15 +139,16 @@ class SpotDetailFragment : Fragment() {
                     } else {
                         Snackbar
                             .make(
-                                requireView(), resources.getString(R.string.delete_failed)
-                                        + it.message, Snackbar.LENGTH_SHORT
+                                requireView(),
+                                resources.getString(R.string.delete_failed) +
+                                    it.message,
+                                Snackbar.LENGTH_SHORT
                             )
                             .show()
                     }
                 }
             }
         )
-
     }
 
     private fun unFavoriteSpot(spotDetail: SpotDetail) {
@@ -146,8 +156,9 @@ class SpotDetailFragment : Fragment() {
             spotDetailViewModel.unFavoriteSpot(spotDetail)
         } else {
             Snackbar.make(
-                requireView(), resources.getString(R.string.un_favor_failed)
-                        + requireContext().resources.getString(R.string.no_connection),
+                requireView(),
+                resources.getString(R.string.un_favor_failed) +
+                    requireContext().resources.getString(R.string.no_connection),
                 Snackbar.LENGTH_SHORT
             ).show()
         }
@@ -158,8 +169,9 @@ class SpotDetailFragment : Fragment() {
             spotDetailViewModel.favoriteSpot(spotDetail)
         } else {
             Snackbar.make(
-                requireView(), resources.getString(R.string.favor_failed)
-                        + requireContext().resources.getString(R.string.no_connection),
+                requireView(),
+                resources.getString(R.string.favor_failed) +
+                    requireContext().resources.getString(R.string.no_connection),
                 Snackbar.LENGTH_SHORT
             ).show()
         }
@@ -170,7 +182,8 @@ class SpotDetailFragment : Fragment() {
         val spotId = args.spotId
         spotDetailViewModel.setSpotId(spotId)
         val liveData = spotDetailViewModel.getSpotDetail()
-        liveData.observe(viewLifecycleOwner,
+        liveData.observe(
+            viewLifecycleOwner,
             {
                 Log.i(TAG, "spot_detail: $it")
                 it?.let {
@@ -221,8 +234,10 @@ class SpotDetailFragment : Fragment() {
                 .show()
         } else {
             Snackbar.make(
-                requireView(), resources.getString(R.string.delete_failed)
-                        + resources.getString(R.string.no_connection), Snackbar.LENGTH_SHORT
+                requireView(),
+                resources.getString(R.string.delete_failed) +
+                    resources.getString(R.string.no_connection),
+                Snackbar.LENGTH_SHORT
             ).show()
         }
     }
@@ -239,5 +254,4 @@ class SpotDetailFragment : Fragment() {
             updateToolbarIfOwner(it)
         }
     }
-
 }

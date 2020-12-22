@@ -51,14 +51,11 @@ class MeRepository(private val userService: UserService, private val spotDetailD
             Log.i(TAG, "fetched: $response")
 
             return response
-
         } catch (e: SocketTimeoutException) {
             fetchMe()
-
         } catch (e: Throwable) {
             Log.i("TAG", e.message ?: "fetch me failed")
         }
         return null
     }
-
 }

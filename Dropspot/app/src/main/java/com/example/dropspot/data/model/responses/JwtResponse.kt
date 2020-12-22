@@ -9,5 +9,4 @@ data class JwtResponse(
     val user: AppUser? = null
 ) {
     private val type = "Bearer"
-
 }

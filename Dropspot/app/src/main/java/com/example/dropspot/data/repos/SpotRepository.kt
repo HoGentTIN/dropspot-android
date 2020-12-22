@@ -47,7 +47,6 @@ class SpotRepository(
             Log.d(TAG, e.message ?: "something went wrong with addStreetSpot")
             return null
         }
-
     }
 
     suspend fun addParkSpot(
@@ -83,12 +82,9 @@ class SpotRepository(
             val spotResponse = spotService.addParkSpot(request)
             spotDao.insert(spotResponse)
             return spotResponse
-
         } catch (e: Exception) {
             Log.d("spot_response", e.message ?: "something went wrong with addParkSpot")
             return null
         }
-
     }
-
 }

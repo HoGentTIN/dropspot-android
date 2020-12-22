@@ -51,5 +51,4 @@ interface SpotService {
 
     @GET("spots/detail")
     suspend fun getSpotDetails(): List<SpotDetail>
-
 }

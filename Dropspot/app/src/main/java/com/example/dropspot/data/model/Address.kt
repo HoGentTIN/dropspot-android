@@ -13,7 +13,6 @@ data class Address(
 
     fun getAddressString(): String {
         return "${this.street} ${this.houseNumber}\n" +
-                "${this.postalCode} ${this.city}\n"
+            "${this.postalCode} ${this.city}\n"
     }
-
 }

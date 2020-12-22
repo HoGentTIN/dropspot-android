@@ -1,6 +1,5 @@
 package com.example.dropspot.data.model
 
-
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
@@ -18,5 +17,4 @@ open class Spot(
     override fun toString(): String {
         return "Spot(spotId=$id, name=$name, latitude=$latitude, longitude=$longitude, creatorId=$creatorId)"
     }
-
 }

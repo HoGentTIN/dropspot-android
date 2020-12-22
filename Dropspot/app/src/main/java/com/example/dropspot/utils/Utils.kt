@@ -18,5 +18,4 @@ object Utils {
             BitmapDescriptorFactory.fromBitmap(bitmap)
         }
     }
-
 }

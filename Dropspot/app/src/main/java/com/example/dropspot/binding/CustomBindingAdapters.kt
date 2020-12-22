@@ -42,7 +42,3 @@ fun bindNavViewFromUser(v: NavigationView, user: AppUser?) {
         v.getHeaderView(0).findViewById<ProgressBar>(R.id.user_loading).visibility = View.VISIBLE
     }
 }
-
-
-
-

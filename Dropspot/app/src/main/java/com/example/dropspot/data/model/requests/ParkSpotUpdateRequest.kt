@@ -11,4 +11,3 @@ data class ParkSpotUpdateRequest(
     private val entranceFee: Double,
     private val parkCategory: ParkCategory
 )
-

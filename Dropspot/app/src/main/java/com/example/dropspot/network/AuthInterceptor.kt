@@ -62,5 +62,4 @@ object AuthInterceptor : Interceptor {
     fun generateFormattedToken(): String {
         return "Bearer $sessionToken"
     }
-
 }

@@ -32,15 +32,15 @@ data class SpotDetail(
 
     fun getLocationString(): String {
         return if (address == null) {
-            latLngToDMS(latitude,longitude)
+            latLngToDMS(latitude, longitude)
         } else {
             address!!.getAddressString()
         }
     }
 
-    private fun latLngToDMS(lat : Double, lng : Double) : String{
-        var latString : String = if (lat >= 0) "N" else "S"
-        var lngString : String = if (lng >= 0) "E" else "W"
+    private fun latLngToDMS(lat: Double, lng: Double): String {
+        var latString: String = if (lat >= 0) "N" else "S"
+        var lngString: String = if (lng >= 0) "E" else "W"
 
         latString += calcDMS(lat)
         lngString += calcDMS(lng)
@@ -48,16 +48,16 @@ data class SpotDetail(
         return "$latString\n$lngString"
     }
 
-    private fun calcDMS(doubleCoordinate : Double): String {
+    private fun calcDMS(doubleCoordinate: Double): String {
         val absValue = abs(doubleCoordinate)
 
         val d = floor(absValue)
         val m = floor((absValue - d) * 60)
         val s = round((absValue - d - m / 60) * 3600 * 1000) / 1000
 
-        var resD : Any = d
-        var resM : Any = m
-        var resS : Any = s
+        var resD: Any = d
+        var resM: Any = m
+        var resS: Any = s
 
         if (d.toInt() - d == 0.0) resD = d.toInt()
         if (m.toInt() - m == 0.0) resM = m.toInt()
@@ -65,7 +65,6 @@ data class SpotDetail(
 
         return "$resD°$resM'$resS\""
     }
-
 
     fun isPark(): Boolean {
         return address != null
@@ -101,5 +100,4 @@ data class SpotDetail(
 
         return (res / criteriaScore.size).roundToInt()
     }
-
 }

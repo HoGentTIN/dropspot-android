@@ -126,7 +126,6 @@ class SpotDetailRepository(
         } catch (e: Exception) {
             return handleException(e)
         }
-
     }
 
     private fun handleException(e: Exception): MessageResponse {
@@ -163,5 +162,4 @@ class SpotDetailRepository(
 
         spotDetailDao.delete(response)
     }
-
 }
