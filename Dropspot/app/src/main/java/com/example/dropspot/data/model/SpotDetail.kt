@@ -5,7 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
-import java.util.*
+import java.util.Currency
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.round

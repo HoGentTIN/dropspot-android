@@ -1,7 +1,11 @@
 package com.example.dropspot.data.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Delete
+import androidx.room.Query
 import com.example.dropspot.data.model.Spot
 
 @Dao

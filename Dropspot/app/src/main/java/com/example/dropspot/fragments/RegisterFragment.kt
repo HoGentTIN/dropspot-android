@@ -18,7 +18,12 @@ import com.example.dropspot.utils.Variables
 import com.example.dropspot.viewmodels.RegisterViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.mobsandgeeks.saripaar.Validator
-import com.mobsandgeeks.saripaar.annotation.*
+import com.mobsandgeeks.saripaar.annotation.NotEmpty
+import com.mobsandgeeks.saripaar.annotation.Length
+import com.mobsandgeeks.saripaar.annotation.Pattern
+import com.mobsandgeeks.saripaar.annotation.Password
+import com.mobsandgeeks.saripaar.annotation.Email
+import com.mobsandgeeks.saripaar.annotation.ConfirmPassword
 import kotlinx.android.synthetic.main.fragment_register.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

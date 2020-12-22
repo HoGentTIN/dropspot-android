@@ -1,6 +1,6 @@
 package com.example.dropspot.data.model
 
-import java.util.*
+import java.util.Locale
 
 enum class ParkCategory {
 
