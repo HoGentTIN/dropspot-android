@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.dropspot.MainActivity
 import com.example.dropspot.R
+import com.example.dropspot.activities.MainActivity
 import com.example.dropspot.adapters.CriterionScoresAdapter
 import com.example.dropspot.data.model.SpotDetail
 import com.example.dropspot.databinding.FragmentSpotDetailBinding

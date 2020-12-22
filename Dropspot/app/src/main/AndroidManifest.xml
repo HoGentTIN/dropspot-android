@@ -33,7 +33,7 @@
             android:value="@string/maps_api_key" />
 
         <activity
-            android:name=".AuthActivity"
+            android:name=".activities.AuthActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,7 +42,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:screenOrientation="portrait">
 
         </activity>

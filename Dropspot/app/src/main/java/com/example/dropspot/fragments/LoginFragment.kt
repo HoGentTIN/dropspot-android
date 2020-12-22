@@ -17,9 +17,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.example.dropspot.AuthActivity
-import com.example.dropspot.MainActivity
 import com.example.dropspot.R
+import com.example.dropspot.activities.AuthActivity
+import com.example.dropspot.activities.MainActivity
 import com.example.dropspot.data.model.AppUser
 import com.example.dropspot.databinding.FragmentLoginBinding
 import com.example.dropspot.utils.Constants.AUTH_ENC_SHARED_PREF_KEY

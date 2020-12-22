@@ -227,7 +227,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/rating_title"
-                    tools:context="com.example.dropspot.MainActivity"
+                    tools:context="com.example.dropspot.activities.MainActivity"
                     tools:listitem="@layout/list_item_rating" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

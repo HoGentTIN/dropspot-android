@@ -1,4 +1,4 @@
-package com.example.dropspot
+package com.example.dropspot.activities
 
 import android.content.Context
 import android.os.Bundle
@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.example.dropspot.R
 import com.example.dropspot.databinding.ActivityAuthBinding
 
 class AuthActivity : AppCompatActivity() {

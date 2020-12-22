@@ -5,7 +5,6 @@ import com.example.dropspot.data.model.CriterionScore
 import com.example.dropspot.data.model.ParkCategory
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.util.*
 
 object Converters {
 

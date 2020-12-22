@@ -1,4 +1,4 @@
-package com.example.dropspot
+package com.example.dropspot.activities
 
 import android.content.Context
 import android.content.Intent
@@ -25,6 +25,7 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.example.dropspot.R
 import com.example.dropspot.databinding.ActivityMainBinding
 import com.example.dropspot.fragments.HomeFragmentDirections
 import com.example.dropspot.network.AuthInterceptor

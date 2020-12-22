@@ -9,8 +9,8 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.dropspot.AuthActivity
 import com.example.dropspot.R
+import com.example.dropspot.activities.AuthActivity
 import com.example.dropspot.databinding.FragmentRegisterBinding
 import com.example.dropspot.utils.InputLayoutTextWatcher
 import com.example.dropspot.utils.MyValidationListener
