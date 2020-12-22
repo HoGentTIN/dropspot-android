@@ -101,7 +101,7 @@ class SpotDetailTest {
     }
 
     @Test
-    fun latLngToDMS_NW(){
+    fun latLngToDMS_NW() {
         val inputLat = 43.068888
         val inputLng = -111.972656
         val expectedDMSString = "N43°4'7.997\"\nW111°58'21.562\""
@@ -125,7 +125,7 @@ class SpotDetailTest {
     }
 
     @Test
-    fun latLngToDMS_NE(){
+    fun latLngToDMS_NE() {
         val inputLat = 42.032974
         val inputLng = 74.707031
         val expectedDMSString = "N42°1'58.706\"\nE74°42'25.312\""
@@ -149,7 +149,7 @@ class SpotDetailTest {
     }
 
     @Test
-    fun latLngToDMS_SE(){
+    fun latLngToDMS_SE() {
         val inputLat = -27.683528
         val inputLng = 119.707031
         val expectedDMSString = "S27°41'0.701\"\nE119°42'25.312\""
@@ -173,7 +173,7 @@ class SpotDetailTest {
     }
 
     @Test
-    fun latLngToDMS_SW(){
+    fun latLngToDMS_SW() {
         val inputLat = -34.885931
         val inputLng = -64.863281
         val expectedDMSString = "S34°53'9.352\"\nW64°51'47.812\""
@@ -195,5 +195,4 @@ class SpotDetailTest {
 
         assertThat(spotDetail.getLocationString()).isEqualTo(expectedDMSString)
     }
-
 }
