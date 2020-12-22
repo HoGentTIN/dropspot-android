@@ -27,11 +27,16 @@ jobs:
         working-directory: ./Dropspot
         run: ls -a
       
-        # make gradlew executable
+      # make gradlew executable
       - name: Make gradlew executable
         working-directory: ./Dropspot
         run: chmod +x gradlew
-        
+      
+      # run unit tests
+      - name: unit tests
+        working-directory: ./Dropspot
+        run: ./gradlew test
+         
       # Ktlinting
       - name: Execute the ktlinting
         working-directory: ./Dropspot
