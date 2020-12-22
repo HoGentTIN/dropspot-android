@@ -21,11 +21,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-        
-      # echo dir
-      - name: Echo dir
-        working-directory: ./Dropspot
-        run: echo $PWD
       
       # show content
       - name: dir content
@@ -36,11 +31,6 @@ jobs:
       - name: Make gradlew executable
         working-directory: ./Dropspot
         run: chmod +x gradlew
-        
-      # show available tasks
-      - name: Show available tasks
-        working-directory: ./Dropspot
-        run: ./gradlew tasks
         
       # Ktlinting
       - name: Execute the ktlinting
