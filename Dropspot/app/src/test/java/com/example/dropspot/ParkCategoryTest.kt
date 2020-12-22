@@ -12,7 +12,7 @@ class ParkCategoryTest {
     private val wrongString = "wrongString"
 
     @Test
-    fun parkCategoryFromString_outdoorString_outdoorEnum(){
+    fun parkCategoryFromString_outdoorString_outdoorEnum() {
         val input = outdoorString
         val expected = ParkCategory.OUTDOOR
         val output = ParkCategory.parkCategoryFromString(input)
@@ -20,7 +20,7 @@ class ParkCategoryTest {
     }
 
     @Test
-    fun parkCategoryFromString_indoorString_indoorEnum(){
+    fun parkCategoryFromString_indoorString_indoorEnum() {
         val input = indoorString
         val expected = ParkCategory.INDOOR
         val output = ParkCategory.parkCategoryFromString(input)
@@ -28,7 +28,7 @@ class ParkCategoryTest {
     }
 
     @Test
-    fun parkCategoryFromString_outdoorIndoorString_outdoorIndoorEnum(){
+    fun parkCategoryFromString_outdoorIndoorString_outdoorIndoorEnum() {
         val input = outdoorIndoorString
         val expected = ParkCategory.OUTDOOR_INDOOR
         val output = ParkCategory.parkCategoryFromString(input)
@@ -36,11 +36,10 @@ class ParkCategoryTest {
     }
 
     @Test
-    fun parkCategoryFromString_wrongString_outdoorIndoorEnum(){
+    fun parkCategoryFromString_wrongString_outdoorIndoorEnum() {
         val input = wrongString
         val expected = ParkCategory.OUTDOOR_INDOOR
         val output = ParkCategory.parkCategoryFromString(input)
         assertThat(output).isEqualTo(expected)
     }
-
 }
