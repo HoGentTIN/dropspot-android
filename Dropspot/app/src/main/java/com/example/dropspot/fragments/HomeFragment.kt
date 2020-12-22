@@ -43,11 +43,11 @@ import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.Length
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Order
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.IOException
 import java.text.NumberFormat
-import java.util.Locale
 import java.util.Currency
+import java.util.Locale
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
 
@@ -543,12 +543,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
      */
     private fun getLocationPermission() {
 
-        if (ContextCompat.checkSelfPermission(
-                this.requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            == PackageManager.PERMISSION_GRANTED
-        ) {
+        if ( ContextCompat.checkSelfPermission( this.requireContext(), Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true
         } else {
             ActivityCompat.requestPermissions(
