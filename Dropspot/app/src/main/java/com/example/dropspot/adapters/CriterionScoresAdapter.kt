@@ -48,16 +48,18 @@ class CriterionScoresAdapter(
             binding.criterionScore = criterionScore
             binding.ratingBar.onRatingBarChangeListener =
                 RatingBar.OnRatingBarChangeListener { _, rating, fromUser ->
-                    if (Variables.isNetworkConnected.value!! && fromUser) {
-                        spotDetailViewModel.vote(criterionScore.criterionId, rating.toDouble())
-                    } else {
-                        Snackbar.make(
-                            binding.root,
-                            context.resources.getString(R.string.vote_failed)
-                                    + context.resources.getString(R.string.no_connection),
-                            Snackbar.LENGTH_SHORT
-                        ).show()
-                        binding.ratingBar.rating = 0f
+                    if (fromUser) {
+                        if (Variables.isNetworkConnected.value!!) {
+                            spotDetailViewModel.vote(criterionScore.criterionId, rating.toDouble())
+                        } else {
+                            Snackbar.make(
+                                binding.root,
+                                context.resources.getString(R.string.vote_failed)
+                                        + context.resources.getString(R.string.no_connection),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            binding.ratingBar.rating = 0f
+                        }
                     }
                 }
         }

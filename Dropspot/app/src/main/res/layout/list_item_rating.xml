@@ -14,16 +14,6 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <ImageView
-            android:id="@+id/ranking"
-            style="@style/icon"
-            android:contentDescription="@string/ranking_icon_descr"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:rankingImgFromScore="@{criterionScore.ratingBarScore}"
-            app:srcCompat="@drawable/ic_zero" />
-
         <com.example.dropspot.views.RatingBarSvg
             android:id="@+id/ratingBar"
             style="@style/myCustomRatingBar"
@@ -32,6 +22,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:numStars="5"
+            android:rating="@{criterionScore.ratingBarScore}"
             android:stepSize="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageView"
@@ -43,11 +34,10 @@
             android:id="@+id/criterionName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:text="@{criterionScore.criterionName}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline_rating_list_item"
-            app:layout_constraintStart_toEndOf="@+id/ranking"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView

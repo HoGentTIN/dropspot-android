@@ -85,7 +85,6 @@
 
     <style name="dropdown_main" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu">
         <item name="boxBackgroundColor">@color/white</item>
-
     </style>
 
     <style name="text_input_main">
