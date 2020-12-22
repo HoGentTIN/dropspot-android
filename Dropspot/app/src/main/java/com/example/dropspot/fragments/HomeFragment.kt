@@ -46,7 +46,8 @@ import com.mobsandgeeks.saripaar.annotation.Order
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.IOException
 import java.text.NumberFormat
-import java.util.*
+import java.util.Locale
+import java.util.Currency
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
 
