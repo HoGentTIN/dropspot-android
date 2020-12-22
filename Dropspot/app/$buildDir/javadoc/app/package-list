@@ -2,6 +2,7 @@ $dokka.format:html
 $dokka.linkExtension:html
 
 com.example.dropspot
+com.example.dropspot.activities
 com.example.dropspot.adapters
 com.example.dropspot.binding
 com.example.dropspot.data
