@@ -5,13 +5,13 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 
 @Entity(tableName = "spots")
-open class Spot(
+class Spot(
     @PrimaryKey
-    open val id: Long,
-    open val creatorId: Long,
-    open var name: String = "unnamed",
-    open var latitude: Double = 0.0,
-    open var longitude: Double = 0.0
+    val id: Long,
+    val creatorId: Long,
+    var name: String = "unnamed",
+    var latitude: Double = 0.0,
+    var longitude: Double = 0.0
 ) : Serializable {
 
     override fun toString(): String {
